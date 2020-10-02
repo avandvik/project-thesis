@@ -211,72 +211,148 @@
       "id": 1,
       "deck_capacity": 100,
       "bulk_capacity": 100,
-      "is_spot_vessel": "False",
-      "return_day": 4
+      "is_spot_vessel": "False"
     },
     "PSV_2": {
       "id": 2,
       "deck_capacity": 100,
       "bulk_capacity": 100,
-      "is_spot_vessel": "False",
-      "return_day": 0
+      "is_spot_vessel": "False"
     },
     "PSV_3": {
       "id": 3,
       "deck_capacity": 100,
       "bulk_capacity": 100,
-      "is_spot_vessel": "False",
-      "return_day": 0
+      "is_spot_vessel": "False"
     },
     "PSV_4": {
       "id": 4,
       "deck_capacity": 100,
       "bulk_capacity": 100,
-      "is_spot_vessel": "False",
-      "return_day": 0
+      "is_spot_vessel": "False"
     },
     "PSV_5": {
       "id": 5,
       "deck_capacity": 100,
       "bulk_capacity": 100,
-      "is_spot_vessel": "False",
-      "return_day": 0
+      "is_spot_vessel": "False"
     },
     "SPOT_VESSEL": {
       "id": 6,
       "deck_capacity": 100,
       "bulk_capacity": 100,
-      "is_spot_vessel": "True",
-      "return_day": 4
+      "is_spot_vessel": "True"
     }
   },
-  "orders": {
+  "scenarios": {
     "1": {
-      "transport_type": "delivery",
-      "cargo_type": "deck",
-      "mandatory": "True",
-      "size_variation": 4,
-      "deadline_day": 3,
-      "installation": 4
+      "order_size_variations": [0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "order_deadlines": [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "vessel_return_days": [4, 0, 0, 0, 0, 0]
     },
     "2": {
-      "transport_type": "delivery",
-      "cargo_type": "deck",
-      "mandatory": "True",
-      "size_variation": 3,
-      "deadline_day": 2,
-      "installation": 12
+      "order_size_variations": [3, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 3, 0],
+      "order_deadlines": [4, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 2, 0],
+      "vessel_return_days": [3, 0, 0, 0, 0, 0]
     },
     "3": {
-      "transport_type": "delivery",
-      "cargo_type": "deck",
-      "mandatory": "True",
-      "size_variation": 5,
-      "deadline_day": 3,
-      "installation": 16
+      "order_size_variations": [0, 3, 3, 0, 0, 0, 0, 0, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "order_deadlines": [0, 3, 2, 0, 0, 0, 0, 0, 2, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "vessel_return_days": [4, 0, 0, 0, 0, 0]
+    },
+    "4": {
+      "order_size_variations": [0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 4, 0, 2, 0, 0, 2, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0],
+      "order_deadlines": [0, 3, 0, 0, 0, 0, 4, 0, 0, 0, 3, 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0, 0, 0, 0, 0],
+      "vessel_return_days": [4, 0, 0, 0, 0, 0]
+    },
+    "5": {
+      "order_size_variations": [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 3, 3, 0, 0, 0, 3, 4, 0, 0, 0, 4, 5, 0, 0, 0, 0],
+      "order_deadlines": [0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 4, 4, 0, 0, 0, 4, 4, 0, 0, 0, 4, 4, 0, 0, 0, 0],
+      "vessel_return_days": [4, 0, 0, 0, 0, 0]
+    },
+    "6": {
+      "order_size_variations": [0, 0, 0, 0, 2, 4, 0, 3, 4, 0, 0, 5, 2, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "order_deadlines": [0, 0, 0, 0, 4, 4, 0, 4, 4, 0, 0, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "vessel_return_days": [4, 4, 0, 0, 0, 0]
+    },
+    "7": {
+      "order_size_variations": [0, 0, 0, 0, 0, 2, 4, 3, 2, 0, 0, 0, 0, 2, 4, 4, 5, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0],
+      "order_deadlines": [0, 0, 0, 0, 0, 4, 4, 4, 4, 0, 0, 0, 0, 4, 4, 4, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0],
+      "vessel_return_days": [4, 4, 0, 0, 0, 0]
+    },
+    "8": {
+      "order_size_variations": [0, 0, 4, 0, 2, 4, 0, 0, 0, 2, 3, 0, 0, 0, 3, 0, 0, 4, 0, 2, 0, 0, 0, 3, 3, 0, 1],
+      "order_deadlines": [0, 0, 3, 0, 3, 2, 0, 0, 0, 3, 3, 0, 0, 0, 3, 0, 0, 2, 0, 3, 0, 0, 0, 3, 4, 0, 3],
+      "vessel_return_days": [4, 0, 0, 0, 0, 0]
+    },
+    "9": {
+      "order_size_variations": [2, 3, 2, 4, 0, 0, 0, 0, 4, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 3, 4, 5, 0, 0, 0, 0],
+      "order_deadlines": [3, 4, 3, 3, 0, 0, 0, 0, 3, 2, 0, 0, 0, 0, 0, 3, 0, 0, 0, 2, 3, 3, 4, 0, 0, 0, 0],
+      "vessel_return_days": [4, 3, 0, 0, 0, 0]
+    },
+    "10": {
+      "order_size_variations": [2, 0, 0, 4, 0, 0, 3, 0, 0, 3, 3, 0, 2, 2, 0, 4, 1, 0, 4, 5, 0, 0, 4, 0, 0, 0, 4],
+      "order_deadlines": [3, 0, 0, 3, 0, 0, 3, 0, 0, 3, 3, 0, 3, 3, 0, 3, 3, 0, 4, 3, 0, 0, 4, 0, 0, 0, 4],
+      "vessel_return_days": [3, 4, 0, 0, 0, 0]
+    },
+    "11": {
+      "order_size_variations": [0, 2, 3, 0, 0, 3, 3, 2, 1, 0, 0, 0, 0, 4, 3, 2, 5, 0, 0, 0, 0, 0, 4, 3, 3, 0, 0],
+      "order_deadlines": [0, 3, 3, 0, 0, 2, 3, 3, 2, 0, 0, 0, 0, 3, 2, 3, 4, 0, 0, 0, 0, 0, 4, 4, 4, 0, 0],
+      "vessel_return_days": [3, 3, 0, 0, 0, 0]
+    },
+    "12": {
+      "order_size_variations": [2, 2, 0, 3, 0, 1, 0, 5, 0, 2, 0, 4, 3, 4, 0, 0, 0, 3, 4, 2, 1, 0, 0, 2, 0, 4, 0],
+      "order_deadlines": [3, 3, 0, 3, 0, 3, 0, 4, 0, 3, 0, 3, 3, 3, 0, 0, 0, 4, 4, 4, 4, 0, 0, 3, 0, 4, 0],
+      "vessel_return_days": [4, 3, 3, 0, 0, 0]
+    },
+    "13": {
+      "order_size_variations": [0, 2, 3, 2, 3, 4, 5, 0, 0, 0, 3, 4, 5, 3, 0, 0, 0, 2, 2, 1, 0, 0, 2, 3, 0, 0, 0],
+      "order_deadlines": [0, 3, 3, 3, 4, 4, 4, 0, 0, 0, 4, 4, 3, 2, 0, 0, 0, 3, 3, 3, 0, 0, 4, 4, 0, 0, 0],
+      "vessel_return_days": [4, 4, 2, 0, 0, 0]
+    },
+    "14": {
+      "order_size_variations": [0, 0, 3, 0, 0, 2, 0, 2, 3, 1, 3, 0, 0, 4, 2, 0, 4, 3, 4, 2, 3, 2, 3, 0, 3, 2, 0],
+      "order_deadlines": [0, 0, 3, 0, 0, 4, 0, 3, 3, 3, 3, 0, 0, 3, 3, 0, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 0],
+      "vessel_return_days": [4, 4, 4, 0, 0, 0]
+    },
+    "15": {
+      "order_size_variations": [3, 3, 2, 4, 5, 1, 0, 0, 0, 3, 3, 5, 5, 2, 0, 0, 0, 1, 3, 5, 0, 0, 0, 4, 5, 0, 0],
+      "order_deadlines": [3, 4, 3, 3, 3, 3, 0, 0, 0, 3, 4, 4, 4, 4, 0, 0, 0, 3, 4, 3, 0, 0, 0, 3, 4, 0, 0],
+      "vessel_return_days": [4, 3, 4, 0, 0, 0]
+    },
+    "16": {
+      "order_size_variations": [3, 3, 1, 0, 0, 2, 4, 0, 2, 2, 0, 3, 0, 0, 4, 5, 0, 3, 1, 2, 3, 4, 0, 2, 3, 3, 3],
+      "order_deadlines": [3, 3, 3, 0, 0, 3, 3, 0, 3, 3, 0, 3, 0, 0, 3, 3, 0, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3],
+      "vessel_return_days": [4, 3, 3, 0, 0, 0]
+    },
+    "17": {
+      "order_size_variations": [3, 2, 3, 2, 3, 0, 4, 0, 3, 1, 0, 3, 3, 3, 3, 0, 2, 1, 0, 2, 2, 3, 4, 0, 3, 1, 1],
+      "order_deadlines": [4, 4, 4, 4, 4, 0, 3, 0, 3, 3, 0, 3, 3, 3, 3, 0, 3, 4, 0, 4, 4, 4, 3, 0, 3, 3, 3],
+      "vessel_return_days": [4, 3, 3, 0, 0, 0]
+    },
+    "18": {
+      "order_size_variations": [3, 2, 3, 3, 2, 0, 2, 3, 4, 3, 5, 2, 2, 3, 0, 3, 3, 3, 4, 3, 2, 1, 0, 3, 4, 3, 0],
+      "order_deadlines": [3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 0, 3, 3, 3, 0],
+      "vessel_return_days": [3, 3, 2, 2, 0, 0]
+    },
+    "19": {
+      "order_size_variations": [3, 3, 4, 3, 0, 5, 3, 1, 3, 2, 3, 3, 3, 3, 3, 2, 4, 3, 3, 3, 3, 3, 4, 3, 5, 2, 0],
+      "order_deadlines": [3, 3, 3, 3, 0, 3, 3, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0],
+      "vessel_return_days": [4, 4, 3, 2, 0, 0]
+    },
+    "20": {
+      "order_size_variations": [3, 3, 4, 3, 3, 2, 2, 3, 3, 4, 2, 3, 2, 2, 4, 3, 3, 4, 3, 4, 1, 3, 3, 4, 3, 3, 3],
+      "order_deadlines": [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+      "vessel_return_days": [4, 3, 3, 2, 3, 0]
     }
   },
-  "order_size_variations": [0.5, 0.75, 1.0, 1.25, 1.5],
+  "order_size_variations": {
+    "1": 0.5,
+    "2": 0.75,
+    "3": 1.0,
+    "4": 1.25,
+    "5": 1.5
+  },
   "weather_states": {
     "0": {
       "speed_impact": 0,
