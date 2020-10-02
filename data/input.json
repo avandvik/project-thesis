@@ -1,0 +1,269 @@
+{
+  "fuel_price": 0.2755,
+  "min_speed": 7,
+  "max_speed": 14,
+  "fuel_consumption_DP": 170,
+  "fuel_consumption_idling": 120,
+  "spot_hour_rate": 608,
+  "time_per_unit_demand": 0.1,
+  "time_units_per_hour": 4,
+  "installations": {
+    "DEP": {
+      "id": 0,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 0
+    },
+    "TRO": {
+      "id": 1,
+      "opening_hour": 7,
+      "closing_hour": 19,
+      "standard_order_size": 15.0
+    },
+    "TRB": {
+      "id": 2,
+      "opening_hour": 7,
+      "closing_hour": 19,
+      "standard_order_size": 20.0
+    },
+    "TRC": {
+      "id": 3,
+      "opening_hour": 7,
+      "closing_hour": 19,
+      "standard_order_size": 15.0
+    },
+    "CPR": {
+      "id": 4,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 20.0
+    },
+    "SEN": {
+      "id": 5,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 20.0
+    },
+    "SDO": {
+      "id": 6,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 20.0
+    },
+    "SEQ": {
+      "id": 7,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 20.0
+    },
+    "OSE": {
+      "id": 8,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 15.0
+    },
+    "OSB": {
+      "id": 9,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 15.0
+    },
+    "OSC": {
+      "id": 10,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 15.0
+    },
+    "OSO": {
+      "id": 11,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 15.0
+    },
+    "SSC": {
+      "id": 12,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 7.5
+    },
+    "OSS": {
+      "id": 13,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 15.0
+    },
+    "DSD": {
+      "id": 14,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 20.0
+    },
+    "KVB": {
+      "id": 15,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 10.0
+    },
+    "VMO": {
+      "id": 16,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 15.0
+    },
+    "WEL": {
+      "id": 17,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 15.0
+    },
+    "VFB": {
+      "id": 18,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 15.0
+    },
+    "WEP": {
+      "id": 19,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 15.0
+    },
+    "HUL": {
+      "id": 20,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 10.0
+    },
+    "STA": {
+      "id": 21,
+      "opening_hour": 7,
+      "closing_hour": 19,
+      "standard_order_size": 17.5
+    },
+    "STB": {
+      "id": 22,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 17.5
+    },
+    "STC": {
+      "id": 23,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 17.5
+    },
+    "GFA": {
+      "id": 24,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 17.5
+    },
+    "GFB": {
+      "id": 25,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 17.5
+    },
+    "GFC": {
+      "id": 26,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 17.5
+    },
+    "SOD": {
+      "id": 27,
+      "opening_hour": 0,
+      "closing_hour": 24,
+      "standard_order_size": 15.0
+    }
+  },
+  "order_scenarios": {
+    "1": {
+      "size_variations": [0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "deadlines": [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    "2": {
+      "size_variations": [3, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 3, 0],
+      "deadlines": [4, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 2, 0]
+    },
+    "3": {
+      "size_variations": [0, 3, 3, 0, 0, 0, 0, 0, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "deadlines": [0, 3, 2, 0, 0, 0, 0, 0, 2, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    "4": {
+      "size_variations": [0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 4, 0, 2, 0, 0, 2, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0],
+      "deadlines": [0, 3, 0, 0, 0, 0, 4, 0, 0, 0, 3, 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0, 0, 0, 0, 0]
+    },
+    "5": {
+      "size_variations": [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 3, 3, 0, 0, 0, 3, 4, 0, 0, 0, 4, 5, 0, 0, 0, 0],
+      "deadlines": [0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 4, 4, 0, 0, 0, 4, 4, 0, 0, 0, 4, 4, 0, 0, 0, 0]
+    },
+    "6": {
+      "size_variations": [0, 0, 0, 0, 2, 4, 0, 3, 4, 0, 0, 5, 2, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "deadlines": [0, 0, 0, 0, 4, 4, 0, 4, 4, 0, 0, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    "7": {
+      "size_variations": [0, 0, 0, 0, 0, 2, 4, 3, 2, 0, 0, 0, 0, 2, 4, 4, 5, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0],
+      "deadlines": [0, 0, 0, 0, 0, 4, 4, 4, 4, 0, 0, 0, 0, 4, 4, 4, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0]
+    },
+    "8": {
+      "size_variations": [0, 0, 4, 0, 2, 4, 0, 0, 0, 2, 3, 0, 0, 0, 3, 0, 0, 4, 0, 2, 0, 0, 0, 3, 3, 0, 1],
+      "deadlines": [0, 0, 3, 0, 3, 2, 0, 0, 0, 3, 3, 0, 0, 0, 3, 0, 0, 2, 0, 3, 0, 0, 0, 3, 4, 0, 3]
+    },
+    "9": {
+      "size_variations": [2, 3, 2, 4, 0, 0, 0, 0, 4, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 3, 4, 5, 0, 0, 0, 0],
+      "deadlines": [3, 4, 3, 3, 0, 0, 0, 0, 3, 2, 0, 0, 0, 0, 0, 3, 0, 0, 0, 2, 3, 3, 4, 0, 0, 0, 0]
+    },
+    "10": {
+      "size_variations": [2, 0, 0, 4, 0, 0, 3, 0, 0, 3, 3, 0, 2, 2, 0, 4, 1, 0, 4, 5, 0, 0, 4, 0, 0, 0, 4],
+      "deadlines": [3, 0, 0, 3, 0, 0, 3, 0, 0, 3, 3, 0, 3, 3, 0, 3, 3, 0, 4, 3, 0, 0, 4, 0, 0, 0, 4]
+    },
+    "11": {
+      "size_variations": [0, 2, 3, 0, 0, 3, 3, 2, 1, 0, 0, 0, 0, 4, 3, 2, 5, 0, 0, 0, 0, 0, 4, 3, 3, 0, 0],
+      "deadlines": [0, 3, 3, 0, 0, 2, 3, 3, 2, 0, 0, 0, 0, 3, 2, 3, 4, 0, 0, 0, 0, 0, 4, 4, 4, 0, 0]
+    },
+    "12": {
+      "size_variations": [2, 2, 0, 3, 0, 1, 0, 5, 0, 2, 0, 4, 3, 4, 0, 0, 0, 3, 4, 2, 1, 0, 0, 2, 0, 4, 0],
+      "deadlines": [3, 3, 0, 3, 0, 3, 0, 4, 0, 3, 0, 3, 3, 3, 0, 0, 0, 4, 4, 4, 4, 0, 0, 3, 0, 4, 0]
+    },
+    "13": {
+      "size_variations": [0, 2, 3, 2, 3, 4, 5, 0, 0, 0, 3, 4, 5, 3, 0, 0, 0, 2, 2, 1, 0, 0, 2, 3, 0, 0, 0],
+      "deadlines": [0, 3, 3, 3, 4, 4, 4, 0, 0, 0, 4, 4, 3, 2, 0, 0, 0, 3, 3, 3, 0, 0, 4, 4, 0, 0, 0]
+    },
+    "14": {
+      "size_variations": [0, 0, 3, 0, 0, 2, 0, 2, 3, 1, 3, 0, 0, 4, 2, 0, 4, 3, 4, 2, 3, 2, 3, 0, 3, 2, 0],
+      "deadlines": [0, 0, 3, 0, 0, 4, 0, 3, 3, 3, 3, 0, 0, 3, 3, 0, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 0]
+    },
+    "15": {
+      "size_variations": [3, 3, 2, 4, 5, 1, 0, 0, 0, 3, 3, 5, 5, 2, 0, 0, 0, 1, 3, 5, 0, 0, 0, 4, 5, 0, 0],
+      "deadlines": [3, 4, 3, 3, 3, 3, 0, 0, 0, 3, 4, 4, 4, 4, 0, 0, 0, 3, 4, 3, 0, 0, 0, 3, 4, 0, 0]
+    },
+    "16": {
+      "size_variations": [3, 3, 1, 0, 0, 2, 4, 0, 2, 2, 0, 3, 0, 0, 4, 5, 0, 3, 1, 2, 3, 4, 0, 2, 3, 3, 3],
+      "deadlines": [3, 3, 3, 0, 0, 3, 3, 0, 3, 3, 0, 3, 0, 0, 3, 3, 0, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3]
+    },
+    "17": {
+      "size_variations": [3, 2, 3, 2, 3, 0, 4, 0, 3, 1, 0, 3, 3, 3, 3, 0, 2, 1, 0, 2, 2, 3, 4, 0, 3, 1, 1],
+      "deadlines": [4, 4, 4, 4, 4, 0, 3, 0, 3, 3, 0, 3, 3, 3, 3, 0, 3, 4, 0, 4, 4, 4, 3, 0, 3, 3, 3]
+    },
+    "18": {
+      "size_variations": [3, 2, 3, 3, 2, 0, 2, 3, 4, 3, 5, 2, 2, 3, 0, 3, 3, 3, 4, 3, 2, 1, 0, 3, 4, 3, 0],
+      "deadlines": [3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 0, 3, 3, 3, 0]
+    },
+    "19": {
+      "size_variations": [3, 3, 4, 3, 0, 5, 3, 1, 3, 2, 3, 3, 3, 3, 3, 2, 4, 3, 3, 3, 3, 3, 4, 3, 5, 2, 0],
+      "deadlines": [3, 3, 3, 3, 0, 3, 3, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0]
+    },
+    "20": {
+      "size_variations": [3, 3, 4, 3, 3, 2, 2, 3, 3, 4, 2, 3, 2, 2, 4, 3, 3, 4, 3, 4, 1, 3, 3, 4, 3, 3, 3],
+      "deadlines": [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+    }
+  },
+  "order_size_variations": {
+    "1": 0.5,
+    "2": 0.75,
+    "3": 1.0,
+    "4": 1.25,
+    "5": 1.5
+  }
+}
