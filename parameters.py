@@ -4,11 +4,10 @@ from objects.installation import Installation
 from objects.vessel import Vessel
 from objects.order import Order
 
-file_path = 'data/mongstad_scenarios.json'
+file_path = 'data/mongstad.json'
 
 with open(file_path) as file:
     input_data = json.load(file)
-
 
 """ ============================ INSTALLATIONS ============================ """
 installations = []
@@ -17,10 +16,10 @@ for installation_name in input_data['installations']:
                                       name=installation_name,
                                       opening_hour=input_data['installations'][installation_name]['opening_hour'],
                                       closing_hour=input_data['installations'][installation_name]['closing_hour'],
-                                      standard_order_size=input_data['installations'][installation_name]['standard_order_size'],
+                                      standard_order_size=input_data['installations'][installation_name][
+                                          'standard_order_size'],
                                       distances=input_data['installations'][installation_name][
                                           'distances_to_other_installations']))
-
 
 """ ============================ VESSEL ============================ """
 vessels = []
@@ -34,18 +33,20 @@ for vessel_name in input_data['vessels']:
 
 MIN_SPEED = input_data['min_speed']
 MAX_SPEED = input_data['max_speed']
+
+FUEL_PRICE = input_data['fuel_price']
 FUEL_CONSUMPTION_DP = input_data['fuel_consumption_dp']  # TODO: Find out if this is fuel consumption at DEPOT
 FUEL_CONSUMPTION_IDLING = input_data['fuel_consumption_idling']
+
 SPOT_HOUR_RATE = input_data['spot_hour_rate']
 
 TIME_PER_UNIT_DEMAND = input_data['time_per_unit_demand']  # TODO: Find out what this is and rename
-
 
 """ ============================ ORDERS ============================ """
 orders = []
 order_size_variations = input_data['order_size_variations']
 for order_identfifier in input_data['orders']:
-    variation_idx = input_data['orders'][order_identfifier]['size_variation']-1
+    variation_idx = input_data['orders'][order_identfifier]['size_variation'] - 1
     order_size_variation = order_size_variations[variation_idx]
     installation_idx = input_data['orders'][order_identfifier]['installation']
     installation = installations[installation_idx]
@@ -62,5 +63,10 @@ for order_identfifier in input_data['orders']:
 PLANNING_PERIOD_IN_HOURS = input_data['planning_period_in_hours']
 TIME_UNITS_PER_HOUR = input_data['time_units_per_hour']
 
-""" ============================ OTHER ============================ """
-FUEL_PRICE = input_data['fuel_price']
+
+""" ============================ WEATHER ============================ """
+WEATHER_FORECAST = input_data['weather_forecast']
+SPEED_IMPACTS = [input_data['weather_states'][weather_state]['speed_impact'] for weather_state in
+                 input_data['weather_states']]
+SERVICE_IMPACTS = [input_data['weather_states'][weather_state]['service_impact'] for weather_state in
+                   input_data['weather_states']]
