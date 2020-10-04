@@ -1,3 +1,5 @@
 .idea
 __pycache__
 .DS_Store
+testing.ipynb
+.ipynb_checkpoints

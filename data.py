@@ -9,6 +9,7 @@ file_path = 'data/mongstad.json'
 with open(file_path) as file:
     input_data = json.load(file)
 
+
 """ ============================ INSTALLATIONS ============================ """
 installations = []
 for installation_name in input_data['installations']:
@@ -20,6 +21,7 @@ for installation_name in input_data['installations']:
                                           'standard_order_size'],
                                       distances=input_data['installations'][installation_name][
                                           'distances_to_other_installations']))
+
 
 """ ============================ VESSEL ============================ """
 vessels = []
@@ -40,17 +42,18 @@ FUEL_CONSUMPTION_IDLING = input_data['fuel_consumption_idling']
 
 SPOT_HOUR_RATE = input_data['spot_hour_rate']
 
-TIME_PER_UNIT_DEMAND = input_data['time_per_unit_demand']  # TODO: Find out what this is and rename
+SERVICE_TIME_PER_UNIT = input_data['time_per_unit_demand']
+
 
 """ ============================ ORDERS ============================ """
 orders = []
 order_size_variations = input_data['order_size_variations']
-for order_identfifier in input_data['orders']:
+for index, order_identfifier in enumerate(input_data['orders']):
     variation_idx = input_data['orders'][order_identfifier]['size_variation'] - 1
     order_size_variation = order_size_variations[variation_idx]
     installation_idx = input_data['orders'][order_identfifier]['installation']
     installation = installations[installation_idx]
-    orders.append(Order(identifier=order_identfifier,
+    orders.append(Order(index=index,
                         transport_type=input_data['orders'][order_identfifier]['transport_type'],
                         cargo_type=input_data['orders'][order_identfifier]['cargo_type'],
                         mandatory=input_data['orders'][order_identfifier]['mandatory'],
@@ -58,6 +61,8 @@ for order_identfifier in input_data['orders']:
                         deadline=input_data['orders'][order_identfifier]['deadline_day'],
                         departure_day=0,
                         installation=installation))
+    installation.add_order(index)
+
 
 """ ============================ TIME AND DISCRETIZATION ============================ """
 PLANNING_PERIOD_IN_HOURS = input_data['planning_period_in_hours']

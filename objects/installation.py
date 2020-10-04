@@ -15,9 +15,22 @@ class Installation:
         self.closing_hour = closing_hour
         self.standard_order_size = standard_order_size
         self.distances = distances
+        self.orders = []
 
     def is_closed(self, order):
         pass
 
+    def add_order(self, order):
+        self.orders.append(order)
+
+    def has_orders(self):
+        return True if self.orders else False
+
     def get_standard_order_size(self):
         return self.standard_order_size
+
+    def get_distance_to_installation(self, installation_index):
+        return self.distances[installation_index]
+
+    def get_orders(self):
+        return self.orders
