@@ -22,6 +22,8 @@ for installation_name in input_data['installations']:
                                       distances=input_data['installations'][installation_name][
                                           'distances_to_other_installations']))
 
+REAL_SERVICE_TIME_PER_UNIT = input_data['time_per_unit_demand']
+
 
 """ ============================ VESSEL ============================ """
 vessels = []
@@ -41,8 +43,6 @@ FUEL_CONSUMPTION_DP = input_data['fuel_consumption_dp']  # TODO: Find out if thi
 FUEL_CONSUMPTION_IDLING = input_data['fuel_consumption_idling']
 
 SPOT_HOUR_RATE = input_data['spot_hour_rate']
-
-SERVICE_TIME_PER_UNIT = input_data['time_per_unit_demand']
 
 
 """ ============================ ORDERS ============================ """
@@ -67,10 +67,14 @@ for index, order_identfifier in enumerate(input_data['orders']):
 """ ============================ TIME AND DISCRETIZATION ============================ """
 PLANNING_PERIOD_IN_HOURS = input_data['planning_period_in_hours']
 TIME_UNITS_PER_HOUR = input_data['time_units_per_hour']
+TIME_INCREMENT = 1.0 / TIME_UNITS_PER_HOUR
+UNIT_MINUTES = 60 / TIME_UNITS_PER_HOUR
+DISC_SERVICE_TIME_PER_UNIT = REAL_SERVICE_TIME_PER_UNIT * TIME_UNITS_PER_HOUR
 
 
 """ ============================ WEATHER ============================ """
 WEATHER_FORECAST = input_data['weather_forecast']
+WORST_WEATHER_STATE = input_data['worst_possible_weather_state']
 SPEED_IMPACTS = [input_data['weather_states'][weather_state]['speed_impact'] for weather_state in
                  input_data['weather_states']]
 SERVICE_IMPACTS = [input_data['weather_states'][weather_state]['service_impact'] for weather_state in

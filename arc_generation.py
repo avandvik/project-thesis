@@ -28,14 +28,19 @@ def generate_arcs_from_node(dep_inst, start_time, vessel):
 
             min_service_time, max_service_time = 0, 0
             for order in order_combination:
-                min_service_time += order.get_size() * data.SERVICE_TIME_PER_UNIT
-                max_service_time += order.get_size() * data.SERVICE_TIME_PER_UNIT * 1.3  # TODO: Find out why 1.3 is used
+                min_service_time += order.get_size() * data.SERVICE_TIME_PER_UNIT_REAL
+                max_service_time += order.get_size() * data.SERVICE_TIME_PER_UNIT_REAL * data.SERVICE_IMPACTS[2]
 
             min_sailing_time = distance / data.MAX_SPEED
             max_sailing_time = distance / data.MIN_SPEED
 
             early_end = start_time + math.ceil((min_sailing_time + min_service_time) * data.TIME_UNITS_PER_HOUR)
             late_end = start_time + math.ceil((max_sailing_time + max_service_time) * data.TIME_UNITS_PER_HOUR)
+
+            end_time = early_end
+
+            while end_time <= late_end:
+                end_time = find_first_feasible_end_time()
 
 
 def add_arc():
@@ -51,3 +56,46 @@ def create_order_combinations(orders):
                 continue
             combinations.append({order_one, other_order})
     return combinations
+
+
+def find_first_feasible_end_time():
+    pass
+
+
+def servicing_possible(time, orders, installation):
+    hours = convert_discretized_time_to_hours(time)
+    service_time = time  # TODO: Check that these diverge
+
+    for order in orders:
+        cargo_left = order.get_size()
+        while cargo_left:
+            service_time += data.DISC_SERVICE_TIME_PER_UNIT / get_weather_impact_on_service(hours)
+            cargo_left -= 1
+
+            if get_weather_state(hours) == data.WORST_WEATHER_STATE or installation.is_closed(hours):
+                return False
+
+            if service_time % hours == 0:
+                hours += 1
+
+    return True
+
+
+def convert_discretized_time_to_hours(time):
+    return time / data.TIME_UNITS_PER_HOUR
+
+
+def convert_hours_to_discretized_time(hours):
+    return hours * data.TIME_UNITS_PER_HOUR
+
+
+def get_weather_state(hours):
+    return data.WEATHER_FORECAST[hours]
+
+
+def get_weather_impact_on_service(hours):
+    return data.SERVICE_IMPACTS[data.WEATHER_FORECAST[hours]]
+
+
+def get_weather_impact_on_sailing(hours):
+    return data.SPEED_IMPACTS[data.WEATHER_FORECAST[hours]]

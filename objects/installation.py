@@ -17,14 +17,14 @@ class Installation:
         self.distances = distances
         self.orders = []
 
-    def is_closed(self, order):
-        pass
-
     def add_order(self, order):
         self.orders.append(order)
 
     def has_orders(self):
         return True if self.orders else False
+
+    def is_closed(self, hour):
+        return self.opening_hour <= hour <= self.closing_hour
 
     def get_standard_order_size(self):
         return self.standard_order_size
