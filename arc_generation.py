@@ -28,8 +28,8 @@ def generate_arcs_from_node(dep_inst, start_time, vessel):
 
             min_service_time, max_service_time = 0, 0
             for order in order_combination:
-                min_service_time += order.get_size() * data.SERVICE_TIME_PER_UNIT_REAL
-                max_service_time += order.get_size() * data.SERVICE_TIME_PER_UNIT_REAL * data.SERVICE_IMPACTS[2]
+                min_service_time += order.get_size() * data.REAL_SERVICE_TIME_PER_UNIT
+                max_service_time += order.get_size() * data.REAL_SERVICE_TIME_PER_UNIT * data.SERVICE_IMPACTS[2]
 
             min_sailing_time = distance / data.MAX_SPEED
             max_sailing_time = distance / data.MIN_SPEED
@@ -64,19 +64,20 @@ def find_first_feasible_end_time():
 
 def servicing_possible(time, orders, installation):
     hours = convert_discretized_time_to_hours(time)
-    service_time = time  # TODO: Check that these diverge
+    service_time = 0
 
     for order in orders:
         cargo_left = order.get_size()
         while cargo_left:
-            service_time += data.DISC_SERVICE_TIME_PER_UNIT / get_weather_impact_on_service(hours)
+            service_time += data.REAL_SERVICE_TIME_PER_UNIT / get_weather_impact_on_service(hours)
             cargo_left -= 1
 
             if get_weather_state(hours) == data.WORST_WEATHER_STATE or installation.is_closed(hours):
                 return False
 
-            if service_time % hours == 0:
+            if service_time > 1:
                 hours += 1
+                service_time = 0
 
     return True
 
