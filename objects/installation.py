@@ -1,15 +1,15 @@
 class Installation:
 
-    def __init__(self, identifier, name, opening_hour, closing_hour, standard_order_size, distances):
+    def __init__(self, index, name, opening_hour, closing_hour, standard_order_size, distances):
         """
-        :param identifier: Unique identifier for the installation (starting at 0 for depot).
+        :param index: Unique identifier for the installation (starting at 0 for depot).
         :param name: Shortened name of the installation.
         :param opening_hour: Hour (0-24) that installation opens for service.
         :param closing_hour: Hour (0-24) that installation closes.
         :param standard_order_size: Standard order size of the installation. Will vary in different scenarios.
         :param distances: Distances to all other installations.
         """
-        self.identifier = identifier
+        self.index = index
         self.name = name
         self.opening_hour = opening_hour
         self.closing_hour = closing_hour
@@ -36,4 +36,4 @@ class Installation:
         return self.orders
 
     def get_index(self):
-        return self.identifier
+        return self.index

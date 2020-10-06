@@ -33,8 +33,6 @@ def generate_arcs_from_node(vessel, start_time, dep_inst):
         orders = [data.orders[order_index] for order_index in dest_inst.get_orders()]
         order_combinations = get_order_combinations(orders)
 
-        print(order_combinations)
-
         for order_combination in order_combinations:
 
             min_service_time, max_service_time = 0, 0
@@ -53,6 +51,8 @@ def generate_arcs_from_node(vessel, start_time, dep_inst):
             break_counter = 0
             while end_time <= late_end:
                 end_time = find_first_feasible_end_time(end_time, order_combination, dest_inst)
+
+
 
                 break_counter += 1
                 if break_counter == 10:

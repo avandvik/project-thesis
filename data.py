@@ -13,7 +13,7 @@ with open(file_path) as file:
 """ ============================ INSTALLATIONS ============================ """
 installations = []
 for installation_name in input_data['installations']:
-    installations.append(Installation(identifier=input_data['installations'][installation_name]['id'],
+    installations.append(Installation(index=input_data['installations'][installation_name]['id'],
                                       name=installation_name,
                                       opening_hour=input_data['installations'][installation_name]['opening_hour'],
                                       closing_hour=input_data['installations'][installation_name]['closing_hour'],
@@ -22,13 +22,13 @@ for installation_name in input_data['installations']:
                                       distances=input_data['installations'][installation_name][
                                           'distances_to_other_installations']))
 
-REAL_SERVICE_TIME_PER_UNIT = input_data['time_per_unit_demand']
+REAL_SERVICE_TIME_PER_UNIT = input_data['real_service_time_per_unit']
 
 
 """ ============================ VESSEL ============================ """
 vessels = []
 for vessel_name in input_data['vessels']:
-    vessels.append(Vessel(identifier=input_data['vessels'][vessel_name]['id'],
+    vessels.append(Vessel(index=input_data['vessels'][vessel_name]['id'],
                           name=vessel_name,
                           return_day=input_data['vessels'][vessel_name]['return_day'],
                           deck_capacity=input_data['vessels'][vessel_name]['deck_capacity'],
@@ -39,7 +39,7 @@ MIN_SPEED = input_data['min_speed']
 MAX_SPEED = input_data['max_speed']
 
 FUEL_PRICE = input_data['fuel_price']
-FUEL_CONSUMPTION_DP = input_data['fuel_consumption_dp']  # TODO: Find out if this is fuel consumption at DEPOT
+FUEL_CONSUMPTION_DEPOT = input_data['fuel_consumption_depot']
 FUEL_CONSUMPTION_IDLING = input_data['fuel_consumption_idling']
 
 SPOT_HOUR_RATE = input_data['spot_hour_rate']
