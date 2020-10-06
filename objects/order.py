@@ -22,3 +22,11 @@ class Order:
 
     def get_size(self):
         return self.size
+
+    def __str__(self):
+        return f'Order {self.index} for Installation {self.installation.get_index()} ' \
+               f'{self.transport_type} {self.cargo_type} {self.mandatory}'
+
+    def __repr__(self):
+        return f'Order {self.index} for Installation {self.installation.get_index()} ' \
+               f'{self.transport_type} {self.cargo_type} {self.mandatory}'

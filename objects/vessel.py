@@ -15,3 +15,9 @@ class Vessel:
         self.deck_capacity = deck_capacity
         self.bulk_capacity = bulk_capacity
         self.is_spot_vessel = is_spot_vessel
+
+    def get_real_return_time(self):
+        return self.return_day*24
+
+    def __str__(self):
+        return self.name

@@ -34,3 +34,6 @@ class Installation:
 
     def get_orders(self):
         return self.orders
+
+    def get_index(self):
+        return self.identifier
