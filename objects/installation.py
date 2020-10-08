@@ -23,7 +23,7 @@ class Installation:
     def has_orders(self):
         return True if self.orders else False
 
-    def is_closed(self, hour):
+    def is_open(self, hour):
         return self.opening_hour <= hour <= self.closing_hour
 
     def get_standard_order_size(self):
@@ -37,3 +37,9 @@ class Installation:
 
     def get_index(self):
         return self.index
+
+    def __repr__(self):
+        return f'Installation {self.name} with {len(self.orders)} orders'
+
+    def __str__(self):
+        return f'Installation {self.name} with {len(self.orders)} orders'

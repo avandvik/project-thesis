@@ -1,117 +1,152 @@
 import data
 import math
+import helpers
 from collections import defaultdict
 from itertools import combinations
 
 
 def generate_all_arcs(operation_start_time):
     nodes = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: False)))
+    arc_costs = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0)))))
 
     # Add depot node for all vessels
-    for vessel in data.vessels:
-        nodes[vessel.identifier][operation_start_time][0] = True
+    for vessel in data.VESSELS:
+        nodes[vessel.index][operation_start_time][0] = True
 
-    for vessel in data.vessels:
-        print(vessel)
-        for installation in data.installations:
-            for start_time in range(operation_start_time, vessel.get_real_return_time()*data.TIME_UNITS_PER_HOUR):
-
-                if nodes[vessel.identifier][start_time][installation.identifier]:
-                    generate_arcs_from_node(vessel, start_time, installation)
+    for vessel in data.VESSELS:
+        for installation in data.INSTALLATIONS:
+            for start_time in range(operation_start_time, vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR):
+                if nodes[vessel.index][start_time][installation.index]:
+                    generate_arcs_from_node(vessel, start_time, installation, nodes, arc_costs)
 
 
-def generate_arcs_from_node(vessel, start_time, dep_inst):
-    for dest_inst in data.installations:
-
-        if dest_inst.identifier == dep_inst.identifier or not dest_inst.has_orders():
+def generate_arcs_from_node(vessel, departure_time, dep_inst, nodes, arc_costs):
+    for dest_inst in data.INSTALLATIONS:
+        if dest_inst.get_index() == dep_inst.get_index() or not dest_inst.has_orders():
             continue
 
-        distance = dep_inst.get_distance_to_installation(dest_inst.identifier)
+        distance = dep_inst.get_distance_to_installation(dest_inst.index)
+        order_combinations = combine_orders([data.ORDERS[order_index] for order_index in dest_inst.get_orders()])
 
-        # TODO: Add real start time if needed
+        for orders in order_combinations:
+            early_end, late_end = calculate_end_time_span(departure_time, distance, orders)
+            service_end_time = early_end
 
-        orders = [data.orders[order_index] for order_index in dest_inst.get_orders()]
-        order_combinations = get_order_combinations(orders)
+            while service_end_time <= late_end:
+                service_end_time, service_duration = calculate_servicing_times(service_end_time, orders, dest_inst)
+                idling_end_time = service_end_time - service_duration
 
-        for order_combination in order_combinations:
+                if is_arrival_possible(departure_time, distance, idling_end_time):
+                    sailing_end_time, idling_duration = calculate_idling_times(departure_time, distance,
+                                                                               idling_end_time)
 
-            min_service_time, max_service_time = 0, 0
-            for order in order_combination:
-                min_service_time += order.get_size() * data.REAL_SERVICE_TIME_PER_UNIT
-                max_service_time += order.get_size() * data.REAL_SERVICE_TIME_PER_UNIT * data.SERVICE_IMPACTS[2]
+                    print('Arc generated!')
 
-            min_sailing_time = distance / data.MAX_SPEED
-            max_sailing_time = distance / data.MIN_SPEED
+                # Calculate total fuel consumption
 
-            early_end = start_time + math.ceil((min_sailing_time + min_service_time) * data.TIME_UNITS_PER_HOUR)
-            late_end = start_time + math.ceil((max_sailing_time + max_service_time) * data.TIME_UNITS_PER_HOUR)
+                # Calculate adjusted average speed
 
-            end_time = early_end
-
-            break_counter = 0
-            while end_time <= late_end:
-                end_time = find_first_feasible_end_time(end_time, order_combination, dest_inst)
+                service_end_time += 1
 
 
-
-                break_counter += 1
-                if break_counter == 10:
-                    break
+def combine_orders(orders):
+    return [comb for sublist in list(combinations(orders, r) for r in range(1, len(orders) + 1)) for comb in sublist]
 
 
-def add_arc():
-    pass
+def calculate_end_time_span(departure_time, distance, order_combination):
+    """Calculates the earliest time (discretized scale) service can be finished to the latest it can be finished"""
+    min_service_time, max_service_time = 0, 0
+    for order in order_combination:
+        min_service_time += order.get_size() * data.REAL_SERVICE_TIME_PER_UNIT
+        max_service_time += order.get_size() * data.REAL_SERVICE_TIME_PER_UNIT * data.SERVICE_IMPACTS[2]
+
+    min_sailing_time = distance / data.MAX_SPEED
+    max_sailing_time = distance / data.MIN_SPEED
+
+    # TODO: What about potential idling time?
+
+    # NB! Note that the discretization is handled here
+    early_end = departure_time + math.ceil((min_sailing_time + min_service_time) * data.TIME_UNITS_PER_HOUR)
+    late_end = departure_time + math.ceil((max_sailing_time + max_service_time) * data.TIME_UNITS_PER_HOUR)
+
+    return early_end, late_end
 
 
-def get_order_combinations(orders):
-    return [comb for sublist in list(combinations(orders, r) for r in range(1, len(orders)+1)) for comb in sublist]
-
-
-def find_first_feasible_end_time(end_time, orders, installation):
-    first_feasible_end_time = end_time
-    if not servicing_possible(first_feasible_end_time, orders, installation):
-        first_feasible_end_time = find_first_feasible_end_time(first_feasible_end_time+1, orders, installation)
-    return first_feasible_end_time
-
-
-def servicing_possible(end_time, orders, installation):
-    hours = convert_discretized_time_to_hours(end_time)
-    service_time = 0
+def calculate_servicing_times(service_end_time, orders, installation):
+    """Calculates earliest feasible servicing end time and service time given weather and opening hours"""
+    time_of_day = helpers.convert_discretized_time_to_time_of_day(service_end_time)
+    hourly_time = helpers.convert_discretized_time_to_hourly_time(service_end_time)
+    service_time, hours_passed = 0, 1
 
     for order in orders:
         cargo_left = order.get_size()
         while cargo_left:
-            service_time += data.REAL_SERVICE_TIME_PER_UNIT / get_weather_impact_on_service(hours)
+            if not is_servicing_possible(hourly_time, time_of_day, installation):
+                return calculate_servicing_times(service_end_time + 1, orders, installation)
+
             cargo_left -= 1
+            service_time += data.REAL_SERVICE_TIME_PER_UNIT * helpers.get_weather_impact_on_service(hourly_time)
 
-            if get_weather_state(hours) == data.WORST_WEATHER_STATE or installation.is_closed(hours):
-                return False
+            if service_time > hours_passed:
+                hourly_time -= 1
+                hours_passed += 1
 
-            if service_time > 1:
-                hours -= 1
-                service_time = 0
+    service_duration = helpers.convert_hourly_time_to_discretized_time(service_time)
+    return service_end_time, service_duration
+
+
+def is_servicing_possible(hourly_time, time_of_day, installation):
+    """Returns whether an installation is open and the weather good enough to perform servicing"""
+    if helpers.get_weather_state(hourly_time) == data.WORST_WEATHER_STATE or not installation.is_open(time_of_day):
+        open_or_closed = 'open' if installation.is_open(time_of_day) else 'closed'
+        weather = 'worst' if helpers.get_weather_state(hourly_time) == data.WORST_WEATHER_STATE else 'good enough'
+        print(f'Servicing not possible. Weather is {weather}, installation is {open_or_closed}')
+
+        return False
 
     return True
 
 
-def convert_discretized_time_to_hours(time):
-    return math.floor(time / data.TIME_UNITS_PER_HOUR)
+def is_arrival_possible(departure_time, distance, service_start_time):
+    """Returns whether arrival is possible if a vessel sails at max speed in the given weather conditions"""
+    hourly_departure_time = helpers.convert_discretized_time_to_hourly_time(departure_time)
+    hourly_service_start_time = helpers.convert_discretized_time_to_hourly_time(service_start_time)
+
+    time_in_each_weather_state = helpers.get_time_in_each_weather_state(hourly_departure_time,
+                                                                        hourly_service_start_time)
+
+    max_travel_distance = 0
+    for ws in range(data.WORST_WEATHER_STATE + 1):
+        max_travel_distance += time_in_each_weather_state[ws] * (data.MAX_SPEED - data.SPEED_IMPACTS[ws])
+
+    if max_travel_distance >= distance:
+        return True
+
+    return False
 
 
-def convert_hours_to_discretized_time(hours):
-    return hours * data.TIME_UNITS_PER_HOUR
+def calculate_idling_times(departure_time, distance, service_start_time):
+    max_sailing_time = distance / data.MIN_SPEED
+
+    if max_sailing_time >= service_start_time - departure_time:
+        idling_duration = 0
+        sailing_end_time = service_start_time
+    else:
+        idling_duration = service_start_time - max_sailing_time - departure_time
+        sailing_end_time = service_start_time - idling_duration
+
+    return sailing_end_time, idling_duration
 
 
-def get_weather_state(hours):
-    return data.WEATHER_FORECAST[hours]
+def add_arc(vessel, dep_inst, dest_inst, start_time, end_time, consumptions, nodes, arc_costs):
+    if end_time <= vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR:
+        charter_cost = data.SPOT_HOUR_RATE * helpers.convert_discretized_time_to_hourly_time(
+            end_time - start_time) if vessel.is_spot_vessel() else 0.0
 
+        nodes[vessel.get_index()][end_time][dest_inst.get_index()] = True
 
-def get_weather_impact_on_service(hours):
-    return data.SERVICE_IMPACTS[data.WEATHER_FORECAST[hours]]
-
-
-def get_weather_impact_on_sailing(hours):
-    return data.SPEED_IMPACTS[data.WEATHER_FORECAST[hours]]
+        arc_cost = sum(consumptions) * data.FUEL_PRICE + charter_cost
+        arc_costs[vessel.get_index()][dep_inst.get_index()][start_time][dest_inst.get_index()][end_time] = arc_cost
 
 
 if __name__ == '__main__':
