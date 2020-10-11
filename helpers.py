@@ -1,5 +1,6 @@
 import data
 import math
+from collections import defaultdict
 
 
 def convert_discretized_time_to_hourly_time(disc_time):

@@ -14,10 +14,10 @@ class Vessel:
         self.return_day = return_day
         self.deck_capacity = deck_capacity
         self.bulk_capacity = bulk_capacity
-        self.is_spot_vessel = is_spot_vessel
+        self._is_spot_vessel = is_spot_vessel
 
     def is_spot_vessel(self):
-        return self.is_spot_vessel()
+        return self._is_spot_vessel
 
     def get_hourly_return_time(self):
         return self.return_day*24
