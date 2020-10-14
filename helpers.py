@@ -8,7 +8,7 @@ def convert_discretized_time_to_hourly_time(disc_time):
 
 
 def convert_hourly_time_to_discretized_time(hourly_time):
-    return round(hourly_time * data.TIME_UNITS_PER_HOUR)
+    return hourly_time * data.TIME_UNITS_PER_HOUR
 
 
 def convert_hourly_time_to_time_of_day(hourly_time):

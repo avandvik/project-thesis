@@ -23,8 +23,8 @@ class Installation:
     def has_orders(self):
         return True if self.orders else False
 
-    def is_open(self, hour):
-        return self.opening_hour <= hour <= self.closing_hour
+    def is_open(self, time_of_day):
+        return self.opening_hour <= time_of_day <= self.closing_hour
 
     def get_standard_order_size(self):
         return self.standard_order_size

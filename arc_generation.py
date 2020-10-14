@@ -15,11 +15,15 @@ def generate_all_arcs(operation_start_time):
         nodes[vessel.index][operation_start_time][0] = True
 
     for vessel in data.VESSELS:
+        print(f'Generating network of arcs for vessel {vessel}')
         for installation in data.INSTALLATIONS:
             for start_time in range(operation_start_time, vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR):
                 if nodes[vessel.get_index()][start_time][installation.get_index()]:
-                    print(f'Generating arcs from node {installation}')
+                    print(f'    Generating arcs from node {installation}')
                     generate_arcs_from_node(vessel, start_time, installation, nodes, arc_costs)
+
+                # Early return to only consider one network of arcs
+                return
 
 
 def generate_arcs_from_node(vessel, departure_time, dep_inst, nodes, arc_costs):
@@ -27,28 +31,40 @@ def generate_arcs_from_node(vessel, departure_time, dep_inst, nodes, arc_costs):
         if dest_inst.get_index() == dep_inst.get_index() or not dest_inst.has_orders():
             continue
 
-        distance = dep_inst.get_distance_to_installation(dest_inst.index)
+        print(f'        Considering node {dest_inst}')
+
+        distance = dep_inst.get_distance_to_installation(dest_inst.get_index())
+        print(f'        Distance {distance}')
         order_combinations = combine_orders([data.ORDERS[order_index] for order_index in dest_inst.get_orders()])
 
         for orders in order_combinations:
             early_end, late_end = calculate_end_time_span(departure_time, distance, orders)
+            print(f'            End time span {early_end} -> {late_end}')
             service_end_time = early_end
 
             while service_end_time <= late_end:
+                print(f'                Departure time (disc) {departure_time} | Service end time (disc) {service_end_time}')
+                print(f'                Weather {data.WEATHER_FORECAST[departure_time:service_end_time]}')
                 service_end_time, service_duration = calculate_servicing_times(service_end_time, orders, dest_inst)
-                idling_end_time = service_end_time - service_duration
+                service_start_time = service_end_time - service_duration
+                print(f'                    Service start time (disc) {service_start_time}')
 
-                if is_arrival_possible(departure_time, distance, idling_end_time):
+                if is_arrival_possible(departure_time, distance, service_start_time):
+
                     sailing_end_time, idling_duration = calculate_idling_times(departure_time, distance,
-                                                                               idling_end_time)
+                                                                               service_start_time)
+
+                    print(f'                Sailing end time {sailing_end_time} | Idling duration {idling_duration} | Service start time {service_start_time} | Service end time {service_end_time}')
 
                     fuel_cost_sailing = calcuate_fuel_cost_sailing(departure_time, sailing_end_time, distance)
-                    fuel_cost_idling = calculate_fuel_cost_idling(sailing_end_time, idling_end_time)
-                    fuel_cost_servicing = calculate_fuel_cost_servicing(idling_end_time, service_end_time)
+                    fuel_cost_idling = calculate_fuel_cost_idling(sailing_end_time, service_start_time)
+                    fuel_cost_servicing = calculate_fuel_cost_servicing(service_start_time, service_end_time)
                     total_fuel_cost = fuel_cost_sailing + fuel_cost_idling + fuel_cost_servicing
 
                     add_arc(vessel, dep_inst, dest_inst, departure_time, service_end_time, total_fuel_cost, nodes,
                             arc_costs)
+
+                print()
 
                 service_end_time += 1
 
@@ -78,8 +94,11 @@ def calculate_end_time_span(departure_time, distance, order_combination):
 
 def calculate_servicing_times(service_end_time, orders, installation):
     """Calculates earliest feasible servicing end time and service time given weather and opening hours"""
-    time_of_day = helpers.convert_discretized_time_to_time_of_day(service_end_time)
     hourly_time = helpers.convert_discretized_time_to_hourly_time(service_end_time)
+    print(f'                    Service end time (hourly) {hourly_time}')
+    time_of_day = helpers.convert_hourly_time_to_time_of_day(hourly_time)
+    print(f'                    Service end time (daytime) {time_of_day}')
+
     service_time, hours_passed = 0, 1
 
     for order in orders:
@@ -93,9 +112,11 @@ def calculate_servicing_times(service_end_time, orders, installation):
 
             if service_time > hours_passed:
                 hourly_time -= 1
+                time_of_day = helpers.convert_hourly_time_to_time_of_day(hourly_time)
                 hours_passed += 1
 
     service_duration = helpers.convert_hourly_time_to_discretized_time(service_time)
+    print(f'                    Service duration (disc) {service_duration}')
     return service_end_time, service_duration
 
 
@@ -132,12 +153,11 @@ def calculate_idling_times(departure_time, distance, service_start_time):
     """Calculate the minimal idling time, given that a vessel sails at the minimum speed"""
     max_sailing_duration = distance / data.MIN_SPEED
 
-    if max_sailing_duration >= service_start_time - departure_time:
-        idling_duration = 0
-        sailing_end_time = service_start_time
-    else:
-        idling_duration = service_start_time - (departure_time + max_sailing_duration)
-        sailing_end_time = service_start_time - idling_duration
+    idling_duration = max(0, service_start_time - (departure_time + max_sailing_duration))
+    sailing_end_time = service_start_time - idling_duration
+
+    print(f'                    Idling duration (disc) {idling_duration}')
+    print(f'                    Sailing end time (disc) {sailing_end_time}')
 
     return sailing_end_time, idling_duration
 
@@ -204,7 +224,6 @@ def get_consumption(speed):
 
 
 def add_arc(vessel, dep_inst, dest_inst, start_time, end_time, fuel_cost, nodes, arc_costs):
-    print('     Adding arc!')
     if end_time <= vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR:
         charter_cost = data.SPOT_HOUR_RATE * helpers.convert_discretized_time_to_hourly_time(
             end_time - start_time) if vessel.is_spot_vessel() else 0.0
