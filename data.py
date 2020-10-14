@@ -4,7 +4,7 @@ from objects.installation import Installation
 from objects.vessel import Vessel
 from objects.order import Order
 
-file_path = 'data/mongstad.json'
+file_path = 'data/mongstad/1.json'
 
 with open(file_path) as file:
     input_data = json.load(file)
@@ -65,7 +65,7 @@ for index, order_identfifier in enumerate(input_data['orders']):
 """ ============================ TIME AND DISCRETIZATION ============================ """
 PLANNING_PERIOD_IN_HOURS = input_data['planning_period_in_hours']
 TIME_UNITS_PER_HOUR = input_data['time_units_per_hour']
-TIME_INCREMENT = 1.0 / TIME_UNITS_PER_HOUR
+DISCRETIZED_TIME_UNIT = 1.0 / TIME_UNITS_PER_HOUR
 UNIT_MINUTES = 60 / TIME_UNITS_PER_HOUR
 DISC_SERVICE_TIME_PER_UNIT = HOURLY_SERVICE_TIME_PER_UNIT * TIME_UNITS_PER_HOUR
 

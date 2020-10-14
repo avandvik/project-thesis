@@ -23,6 +23,18 @@ class Installation:
     def has_orders(self):
         return True if self.orders else False
 
+    def has_mandatory_order(self):
+        for order in self.orders:
+            if order.is_mandatory():
+                return True
+        return False
+
+    def has_optional_delivery_order(self):
+        for order in self.orders:
+            if not order.is_mandatory() and order.is_delivery():
+                return True
+        return False
+
     def is_open(self, time_of_day):
         return self.opening_hour <= time_of_day <= self.closing_hour
 
@@ -34,6 +46,18 @@ class Installation:
 
     def get_orders(self):
         return self.orders
+
+    def get_mandatory_order(self):
+        for order in self.orders:
+            if order.is_mandatory():
+                return order
+        return None
+
+    def get_optional_delivery_order(self):
+        for order in self.orders:
+            if not order.is_mandatory() and order.is_delivery():
+                return order
+        return None
 
     def get_index(self):
         return self.index

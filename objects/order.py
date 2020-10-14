@@ -23,6 +23,25 @@ class Order:
     def get_size(self):
         return self.size
 
+    def get_index(self):
+        return self.index
+
+    def get_installation(self):
+        return self.installation
+
+    def is_mandatory(self):
+        return self.mandatory
+
+    def is_optional(self):
+        return not self.mandatory
+
+    # TODO: Parameterize
+    def is_delivery(self):
+        return self.transport_type == 'delivery'
+
+    def is_pickup(self):
+        return self.transport_type == 'pickup'
+
     def __str__(self):
         return f'Order {self.index} for Installation {self.installation.get_index()} ' \
                f'{self.transport_type} {self.cargo_type} {self.mandatory}'
