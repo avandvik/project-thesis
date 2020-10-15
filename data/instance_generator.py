@@ -1,6 +1,8 @@
 import os
 import json
 
+""" ONLY RUN THIS FILE WHEN YOU WANT TO GENERATE A NEW PROBLEM INSTANCE """
+
 # Do not change
 variation_multipliers = [0, 0.5, 0.75, 1.0, 1.25, 1.5]
 standard_order_sizes = [0.0, 15.0, 20.0, 15.0, 20.0, 20.0, 20.0, 20.0, 15.0, 15.0, 15.0, 15.0, 7.5, 15.0, 20.0, 10.0,
@@ -28,13 +30,12 @@ weather_forecast = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
                     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
 
 dirpath = 'mongstad'
-file_path = 'mongstad_basic.json'
+file_path = 'templates/mongstad_template.json'
 
 with open(file_path) as file:
     json_file = json.load(file)
 
 json_file.update({'weather_forecast': weather_forecast})
-json_file.update({'orders': {}})
 
 order_id = 1
 for inst_idx, osv_md in enumerate(order_size_variations_md):

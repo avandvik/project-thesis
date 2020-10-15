@@ -8,7 +8,7 @@ class Order:
         :param size: Size of the order (m2 for deck, m3 for bulk).
         :param mandatory: True if order is categorized as mandatory, False if optional.
         :param deadline: Deadline for the order.
-        :param departure_day: WHY DOES AN ORDER HAVE A FIXED DEPARTURE DAY?
+        :param departure_day: TODO WHY DOES AN ORDER HAVE A FIXED DEPARTURE DAY?
         :param installation: The installation that placed the order.
         """
         self.index = index
@@ -43,9 +43,17 @@ class Order:
         return self.transport_type == 'pickup'
 
     def __str__(self):
-        return f'Order {self.index} for Installation {self.installation.get_index()} ' \
-               f'{self.transport_type} {self.cargo_type} {self.mandatory}'
+        if self.installation.get_index() == 0:
+            return 'DEP'
+        out_str = 'M' if self.mandatory else 'O'
+        out_str += 'D' if self.transport_type == 'delivery' else 'P'
+        out_str += '_I' + str(self.installation.get_index())
+        return out_str
 
     def __repr__(self):
-        return f'Order {self.index} for Installation {self.installation.get_index()} ' \
-               f'{self.transport_type} {self.cargo_type} {self.mandatory}'
+        if self.installation.get_index() == 0:
+            return 'DEP'
+        out_str = 'M' if self.mandatory else 'O'
+        out_str += 'D' if self.transport_type == 'delivery' else 'P'
+        out_str += '_I' + str(self.installation.get_index())
+        return out_str
