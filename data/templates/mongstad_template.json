@@ -6,7 +6,7 @@
   "fuel_consumption_idling": 120,
   "spot_hour_rate": 608,
   "real_service_time_per_unit": 0.1,
-  "planning_period_in_hours": 143,
+  "planning_period_in_hours": 144,
   "time_units_per_hour": 4,
   "best_possible_weather_state": 0,
   "worst_possible_weather_state": 3,

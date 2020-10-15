@@ -20,15 +20,15 @@ def convert_discretized_time_to_time_of_day(disc_time):
 
 
 def get_weather_state(hourly_time):
-    return data.WEATHER_FORECAST[hourly_time]
+    return data.WEATHER_FORECAST_HOURS[hourly_time]
 
 
 def get_weather_impact_on_service(hourly_time):
-    return data.SERVICE_IMPACTS[data.WEATHER_FORECAST[hourly_time]]
+    return data.SERVICE_IMPACTS[data.WEATHER_FORECAST_HOURS[hourly_time]]
 
 
 def get_weather_impact_on_sailing(hourly_time):
-    return data.SPEED_IMPACTS[data.WEATHER_FORECAST[hourly_time]]
+    return data.SPEED_IMPACTS[data.WEATHER_FORECAST_HOURS[hourly_time]]
 
 
 def get_time_in_each_weather_state(start_time, end_time):

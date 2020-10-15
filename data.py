@@ -19,7 +19,7 @@ for installation_name in input_data['installations']:
                                       distances=input_data['installations'][installation_name][
                                           'distances_to_other_installations']))
 
-HOURLY_SERVICE_TIME_PER_UNIT = input_data['real_service_time_per_unit']
+UNIT_SERVICE_TIME_HOUR = input_data['real_service_time_per_unit']
 
 """ ============================ VESSEL ============================ """
 VESSELS = []
@@ -34,11 +34,9 @@ for index, vessel_name in enumerate(input_data['vessels']):
 
 MIN_SPEED = input_data['min_speed']
 MAX_SPEED = input_data['max_speed']
-
 FUEL_PRICE = input_data['fuel_price']
 FUEL_CONSUMPTION_DEPOT = input_data['fuel_consumption_depot']
 FUEL_CONSUMPTION_IDLING = input_data['fuel_consumption_idling']
-
 SPOT_HOUR_RATE = input_data['spot_hour_rate']
 
 """ ============================ ORDERS ============================ """
@@ -61,9 +59,10 @@ for index, order_identfifier in enumerate(input_data['orders']):
 PERIOD_HOURS = input_data['planning_period_in_hours']
 TIME_UNITS_PER_HOUR = input_data['time_units_per_hour']
 PERIOD_DISC = PERIOD_HOURS * TIME_UNITS_PER_HOUR
+
 DISCRETIZED_TIME_UNIT = 1.0 / TIME_UNITS_PER_HOUR
 UNIT_MINUTES = 60 / TIME_UNITS_PER_HOUR
-DISC_SERVICE_TIME_PER_UNIT = HOURLY_SERVICE_TIME_PER_UNIT * TIME_UNITS_PER_HOUR
+UNIT_SERVICE_TIME_DISC = UNIT_SERVICE_TIME_HOUR * TIME_UNITS_PER_HOUR
 
 """ ============================ WEATHER ============================ """
 WEATHER_FORECAST_HOURS = input_data['weather_forecast']

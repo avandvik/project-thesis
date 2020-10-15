@@ -36,6 +36,9 @@ class Installation:
     def is_open(self, time_of_day):
         return self.opening_hour <= time_of_day <= self.closing_hour
 
+    def get_opening_hours_as_list(self):
+        return list(range(self.opening_hour, self.closing_hour + 1))
+
     def get_distance_to_installation(self, destination_installation):
         return self.distances[destination_installation.get_index()]
 
