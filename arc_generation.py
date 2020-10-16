@@ -94,7 +94,7 @@ def calculate_end_time_span(departure_time, distance, order_combination):
 
 def calculate_servicing_times(service_end_time, orders, installation):
     """Calculates earliest feasible servicing end time and service time given weather and opening hours"""
-    hourly_time = helpers.convert_discretized_time_to_hourly_time(service_end_time)
+    hourly_time = helpers.disc_to_hourly_time(service_end_time)
     print(f'                    Service end time (hourly) {hourly_time}')
     time_of_day = helpers.convert_hourly_time_to_time_of_day(hourly_time)
     print(f'                    Service end time (daytime) {time_of_day}')
@@ -133,8 +133,8 @@ def is_servicing_possible(hourly_time, time_of_day, installation):
 
 def is_arrival_possible(departure_time, distance, service_start_time):
     """Returns whether arrival is possible if a vessel sails at max speed in the given weather conditions"""
-    hourly_departure_time = helpers.convert_discretized_time_to_hourly_time(departure_time)
-    hourly_service_start_time = helpers.convert_discretized_time_to_hourly_time(service_start_time)
+    hourly_departure_time = helpers.disc_to_hourly_time(departure_time)
+    hourly_service_start_time = helpers.disc_to_hourly_time(service_start_time)
 
     time_in_each_weather_state = helpers.get_time_in_each_weather_state(hourly_departure_time,
                                                                         hourly_service_start_time)
@@ -225,7 +225,7 @@ def get_consumption(speed):
 
 def add_arc(vessel, dep_inst, dest_inst, start_time, end_time, fuel_cost, nodes, arc_costs):
     if end_time <= vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR:
-        charter_cost = data.SPOT_HOUR_RATE * helpers.convert_discretized_time_to_hourly_time(
+        charter_cost = data.SPOT_RATE * helpers.disc_to_hourly_time(
             end_time - start_time) if vessel.is_spot_vessel() else 0.0
 
         nodes[vessel.get_index()][end_time][dest_inst.get_index()] = True

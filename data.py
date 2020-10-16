@@ -37,7 +37,7 @@ MAX_SPEED = input_data['max_speed']
 FUEL_PRICE = input_data['fuel_price']
 FUEL_CONSUMPTION_DEPOT = input_data['fuel_consumption_depot']
 FUEL_CONSUMPTION_IDLING = input_data['fuel_consumption_idling']
-SPOT_HOUR_RATE = input_data['spot_hour_rate']
+SPOT_RATE = input_data['spot_hour_rate']
 
 """ ============================ ORDERS ============================ """
 ORDERS = []

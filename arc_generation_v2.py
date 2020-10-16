@@ -13,6 +13,8 @@ class ArcGenerator:
         # arc_costs[][][][][]
         self.arc_costs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
 
+        self.number_of_arcs = 0
+
     def generate_arcs(self, preparation_end_time):
 
         for vessel in data.VESSELS:
@@ -24,6 +26,8 @@ class ArcGenerator:
                 for from_order in data.ORDERS:
                     if self.nodes[vessel.get_index()][arc_start_time][from_order.get_index()]:
                         self.generate_arcs_from_node(vessel, arc_start_time, from_order)
+
+        print(f'Arc generation done! Number of arcs: {self.number_of_arcs}')
 
     def generate_arcs_from_node(self, vessel, arc_start_time, from_order):
         for to_order in data.ORDERS:
@@ -45,13 +49,15 @@ class ArcGenerator:
             print(f'\tCheckpoints (A, I, S): {all_checkpoints}')
 
             for checkpoints in all_checkpoints:
-                arc_cost = calculate_total_fuel_cost(arc_start_time, checkpoints) + calculate_charter_cost()
                 arc_end_time = checkpoints[-1]
+                arc_cost = calculate_total_fuel_cost(arc_start_time, checkpoints, distance) \
+                           + calculate_charter_cost(vessel, arc_start_time, arc_end_time)
 
-                self.nodes[vessel.get_index()][arc_end_time][to_order.get_index()] = True
-                self.arc_costs[vessel.get_index()][from_order.get_index()][arc_start_time][to_order.get_index()][arc_end_time] = arc_cost
-
-        print()
+                if arc_end_time <= vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR:
+                    self.nodes[vessel.get_index()][arc_end_time][to_order.get_index()] = True
+                    self.arc_costs[vessel.get_index()][from_order.get_index()][arc_start_time][to_order.get_index()][
+                        arc_end_time] = arc_cost
+                    self.number_of_arcs += 1
 
 
 def is_illegal_arc(from_order, to_order):
@@ -85,44 +91,60 @@ def get_arrival_time_span(distance, departure_time):
     return earliest_arrival_time, latest_arrival_time
 
 
-# TODO: Handle that return to depot has no service time, only sailing time
 def get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration, to_order):
     opening_hours = to_order.get_installation().get_opening_hours_as_list()
     checkpoints = []
     for service_start_time in range(earliest_arrival_time, latest_arrival_time + 1):
-        worst_weather = max(data.WEATHER_FORECAST_DISC[service_start_time:service_start_time + service_duration])
-        start_time_hour = hlp.convert_discretized_time_to_time_of_day(service_start_time)
-        finish_time_hour = hlp.convert_discretized_time_to_time_of_day(service_start_time + service_duration)
-        start_idx = opening_hours.index(start_time_hour) if start_time_hour in opening_hours else 100
-        finish_idx = opening_hours.index(finish_time_hour) if finish_time_hour in opening_hours else -100
-        installation_open = start_idx < finish_idx
-        if installation_open and worst_weather < data.WORST_WEATHER_STATE:
-            checkpoints.append((service_start_time, service_start_time, service_start_time + service_duration))
+        if service_duration == 0:
+            checkpoints.append((service_start_time, service_start_time, service_start_time))
+        else:
+            worst_weather = max(data.WEATHER_FORECAST_DISC[service_start_time:service_start_time + service_duration])
+            start_time_hour = hlp.convert_discretized_time_to_time_of_day(service_start_time)
+            finish_time_hour = hlp.convert_discretized_time_to_time_of_day(service_start_time + service_duration)
+            start_idx = opening_hours.index(start_time_hour) if start_time_hour in opening_hours else 100
+            finish_idx = opening_hours.index(finish_time_hour) if finish_time_hour in opening_hours else -100
+            installation_open = start_idx < finish_idx
+            if installation_open and worst_weather < data.WORST_WEATHER_STATE:
+                checkpoints.append((service_start_time, service_start_time, service_start_time + service_duration))
     return checkpoints
 
 
-def calculate_total_fuel_cost(departure_time, checkpoints):
-    total_cost = calculate_fuel_cost_sailing(departure_time, checkpoints[0]) \
+def calculate_total_fuel_cost(departure_time, checkpoints, distance):
+    total_cost = calculate_fuel_cost_sailing(departure_time, checkpoints[0], distance) \
                  + calculate_fuel_cost_idling(checkpoints[0], checkpoints[1]) \
                  + calculate_fuel_cost_servicing(checkpoints[1], checkpoints[2])
     return total_cost
 
 
-# TODO: Implement the sailing fuel cost estimation by Moan & Ødeskaug
-def calculate_fuel_cost_sailing(departure_time, arrival_time):
-    return 0
+def calculate_fuel_cost_sailing(departure_time, arrival_time, distance):
+    if distance == 0:
+        return 0
+    time_in_each_ws = hlp.get_time_in_each_weather_state(departure_time, arrival_time)
+    speed = distance / (arrival_time - departure_time)
+    max_speed_ws2, max_speed_ws3 = data.MAX_SPEED - data.SPEED_IMPACTS[-2], data.MAX_SPEED - data.SPEED_IMPACTS[-1]
+
+    penalty_speed = 0
+    if speed > max_speed_ws2:
+        penalty_speed += (time_in_each_ws[-2] * (speed - max_speed_ws2)) / time_in_each_ws[:-2]
+    if speed > max_speed_ws3:
+        penalty_speed += (time_in_each_ws[-1] * (speed - max_speed_ws3)) / time_in_each_ws[:-1]
+
+    cost = 0
+    cost += (time_in_each_ws[0] + time_in_each_ws[1]) * get_consumption(speed + penalty_speed)
+    cost += time_in_each_ws[2] * get_consumption(min(speed + data.SPEED_IMPACTS[2], data.MAX_SPEED))
+    cost += time_in_each_ws[3] * get_consumption(min(speed + data.SPEED_IMPACTS[3], data.MAX_SPEED))
+
+    return cost
 
 
-# TODO: Update to use correct weather forecast (discretized)
 def calculate_fuel_cost_idling(idling_start_time, idling_end_time):
     time_in_each_ws = hlp.get_time_in_each_weather_state(idling_start_time, idling_end_time)
     cost = 0
     for ws in range(data.WORST_WEATHER_STATE + 1):
-        cost += time_in_each_ws[ws] * data.SPEED_IMPACTS[ws] * data.FUEL_CONSUMPTION_IDLING * data.FUEL_PRICE
+        cost += time_in_each_ws[ws] * data.SERVICE_IMPACTS[ws] * data.FUEL_CONSUMPTION_IDLING * data.FUEL_PRICE
     return cost
 
 
-# TODO: Update to use correct weather forecast (discretized)
 def calculate_fuel_cost_servicing(servicing_start_time, servicing_end_time):
     time_in_each_ws = hlp.get_time_in_each_weather_state(servicing_start_time, servicing_end_time)
     cost = 0
@@ -131,9 +153,12 @@ def calculate_fuel_cost_servicing(servicing_start_time, servicing_end_time):
     return cost
 
 
-# TODO: Find out how chartering cost is actually calculated
-def calculate_charter_cost():
-    return 0
+def calculate_charter_cost(vessel, start_time, end_time):
+    return data.SPOT_RATE * hlp.disc_to_hourly_time(end_time - start_time) if vessel.is_spot_vessel() else 0.0
+
+
+def get_consumption(speed):
+    return 11.111 * speed * speed - 177.78 * speed + 1011.1
 
 
 ag = ArcGenerator()
