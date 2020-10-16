@@ -10,9 +10,10 @@ class ArcGenerator:
         # nodes[vessel][time][order]
         self.nodes = dd(lambda: dd(lambda: dd(lambda: False)))
 
-        # arc_costs[][][][][]
+        # arc_costs[vessel][from_order][start_time][to_order][end_time]
         self.arc_costs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
 
+        self.verbose = False
         self.number_of_arcs = 0
 
     def generate_arcs(self, preparation_end_time):
@@ -33,27 +34,22 @@ class ArcGenerator:
         for to_order in data.ORDERS:
             if from_order.get_index() == to_order.get_index() or is_illegal_arc(from_order, to_order):
                 continue
+
             distance = from_order.get_installation().get_distance_to_installation(to_order.get_installation())
-
-            print(f'Legal arc: {from_order} -> {to_order} ({distance})')
-            print(f'\tDeparture time: {arc_start_time}')
-
             earliest_arrival_time, latest_arrival_time = get_arrival_time_span(distance, arc_start_time)
-            print(f'\tArrival span: {earliest_arrival_time} -> {latest_arrival_time}')
-
             service_duration = math.ceil(to_order.get_size() * data.UNIT_SERVICE_TIME_DISC)
-            print(f'\tService duration: {service_duration}')
 
             # Checkpoints are in the form of (arrival time, idling end time, service end time)
             all_checkpoints = get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration, to_order)
-            print(f'\tCheckpoints (A, I, S): {all_checkpoints}')
-
             for checkpoints in all_checkpoints:
                 arc_end_time = checkpoints[-1]
                 arc_cost = calculate_total_fuel_cost(arc_start_time, checkpoints, distance) \
                            + calculate_charter_cost(vessel, arc_start_time, arc_end_time)
 
                 if arc_end_time <= vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR:
+                    print_arc_info(from_order, to_order, distance, arc_start_time, earliest_arrival_time,
+                                   latest_arrival_time, service_duration, checkpoints, self.verbose)
+
                     self.nodes[vessel.get_index()][arc_end_time][to_order.get_index()] = True
                     self.arc_costs[vessel.get_index()][from_order.get_index()][arc_start_time][to_order.get_index()][
                         arc_end_time] = arc_cost
@@ -91,6 +87,7 @@ def get_arrival_time_span(distance, departure_time):
     return earliest_arrival_time, latest_arrival_time
 
 
+# TODO: Make sure 
 def get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration, to_order):
     opening_hours = to_order.get_installation().get_opening_hours_as_list()
     checkpoints = []
@@ -159,6 +156,13 @@ def calculate_charter_cost(vessel, start_time, end_time):
 
 def get_consumption(speed):
     return 11.111 * speed * speed - 177.78 * speed + 1011.1
+
+
+def print_arc_info(from_order, to_order, distance, start_time, early, late, service, checkpoints, verbose):
+    if verbose:
+        print(f'Legal arc: {from_order} -> {to_order} | Distance: {distance} | Departure: {start_time} | '
+              f'Arrival span: {early} -> {late} | Service duration: {service} | '
+              f'Checkpoints (A, I, S): {checkpoints}')
 
 
 ag = ArcGenerator()
