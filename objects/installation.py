@@ -60,6 +60,9 @@ class Installation:
     def get_index(self):
         return self.index
 
+    def is_depot(self):
+        return self.index == 0
+
     def __repr__(self):
         return f'Installation {self.name} with {len(self.orders)} orders'
 

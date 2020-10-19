@@ -4,7 +4,7 @@ from objects.installation import Installation
 from objects.vessel import Vessel
 from objects.order import Order
 
-file_path = 'data/mongstad/3.json'
+file_path = 'data/mongstad/4.json'
 
 with open(file_path) as file:
     input_data = json.load(file)
@@ -60,9 +60,10 @@ PERIOD_HOURS = input_data['planning_period_in_hours']
 TIME_UNITS_PER_HOUR = input_data['time_units_per_hour']
 PERIOD_DISC = PERIOD_HOURS * TIME_UNITS_PER_HOUR
 
-DISCRETIZED_TIME_UNIT = 1.0 / TIME_UNITS_PER_HOUR
-UNIT_MINUTES = 60 / TIME_UNITS_PER_HOUR
+TIME_UNIT_DISC = 1.0 / TIME_UNITS_PER_HOUR
 UNIT_SERVICE_TIME_DISC = UNIT_SERVICE_TIME_HOUR * TIME_UNITS_PER_HOUR
+
+MIN_SPEED_DISC = MIN_SPEED * (1 / TIME_UNITS_PER_HOUR)
 
 """ ============================ WEATHER ============================ """
 WEATHER_FORECAST_HOURS = input_data['weather_forecast']
