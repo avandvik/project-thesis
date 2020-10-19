@@ -20,7 +20,7 @@ class Vessel:
         return self._is_spot_vessel
 
     def get_hourly_return_time(self):
-        return self.return_day*24
+        return self.return_day * 24
 
     def get_index(self):
         return self.index

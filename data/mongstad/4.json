@@ -994,42 +994,36 @@
   },
   "vessels": {
     "PSV_1": {
-      "id": 1,
       "deck_capacity": 100,
       "bulk_capacity": 100,
       "is_spot_vessel": "False",
       "return_day": 4
     },
     "PSV_2": {
-      "id": 2,
       "deck_capacity": 100,
       "bulk_capacity": 100,
       "is_spot_vessel": "False",
       "return_day": 0
     },
     "PSV_3": {
-      "id": 3,
       "deck_capacity": 100,
       "bulk_capacity": 100,
       "is_spot_vessel": "False",
       "return_day": 0
     },
     "PSV_4": {
-      "id": 4,
       "deck_capacity": 100,
       "bulk_capacity": 100,
       "is_spot_vessel": "False",
       "return_day": 0
     },
     "PSV_5": {
-      "id": 5,
       "deck_capacity": 100,
       "bulk_capacity": 100,
       "is_spot_vessel": "False",
       "return_day": 0
     },
     "SPOT_VESSEL": {
-      "id": 6,
       "deck_capacity": 100,
       "bulk_capacity": 100,
       "is_spot_vessel": "True",

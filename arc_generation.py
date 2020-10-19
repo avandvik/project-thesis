@@ -7,7 +7,7 @@ from collections import defaultdict as dd
 class ArcGenerator:
 
     def __init__(self):
-        # nodes[vessel][time][order]
+        # nodes[vessel][order][time]
         self.nodes = dd(lambda: dd(lambda: dd(lambda: False)))
 
         # arc_costs[vessel][from_order][start_time][to_order][end_time]
@@ -19,13 +19,13 @@ class ArcGenerator:
     def generate_arcs(self, preparation_end_time):
 
         for vessel in data.VESSELS:
-            self.nodes[vessel.get_index()][preparation_end_time][0] = True
+            self.nodes[vessel.get_index()][0][preparation_end_time] = True
 
         for vessel in data.VESSELS:
             discretized_return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
             for arc_start_time in range(preparation_end_time, discretized_return_time):
                 for from_order in data.ORDERS:
-                    if self.nodes[vessel.get_index()][arc_start_time][from_order.get_index()]:
+                    if self.nodes[vessel.get_index()][from_order.get_index()][arc_start_time]:
                         self.generate_arcs_from_node(vessel, arc_start_time, from_order)
 
         print(f'Arc generation done! Number of arcs: {self.number_of_arcs}')
@@ -48,23 +48,18 @@ class ArcGenerator:
             arc_costs, arc_end_times = calculate_arc_costs_and_end_times(arc_start_time, checkpoints, distance, vessel)
             self.add_nodes_and_arcs(from_order, to_order, arc_costs, arc_start_time, arc_end_times, vessel)
 
+    # TODO: Reduce number of arcs by only allowing one arc to the depot. Make sure a feasible arc is chosen.
     def add_nodes_and_arcs(self, from_order, to_order, arc_costs, arc_start_time, arc_end_times, vessel):
         return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
-        if to_order.get_installation().is_depot():
-            best_arc_cost = min(arc_costs)
-            best_arc_end_time = arc_end_times[arc_costs.index(best_arc_cost)]
-            if best_arc_end_time <= return_time:
-                self.nodes[vessel.get_index()][best_arc_end_time][to_order.get_index()] = True
+        for arc_cost, arc_end_time in zip(arc_costs, arc_end_times):
+            if arc_end_time <= return_time:
+                self.nodes[vessel.get_index()][to_order.get_index()][arc_end_time] = True
                 self.arc_costs[vessel.get_index()][from_order.get_index()][arc_start_time][
-                    to_order.get_index()][best_arc_end_time] = best_arc_cost
+                    to_order.get_index()][arc_end_time] = arc_cost
                 self.number_of_arcs += 1
-        else:
-            for arc_cost, arc_end_time in zip(arc_costs, arc_end_times):
-                if arc_end_time <= return_time:
-                    self.nodes[vessel.get_index()][arc_end_time][to_order.get_index()] = True
-                    self.arc_costs[vessel.get_index()][from_order.get_index()][arc_start_time][
-                        to_order.get_index()][arc_end_time] = arc_cost
-                    self.number_of_arcs += 1
+
+    def get_nodes(self):
+        return self.nodes
 
 
 def is_illegal_arc(from_order, to_order):

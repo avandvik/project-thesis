@@ -23,14 +23,18 @@ UNIT_SERVICE_TIME_HOUR = input_data['real_service_time_per_unit']
 
 """ ============================ VESSEL ============================ """
 VESSELS = []
-for index, vessel_name in enumerate(input_data['vessels']):
+index = 0
+for vessel_name in input_data['vessels']:
     is_spot_vessel = True if input_data['vessels'][vessel_name]['is_spot_vessel'] == 'True' else False
-    VESSELS.append(Vessel(index=index,
-                          name=vessel_name,
-                          return_day=input_data['vessels'][vessel_name]['return_day'],
-                          deck_capacity=input_data['vessels'][vessel_name]['deck_capacity'],
-                          bulk_capacity=input_data['vessels'][vessel_name]['bulk_capacity'],
-                          is_spot_vessel=is_spot_vessel))
+    return_day = input_data['vessels'][vessel_name]['return_day']
+    if return_day != 0:
+        VESSELS.append(Vessel(index=index,
+                              name=vessel_name,
+                              return_day=return_day,
+                              deck_capacity=input_data['vessels'][vessel_name]['deck_capacity'],
+                              bulk_capacity=input_data['vessels'][vessel_name]['bulk_capacity'],
+                              is_spot_vessel=is_spot_vessel))
+        index += 1
 
 MIN_SPEED = input_data['min_speed']
 MAX_SPEED = input_data['max_speed']
@@ -59,6 +63,7 @@ for index, order_identfifier in enumerate(input_data['orders']):
 PERIOD_HOURS = input_data['planning_period_in_hours']
 TIME_UNITS_PER_HOUR = input_data['time_units_per_hour']
 PERIOD_DISC = PERIOD_HOURS * TIME_UNITS_PER_HOUR
+TIME_POINTS_DISC = [tp for tp in range(PERIOD_DISC)]
 
 TIME_UNIT_DISC = 1.0 / TIME_UNITS_PER_HOUR
 UNIT_SERVICE_TIME_DISC = UNIT_SERVICE_TIME_HOUR * TIME_UNITS_PER_HOUR
