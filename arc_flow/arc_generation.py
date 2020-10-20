@@ -6,29 +6,37 @@ from collections import defaultdict as dd
 
 class ArcGenerator:
 
-    def __init__(self):
+    def __init__(self, preparation_end_time):
         # nodes[vessel][order][time]
         self.nodes = dd(lambda: dd(lambda: dd(lambda: False)))
 
         # arc_costs[vessel][from_order][start_time][to_order][end_time]
         self.arc_costs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
 
+        self.preparation_end_time = preparation_end_time
         self.verbose = False
         self.number_of_arcs = 0
 
-    def generate_arcs(self, preparation_end_time):
+    def generate_arcs(self):
 
         for vessel in data.VESSELS:
-            self.nodes[vessel.get_index()][0][preparation_end_time] = True
+            self.nodes[vessel.get_index()][0][self.preparation_end_time] = True
 
         for vessel in data.VESSELS:
             discretized_return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
-            for arc_start_time in range(preparation_end_time, discretized_return_time):
+            for arc_start_time in range(self.preparation_end_time, discretized_return_time):
                 for from_order in data.ORDERS:
-                    if self.nodes[vessel.get_index()][from_order.get_index()][arc_start_time]:
+                    if self.is_start_point(vessel, from_order, arc_start_time):
                         self.generate_arcs_from_node(vessel, arc_start_time, from_order)
 
         print(f'Arc generation done! Number of arcs: {self.number_of_arcs}')
+
+    def is_start_point(self, vessel, from_order, arc_start_time):
+        if arc_start_time != self.preparation_end_time and from_order.get_installation().is_depot():
+            return False
+        if not self.nodes[vessel.get_index()][from_order.get_index()][arc_start_time]:
+            return False
+        return True
 
     def generate_arcs_from_node(self, vessel, arc_start_time, from_order):
         for to_order in data.ORDERS:
@@ -60,6 +68,9 @@ class ArcGenerator:
 
     def get_nodes(self):
         return self.nodes
+
+    def get_arc_costs(self):
+        return self.arc_costs
 
 
 def is_illegal_arc(from_order, to_order):
@@ -183,5 +194,5 @@ def print_arc_info(from_order, to_order, distance, start_time, early, late, serv
               f'Checkpoints (A, I, S): {checkpoints}')
 
 
-ag = ArcGenerator()
-ag.generate_arcs(16 * data.TIME_UNITS_PER_HOUR - 1)
+# ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1)
+# ag.generate_arcs()

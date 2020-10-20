@@ -1,10 +1,12 @@
+import pathlib
 import json
 import math
 from objects.installation import Installation
 from objects.vessel import Vessel
 from objects.order import Order
 
-file_path = 'data/mongstad/4.json'
+file_number = 3
+file_path = f'{pathlib.Path(__file__).parent.absolute()}/input/mongstad/{3}.json'
 
 with open(file_path) as file:
     input_data = json.load(file)
@@ -58,6 +60,11 @@ for index, order_identfifier in enumerate(input_data['orders']):
                   installation=installation)
     ORDERS.append(order)
     installation.add_order(order)
+
+# TODO: Consider adding indices instead
+MAND_ORDERS = [order for order in ORDERS if order.is_mandatory()]
+OPTIONAL_DELIVERY_ORDERS = [order for order in ORDERS if order.is_optional() and order.is_delivery()]
+OPTIONAL_PICKUP_ORDERS = [order for order in ORDERS if order.is_optional() and order.is_pickup()]
 
 """ ============================ TIME AND DISCRETIZATION ============================ """
 PERIOD_HOURS = input_data['planning_period_in_hours']
