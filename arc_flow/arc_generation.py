@@ -10,11 +10,11 @@ class ArcGenerator:
         # nodes[vessel][order][time]
         self.nodes = dd(lambda: dd(lambda: dd(lambda: False)))
 
-        # arc_costs[vessel][from_order][start_time][to_order][end_time]
+        # arc_costs[vessel][from_node][start_time][to_node][end_time]
         self.arc_costs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
 
         self.preparation_end_time = preparation_end_time
-        self.verbose = False
+        self.verbose = True
         self.number_of_arcs = 0
 
     def generate_arcs(self):
@@ -25,45 +25,44 @@ class ArcGenerator:
         for vessel in data.VESSELS:
             discretized_return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
             for arc_start_time in range(self.preparation_end_time, discretized_return_time):
-                for from_order in data.ORDERS:
-                    if self.is_start_point(vessel, from_order, arc_start_time):
-                        self.generate_arcs_from_node(vessel, arc_start_time, from_order)
+                for from_node in data.ALL_NODES[:-1]:
+                    if self.is_valid_start_node(vessel, from_node, arc_start_time):
+                        self.generate_arcs_from_node(vessel, from_node, arc_start_time)
 
         print(f'Arc generation done! Number of arcs: {self.number_of_arcs}')
 
-    def is_start_point(self, vessel, from_order, arc_start_time):
-        if arc_start_time != self.preparation_end_time and from_order.get_installation().is_depot():
+    def is_valid_start_node(self, vessel, from_node, arc_start_time):
+        if arc_start_time != self.preparation_end_time and from_node.is_start_depot():
             return False
-        if not self.nodes[vessel.get_index()][from_order.get_index()][arc_start_time]:
+        if not self.nodes[vessel.get_index()][from_node.get_index()][arc_start_time]:
             return False
         return True
 
-    def generate_arcs_from_node(self, vessel, arc_start_time, from_order):
-        for to_order in data.ORDERS:
-            if from_order.get_index() == to_order.get_index() or is_illegal_arc(from_order, to_order):
+    def generate_arcs_from_node(self, vessel, from_node, arc_start_time):
+        for to_node in data.ALL_NODES[1:]:
+            if from_node.get_index() == to_node.get_index() or is_illegal_arc(from_node, to_node):
                 continue
 
-            distance = from_order.get_installation().get_distance_to_installation(to_order.get_installation())
+            distance = from_node.get_installation().get_distance_to_installation(to_node.get_installation())
             earliest_arrival_time, latest_arrival_time = get_arrival_time_span(distance, arc_start_time)
-            service_duration = math.ceil(to_order.get_size() * data.UNIT_SERVICE_TIME_DISC)
+            service_duration = calculate_service_time(to_node)
 
             # Checkpoints are in the form of (arrival time, idling end time, service end time)
-            checkpoints = get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration, to_order)
-
-            print_arc_info(from_order, to_order, distance, arc_start_time, earliest_arrival_time,
+            checkpoints = get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration, to_node)
+            print_arc_info(from_node, to_node, distance, arc_start_time, earliest_arrival_time,
                            latest_arrival_time, service_duration, checkpoints, self.verbose)
 
             arc_costs, arc_end_times = calculate_arc_costs_and_end_times(arc_start_time, checkpoints, distance, vessel)
-            self.add_nodes_and_arcs(from_order, to_order, arc_costs, arc_start_time, arc_end_times, vessel)
+            self.add_nodes_and_arcs(from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel)
 
     # TODO: Reduce number of arcs by only allowing one arc to the depot. Make sure a feasible arc is chosen.
-    def add_nodes_and_arcs(self, from_order, to_order, arc_costs, arc_start_time, arc_end_times, vessel):
+    def add_nodes_and_arcs(self, from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel):
         return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
         for arc_cost, arc_end_time in zip(arc_costs, arc_end_times):
             if arc_end_time <= return_time:
-                self.nodes[vessel.get_index()][to_order.get_index()][arc_end_time] = True
-                self.arc_costs[vessel.get_index()][from_order.get_index()][arc_start_time][
-                    to_order.get_index()][arc_end_time] = arc_cost
+                self.nodes[vessel.get_index()][to_node.get_index()][arc_end_time] = True
+                self.arc_costs[vessel.get_index()][from_node.get_index()][arc_start_time][
+                    to_node.get_index()][arc_end_time] = arc_cost
                 self.number_of_arcs += 1
 
     def get_nodes(self):
@@ -73,18 +72,21 @@ class ArcGenerator:
         return self.arc_costs
 
 
-def is_illegal_arc(from_order, to_order):
-    if from_order.get_installation() != to_order.get_installation():  # True if we are sailing between installations
-        if to_order.get_installation().has_mandatory_order() and to_order.is_optional():
+def is_illegal_arc(from_node, to_node):
+    if from_node.is_start_depot():
+        return False
+    if from_node.get_installation() != to_node.get_installation():  # True if we are sailing between installations
+        if to_node.get_installation().has_mandatory_order() and to_node.get_order().is_optional():
             return True
-        elif to_order.get_installation().has_optional_delivery_order() and to_order.is_optional() and to_order.is_pickup():
+        elif to_node.get_installation().has_optional_delivery_order() and to_node.get_order().is_optional_pickup():
             return True
     else:
-        if from_order.is_optional() and from_order.is_delivery():
-            if to_order.is_mandatory() and to_order.is_delivery():
+        if from_node.get_order().is_optional_delivery():
+            if to_node.get_order().is_mandatory_delivery():
                 return True
-        elif from_order.is_optional() and from_order.is_pickup():
+        elif from_node.get_order().is_optional_pickup():
             return True
+    return False
 
 
 def get_arrival_time_span(distance, departure_time):
@@ -104,11 +106,15 @@ def get_arrival_time_span(distance, departure_time):
     return earliest_arrival_time, latest_arrival_time
 
 
-def get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration, to_order):
-    opening_hours = to_order.get_installation().get_opening_hours_as_list()
+def calculate_service_time(to_node):
+    return 0 if to_node.is_end_depot() else math.ceil(to_node.get_order().get_size() * data.UNIT_SERVICE_TIME_DISC)
+
+
+def get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration, to_node):
+    opening_hours = to_node.get_installation().get_opening_hours_as_list()
     checkpoints = []
     for service_start_time in range(earliest_arrival_time, latest_arrival_time + 1):
-        if to_order.get_installation().is_depot():
+        if to_node.is_end_depot():
             checkpoints.append((service_start_time, service_start_time, service_start_time))
         else:
             worst_weather = max(data.WEATHER_FORECAST_DISC[service_start_time:service_start_time + service_duration])
@@ -124,7 +130,7 @@ def get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration
 
 def calculate_arc_cost(arc_start_time, arc_end_time, checkpoints, distance, vessel):
     return calculate_total_fuel_cost(arc_start_time, checkpoints, distance) \
-           + calculate_charter_cost(vessel, arc_start_time, arc_end_time)
+           + calculate_charter_cost(vessel, arc_start_time, arc_end_time) + 0.00001  # TODO: Find out effect of this
 
 
 def calculate_total_fuel_cost(departure_time, checkpoints, distance):
@@ -187,12 +193,12 @@ def get_consumption(speed):
     return 11.111 * speed * speed - 177.78 * speed + 1011.1
 
 
-def print_arc_info(from_order, to_order, distance, start_time, early, late, service, checkpoints, verbose):
+def print_arc_info(from_node, to_node, distance, start_time, early, late, service, checkpoints, verbose):
     if verbose:
-        print(f'Legal arc: {from_order} -> {to_order} | Distance: {distance} | Departure: {start_time} | '
+        print(f'Legal arc: {from_node} -> {to_node} | Distance: {distance} | Departure: {start_time} | '
               f'Arrival span: {early} -> {late} | Service duration: {service} | '
               f'Checkpoints (A, I, S): {checkpoints}')
 
 
-# ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1)
-# ag.generate_arcs()
+ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1)
+ag.generate_arcs()

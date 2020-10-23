@@ -1049,14 +1049,6 @@
     }
   },
   "orders": {
-    "0": {
-      "transport_type": "None",
-      "cargo_type": "None",
-      "mandatory": "None",
-      "size": 0,
-      "deadline_day": 0,
-      "installation": 0
-    },
     "1": {
       "transport_type": "delivery",
       "cargo_type": "deck",

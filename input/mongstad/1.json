@@ -277,8 +277,7 @@
       "size_variation": 5,
       "deadline_day": 3,
       "installation": 16
-    }
-  },
+    },
   "order_size_variations": [0, 0.5, 0.75, 1.0, 1.25, 1.5],
   "weather_states": {
     "0": {
