@@ -71,7 +71,7 @@ for index, order_identfifier in enumerate(input_data['orders']):
     ALL_NODES.append(node)
     installation.add_order(order)
 
-end_depot = Node(index=len(ALL_NODES) + 1, is_order=False, order=None, installation=DEPOT, is_start_depot=False)
+end_depot = Node(index=len(ALL_NODES), is_order=False, order=None, installation=DEPOT, is_start_depot=False)
 ALL_NODES.append(end_depot)
 
 order_indices = [order.get_index() for order in ORDER_NODES]

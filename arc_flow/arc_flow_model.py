@@ -16,6 +16,7 @@ class ArcFlowModel:
 
         preparation_end_time = 16 * data.TIME_UNITS_PER_HOUR - 1
         self.ag = ArcGenerator(preparation_end_time)
+        self.nodes = None
         self.arc_costs = None
 
         self.node_time_points = None
@@ -33,14 +34,17 @@ class ArcFlowModel:
 
     def preprocess(self):
         self.ag.generate_arcs()
+        self.nodes = self.ag.get_nodes()
         self.arc_costs = self.ag.get_arc_costs()
 
     def populate_sets(self):
-        self.node_time_points = sg.generate_node_time_points(self.arc_costs)
+        self.node_time_points = sg.generate_node_time_points(self.nodes)
+        pprint(self.node_time_points, compact=True)
         self.from_orders = sg.generate_from_orders(self.arc_costs, self.node_time_points)
         self.to_orders = sg.generate_to_orders(self.arc_costs, self.node_time_points)
         self.departure_times = sg.generate_departure_times(self.arc_costs)
         self.arrival_times = sg.generate_arrival_times(self.arc_costs)
+        pprint(self.arrival_times, compact=True)
         self.specific_departure_times = sg.generate_specific_departure_times(self.arc_costs, self.arrival_times)
         self.specific_arrival_times = sg.generate_specific_arrival_times(self.arc_costs, self.departure_times)
 
@@ -51,8 +55,8 @@ class ArcFlowModel:
         self.l_P = vg.initialize_pickup_load_variables(self.model)
 
     def add_constraints(self):
-        cg.add_flow_conservation_constr(self.model, self.x, self.to_orders, self.specific_departure_times,
-                                        self.specific_arrival_times, self.node_time_points)
+        cg.add_flow_conservation_constrs(self.model, self.x, self.to_orders, self.specific_departure_times,
+                                         self.specific_arrival_times, self.node_time_points)
 
     def run(self):
         self.preprocess()

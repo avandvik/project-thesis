@@ -7,14 +7,14 @@ from collections import defaultdict as dd
 class ArcGenerator:
 
     def __init__(self, preparation_end_time):
-        # nodes[vessel][order][time]
+        # nodes[vessel][node][time]
         self.nodes = dd(lambda: dd(lambda: dd(lambda: False)))
 
         # arc_costs[vessel][from_node][start_time][to_node][end_time]
         self.arc_costs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
 
         self.preparation_end_time = preparation_end_time
-        self.verbose = True
+        self.verbose = False
         self.number_of_arcs = 0
 
     def generate_arcs(self):
