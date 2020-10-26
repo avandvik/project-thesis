@@ -22,6 +22,9 @@ class Vessel:
     def get_hourly_return_time(self):
         return self.return_day * 24
 
+    def get_total_capacity(self):
+        return self.deck_capacity + self.bulk_capacity
+
     def get_index(self):
         return self.index
 

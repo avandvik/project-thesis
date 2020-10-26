@@ -200,5 +200,5 @@ def print_arc_info(from_node, to_node, distance, start_time, early, late, servic
               f'Checkpoints (A, I, S): {checkpoints}')
 
 
-ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1)
-ag.generate_arcs()
+# ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1)
+# ag.generate_arcs()

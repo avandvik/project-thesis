@@ -20,8 +20,8 @@ class ArcFlowModel:
         self.arc_costs = None
 
         self.node_time_points = None
-        self.from_orders = None
-        self.to_orders = None
+        self.from_nodes = None
+        self.to_nodes = None
         self.departure_times = None
         self.arrival_times = None
         self.specific_departure_times = None
@@ -39,12 +39,10 @@ class ArcFlowModel:
 
     def populate_sets(self):
         self.node_time_points = sg.generate_node_time_points(self.nodes)
-        pprint(self.node_time_points, compact=True)
-        self.from_orders = sg.generate_from_orders(self.arc_costs, self.node_time_points)
-        self.to_orders = sg.generate_to_orders(self.arc_costs, self.node_time_points)
+        self.from_nodes = sg.generate_from_orders(self.arc_costs, self.node_time_points)
+        self.to_nodes = sg.generate_to_orders(self.arc_costs, self.node_time_points)
         self.departure_times = sg.generate_departure_times(self.arc_costs)
         self.arrival_times = sg.generate_arrival_times(self.arc_costs)
-        pprint(self.arrival_times, compact=True)
         self.specific_departure_times = sg.generate_specific_departure_times(self.arc_costs, self.arrival_times)
         self.specific_arrival_times = sg.generate_specific_arrival_times(self.arc_costs, self.departure_times)
 
@@ -53,14 +51,55 @@ class ArcFlowModel:
         self.u = vg.initialize_order_served_variables(self.model)
         self.l_D = vg.initialize_delivery_load_variables(self.model)
         self.l_P = vg.initialize_pickup_load_variables(self.model)
+        self.model.update()
 
     def add_constraints(self):
-        cg.add_flow_conservation_constrs(self.model, self.x, self.to_orders, self.specific_departure_times,
-                                         self.specific_arrival_times, self.node_time_points)
+        cg.add_flow_conservation_constrs(self.model, self.x, self.from_nodes, self.to_nodes,
+                                         self.specific_departure_times, self.specific_arrival_times,
+                                         self.node_time_points)
+        cg.add_start_and_end_flow_constrs(self.model, self.x, self.departure_times, self.specific_arrival_times)
+        cg.add_visit_limit_constrs(self.model, self.x, self.u, self.departure_times, self.specific_arrival_times)
+        cg.add_initial_delivery_load_constrs(self.model, self.l_D, self.u)
+        cg.add_load_capacity_constrs(self.model, self.l_D, self.l_P)
+        cg.add_load_continuity_constrs_1(self.model, self.x, self.l_D, self.u, data.DELIVERY_NODE_INDICES,
+                                         self.departure_times, self.specific_arrival_times)
+        cg.add_load_continuity_constrs_2(self.model, self.x, self.l_D, data.PICKUP_NODE_INDICES, self.departure_times,
+                                         self.specific_arrival_times)
+        cg.add_load_continuity_constrs_1(self.model, self.x, self.l_P, self.u, data.PICKUP_NODE_INDICES,
+                                         self.departure_times, self.specific_arrival_times)
+        cg.add_load_continuity_constrs_2(self.model, self.x, self.l_P, data.DELIVERY_NODE_INDICES,
+                                         self.departure_times, self.specific_arrival_times)
+        cg.add_final_pickup_load_constrs(self.model, self.l_P, self.u)
+        self.model.update()
+
+    def set_objective(self):
+        self.model.setObjective(gp.quicksum(self.arc_costs[v][i][t1][j][t2] * self.x[v, i, t1, j, t2]
+                                            for v in range(len(data.VESSELS))
+                                            for i in range(len(data.ALL_NODES))
+                                            for j in range(len(data.ALL_NODES)) if i != j
+                                            for t1 in self.departure_times[v][i][j]
+                                            for t2 in self.specific_arrival_times[v][i][j][t1])
+
+                                +
+
+                                gp.quicksum(data.POSTPONE_PENALTIES[i] * (1 - self.u[i])
+                                            for i in range(len(data.ALL_NODES)))
+
+                                , gp.GRB.MINIMIZE)
+
+        self.model.update()
 
     def run(self):
         self.preprocess()
         self.populate_sets()
+        self.add_variables()
+        self.add_constraints()
+        self.set_objective()
+
+        self.model.printStats()
+        self.model.optimize()
+
+        self.model.printAttr('x')
 
 
 if __name__ == '__main__':

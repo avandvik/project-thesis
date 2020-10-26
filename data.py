@@ -74,12 +74,11 @@ for index, order_identfifier in enumerate(input_data['orders']):
 end_depot = Node(index=len(ALL_NODES), is_order=False, order=None, installation=DEPOT, is_start_depot=False)
 ALL_NODES.append(end_depot)
 
-order_indices = [order.get_index() for order in ORDER_NODES]
+MANDATORY_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order() and node.get_order().is_mandatory()]
+DELIVERY_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order() and node.get_order().is_delivery()]
+PICKUP_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order() and node.get_order().is_pickup()]
 
-# TODO: Consider adding indices instead
-MD_ORDER_NODES = [order for order in ORDER_NODES if order.is_mandatory_delivery()]
-OD_ORDER_NODES = [order for order in ORDER_NODES if order.is_optional_delivery()]
-OP_ORDER_NODES = [order for order in ORDER_NODES if order.is_optional_pickup()]
+POSTPONE_PENALTIES = [100 for _ in range(len(ALL_NODES))]
 
 """ ============================ TIME AND DISCRETIZATION ============================ """
 PERIOD_HOURS = input_data['planning_period_in_hours']

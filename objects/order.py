@@ -16,8 +16,17 @@ class Order:
         self.size = size
         self.deadline = deadline
 
+    def is_mandatory(self):
+        return self.mandatory
+
     def is_optional(self):
         return not self.mandatory
+
+    def is_delivery(self):
+        return self.transport_type == 'delivery'
+
+    def is_pickup(self):
+        return self.transport_type == 'pickup'
 
     def is_mandatory_delivery(self):
         return self.mandatory and self.transport_type == 'delivery'
