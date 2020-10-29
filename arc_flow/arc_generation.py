@@ -6,7 +6,7 @@ from collections import defaultdict as dd
 
 class ArcGenerator:
 
-    def __init__(self, preparation_end_time):
+    def __init__(self, preparation_end_time, verbose):
         # nodes[vessel][node][time]
         self.nodes = dd(lambda: dd(lambda: dd(lambda: False)))
 
@@ -14,7 +14,7 @@ class ArcGenerator:
         self.arc_costs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
 
         self.preparation_end_time = preparation_end_time
-        self.verbose = False
+        self.verbose = verbose
         self.number_of_arcs = 0
 
     def generate_arcs(self):
@@ -53,17 +53,34 @@ class ArcGenerator:
                            latest_arrival_time, service_duration, checkpoints, self.verbose)
 
             arc_costs, arc_end_times = calculate_arc_costs_and_end_times(arc_start_time, checkpoints, distance, vessel)
-            self.add_nodes_and_arcs(from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel)
 
-    # TODO: Reduce number of arcs by only allowing one arc to the depot. Make sure a feasible arc is chosen.
+            if to_node.is_end_depot():
+                self.add_end_depot_node_and_arc(from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel)
+            else:
+                self.add_nodes_and_arcs(from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel)
+
+            if self.verbose:
+                print()
+
+    def add_end_depot_node_and_arc(self, from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel):
+        return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
+        feasible_return_arcs = [(ac, aet) for ac, aet in zip(arc_costs, arc_end_times) if aet <= return_time]
+        best_return_arc = min(feasible_return_arcs)
+        arc_cost, arc_end_time = best_return_arc
+        self.save_node_and_arc(from_node, to_node, arc_cost, arc_start_time, arc_end_time, vessel)
+
     def add_nodes_and_arcs(self, from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel):
         return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
         for arc_cost, arc_end_time in zip(arc_costs, arc_end_times):
             if arc_end_time <= return_time:
-                self.nodes[vessel.get_index()][to_node.get_index()][arc_end_time] = True
-                self.arc_costs[vessel.get_index()][from_node.get_index()][arc_start_time][
-                    to_node.get_index()][arc_end_time] = arc_cost
-                self.number_of_arcs += 1
+                self.save_node_and_arc(from_node, to_node, arc_cost, arc_start_time, arc_end_time, vessel)
+
+    def save_node_and_arc(self, fn, tn, ac, ast, aet, v):
+        if self.verbose:
+            print(f'\tAdding arc: {ast} -> {aet} ({ac}) ')
+        self.nodes[v.get_index()][tn.get_index()][aet] = True
+        self.arc_costs[v.get_index()][fn.get_index()][ast][tn.get_index()][aet] = ac
+        self.number_of_arcs += 1
 
     def get_nodes(self):
         return self.nodes
@@ -73,7 +90,7 @@ class ArcGenerator:
 
 
 def is_illegal_arc(from_node, to_node):
-    if from_node.is_start_depot():
+    if from_node.is_start_depot():  # TODO: Check if this can be solved tidier
         return False
     if from_node.get_installation() != to_node.get_installation():  # True if we are sailing between installations
         if to_node.get_installation().has_mandatory_order() and to_node.get_order().is_optional():
@@ -90,7 +107,7 @@ def is_illegal_arc(from_node, to_node):
 
 
 def get_arrival_time_span(distance, departure_time):
-    max_sailing_duration = math.floor(distance / data.MIN_SPEED_DISC)
+    max_sailing_duration = math.ceil(distance / data.MIN_SPEED_DISC)  # TODO: Consider floor
     latest_arrival_time = departure_time + max_sailing_duration
 
     speed_impacts = [data.SPEED_IMPACTS[w] for w in data.WEATHER_FORECAST_DISC[departure_time:latest_arrival_time + 1]]
@@ -126,6 +143,15 @@ def get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration
             if installation_open and worst_weather < data.WORST_WEATHER_STATE:
                 checkpoints.append((service_start_time, service_start_time, service_start_time + service_duration))
     return checkpoints
+
+
+def calculate_arc_costs_and_end_times(arc_start_time, checkpoints, distance, vessel):
+    arc_costs, arc_end_times = [], []
+    for checkpoint in checkpoints:
+        arc_cost = calculate_arc_cost(arc_start_time, checkpoint[-1], checkpoint, distance, vessel)
+        arc_costs.append(arc_cost)
+        arc_end_times.append(checkpoint[-1])
+    return arc_costs, arc_end_times
 
 
 def calculate_arc_cost(arc_start_time, arc_end_time, checkpoints, distance, vessel):
@@ -181,14 +207,6 @@ def calculate_charter_cost(vessel, start_time, end_time):
     return data.SPOT_RATE * hlp.disc_to_exact_hours(end_time - start_time) if vessel.is_spot_vessel() else 0.0
 
 
-def calculate_arc_costs_and_end_times(arc_start_time, checkpoints, distance, vessel):
-    arc_costs, arc_end_times = [], []
-    for checkpoint in checkpoints:
-        arc_costs.append(calculate_arc_cost(arc_start_time, checkpoint[-1], checkpoint, distance, vessel))
-        arc_end_times.append(checkpoint[-1])
-    return arc_costs, arc_end_times
-
-
 def get_consumption(speed):
     return 11.111 * speed * speed - 177.78 * speed + 1011.1
 
@@ -200,5 +218,5 @@ def print_arc_info(from_node, to_node, distance, start_time, early, late, servic
               f'Checkpoints (A, I, S): {checkpoints}')
 
 
-# ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1)
-# ag.generate_arcs()
+ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1)
+ag.generate_arcs()

@@ -20,8 +20,9 @@ def initialize_arc_variables(model, departure_times, specific_arrival_times):
 def initialize_order_served_variables(model):
     u = {}
 
-    for i in range(len(data.ALL_NODES)):
-        u[i] = model.addVar(vtype=gp.GRB.BINARY, name=f'u_{i}')
+    for v in range(len(data.VESSELS)):
+        for i in range(len(data.ALL_NODES)):
+            u[v, i] = model.addVar(vtype=gp.GRB.BINARY, name=f'u_{i}_{v}')
 
     return u
 
@@ -41,6 +42,6 @@ def initialize_pickup_load_variables(model):
 
     for v in range(len(data.VESSELS)):
         for i in range(len(data.ALL_NODES)):
-            l_P[v, i] = model.addVar(vtype=gp.GRB.CONTINUOUS, name=f'l_D_{i}_{v}')
+            l_P[v, i] = model.addVar(vtype=gp.GRB.CONTINUOUS, name=f'l_P_{i}_{v}')
 
     return l_P

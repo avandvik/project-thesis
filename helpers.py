@@ -33,4 +33,4 @@ def get_time_in_weather_state(start_time, end_time, weather_state):
         if weather_state == data.WEATHER_FORECAST_DISC[curr_time]:
             time_spent_in_weather_state += 1
         curr_time += 1
-    return time_spent_in_weather_state
+    return disc_to_exact_hours(time_spent_in_weather_state)

@@ -74,7 +74,9 @@ for index, order_identfifier in enumerate(input_data['orders']):
 end_depot = Node(index=len(ALL_NODES), is_order=False, order=None, installation=DEPOT, is_start_depot=False)
 ALL_NODES.append(end_depot)
 
+ALL_NODE_INDICES = [node.get_index() for node in ALL_NODES]
 MANDATORY_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order() and node.get_order().is_mandatory()]
+OPTIONAL_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order() and node.get_order().is_optional()]
 DELIVERY_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order() and node.get_order().is_delivery()]
 PICKUP_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order() and node.get_order().is_pickup()]
 

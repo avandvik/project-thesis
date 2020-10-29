@@ -15,7 +15,8 @@ class ArcFlowModel:
         self.model.setParam('TimeLimit', 1 * 60 * 60)
 
         preparation_end_time = 16 * data.TIME_UNITS_PER_HOUR - 1
-        self.ag = ArcGenerator(preparation_end_time)
+        verbose = False
+        self.ag = ArcGenerator(preparation_end_time, verbose)
         self.nodes = None
         self.arc_costs = None
 
@@ -61,14 +62,10 @@ class ArcFlowModel:
         cg.add_visit_limit_constrs(self.model, self.x, self.u, self.departure_times, self.specific_arrival_times)
         cg.add_initial_delivery_load_constrs(self.model, self.l_D, self.u)
         cg.add_load_capacity_constrs(self.model, self.l_D, self.l_P)
-        cg.add_load_continuity_constrs_1(self.model, self.x, self.l_D, self.u, data.DELIVERY_NODE_INDICES,
-                                         self.departure_times, self.specific_arrival_times)
-        cg.add_load_continuity_constrs_2(self.model, self.x, self.l_D, data.PICKUP_NODE_INDICES, self.departure_times,
+        cg.add_load_continuity_constrs_1(self.model, self.x, self.l_D, self.l_P, self.u, self.departure_times,
                                          self.specific_arrival_times)
-        cg.add_load_continuity_constrs_1(self.model, self.x, self.l_P, self.u, data.PICKUP_NODE_INDICES,
-                                         self.departure_times, self.specific_arrival_times)
-        cg.add_load_continuity_constrs_2(self.model, self.x, self.l_P, data.DELIVERY_NODE_INDICES,
-                                         self.departure_times, self.specific_arrival_times)
+        cg.add_load_continuity_constrs_2(self.model, self.x, self.l_D, self.l_P, self.departure_times,
+                                         self.specific_arrival_times)
         cg.add_final_pickup_load_constrs(self.model, self.l_P, self.u)
         self.model.update()
 
@@ -82,8 +79,15 @@ class ArcFlowModel:
 
                                 +
 
-                                gp.quicksum(data.POSTPONE_PENALTIES[i] * (1 - self.u[i])
-                                            for i in range(len(data.ALL_NODES)))
+                                gp.quicksum(data.POSTPONE_PENALTIES[i] * (1 - self.u[v, i])
+                                            for v in range(len(data.VESSELS))
+                                            for i in data.OPTIONAL_NODE_INDICES)
+
+                                +
+
+                                gp.quicksum(self.l_D[v, i]
+                                            for v in range(len(data.VESSELS))
+                                            for i in data.ALL_NODE_INDICES)
 
                                 , gp.GRB.MINIMIZE)
 
