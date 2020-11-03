@@ -49,6 +49,9 @@ class ArcGenerator:
 
             # Checkpoints are in the form of (arrival time, idling end time, service end time)
             checkpoints = get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration, to_node)
+
+            # TODO: If there are no checkpoints, implement an idling arc
+
             print_arc_info(from_node, to_node, distance, arc_start_time, earliest_arrival_time,
                            latest_arrival_time, service_duration, checkpoints, self.verbose)
 
@@ -70,9 +73,8 @@ class ArcGenerator:
         self.save_node_and_arc(from_node, to_node, arc_cost, arc_start_time, arc_end_time, vessel)
 
     def add_nodes_and_arcs(self, from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel):
-        return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
         for arc_cost, arc_end_time in zip(arc_costs, arc_end_times):
-            if arc_end_time <= return_time:  # TODO: Expand this check for nodes that are not end depot
+            if is_return_possible(to_node, arc_end_time, vessel):
                 self.save_node_and_arc(from_node, to_node, arc_cost, arc_start_time, arc_end_time, vessel)
 
     def save_node_and_arc(self, fn, tn, ac, ast, aet, v):
@@ -89,10 +91,29 @@ class ArcGenerator:
         return self.arc_costs
 
 
+# TODO: This could be solved by modifing the arrival time interval instead
+# TODO: This must be verified for a case where return is not possible for certain arcs
+def is_return_possible(to_node, arc_end_time, vessel):
+    distance = to_node.get_installation().get_distance_to_installation(data.DEPOT)
+
+    speed_impacts = [data.SPEED_IMPACTS[w] for w in data.WEATHER_FORECAST_DISC[arc_end_time:]]
+    adjusted_max_speeds = [data.MAX_SPEED - speed_impact for speed_impact in speed_impacts]
+
+    sailed_distance, min_sailing_duration = 0, 0
+    while sailed_distance < distance:
+        sailed_distance += adjusted_max_speeds[min_sailing_duration] * data.TIME_UNIT_DISC
+        min_sailing_duration += 1
+
+    earliest_arrival_time = arc_end_time + min_sailing_duration
+    return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
+
+    return earliest_arrival_time <= return_time
+
+
 def is_illegal_arc(from_node, to_node):
-    if from_node.is_start_depot():  # TODO: Check if this can be solved tidier
+    if from_node.is_start_depot():
         return False
-    if from_node.get_installation() != to_node.get_installation():  # True if we are sailing between installations
+    if from_node.get_installation() != to_node.get_installation():
         if to_node.get_installation().has_mandatory_order() and to_node.get_order().is_optional():
             return True
         elif to_node.get_installation().has_optional_delivery_order() and to_node.get_order().is_optional_pickup():
