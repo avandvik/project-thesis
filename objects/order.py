@@ -1,20 +1,16 @@
 class Order:
 
-    def __init__(self, index, transport_type, cargo_type, mandatory, size, deadline):
+    def __init__(self, index, transport_type, mandatory, size):
         """
         :param index: Unique identifier for the order also servicing as index in the list of orders.
         :param transport_type: Type of transport (delivery or pickup).
-        :param cargo_type: Type of cargo (either deck or bulk).
         :param size: Size of the order (m2 for deck, m3 for bulk).
         :param mandatory: True if order is categorized as mandatory, False if optional.
-        :param deadline: Deadline for the order.
         """
         self.index = index
         self.transport_type = transport_type
-        self.cargo_type = cargo_type
         self.mandatory = mandatory
         self.size = size
-        self.deadline = deadline
 
     def is_mandatory(self):
         return self.mandatory
@@ -42,6 +38,3 @@ class Order:
 
     def get_size(self):
         return self.size
-
-    def get_deadline(self):
-        return self.deadline

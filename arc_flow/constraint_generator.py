@@ -99,7 +99,7 @@ def add_load_capacity_constrs(model, l_D, l_P):
 
                       <=
 
-                      v.get_total_capacity()
+                      v.get_capacity()
 
                       for i in data.ALL_NODE_INDICES
                       for v in data.VESSELS)
@@ -114,10 +114,10 @@ def add_load_continuity_constrs_1(model, x, l_D, l_P, u, departure_times, specif
 
                       l_D[v, i]
                       - data.ALL_NODES[j].get_order().get_size() * u[v, j]
-                      + data.VESSELS[v].get_total_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
-                                                                                for t1 in departure_times[v][i][j]
-                                                                                for t2 in
-                                                                                specific_arrival_times[v][i][j][t1]))
+                      + data.VESSELS[v].get_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
+                                                                          for t1 in departure_times[v][i][j]
+                                                                          for t2 in
+                                                                          specific_arrival_times[v][i][j][t1]))
 
                       for i in data.ALL_NODE_INDICES[:-1]
                       for j in data.DELIVERY_NODE_INDICES if j != i
@@ -131,10 +131,10 @@ def add_load_continuity_constrs_1(model, x, l_D, l_P, u, departure_times, specif
 
                       l_P[v, i]
                       + data.ALL_NODES[j].get_order().get_size() * u[v, j]
-                      - data.VESSELS[v].get_total_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
-                                                                                for t1 in departure_times[v][i][j]
-                                                                                for t2 in
-                                                                                specific_arrival_times[v][i][j][t1]))
+                      - data.VESSELS[v].get_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
+                                                                          for t1 in departure_times[v][i][j]
+                                                                          for t2 in
+                                                                          specific_arrival_times[v][i][j][t1]))
 
                       for i in data.ALL_NODE_INDICES
                       for j in data.PICKUP_NODE_INDICES
@@ -149,10 +149,10 @@ def add_load_continuity_constrs_2(model, x, l_D, l_P, departure_times, specific_
                       <=
 
                       l_D[v, i]
-                      + data.VESSELS[v].get_total_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
-                                                                                for t1 in departure_times[v][i][j]
-                                                                                for t2 in
-                                                                                specific_arrival_times[v][i][j][t1]))
+                      + data.VESSELS[v].get_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
+                                                                          for t1 in departure_times[v][i][j]
+                                                                          for t2 in
+                                                                          specific_arrival_times[v][i][j][t1]))
 
                       for i in data.ALL_NODE_INDICES[:-1]
                       for j in data.PICKUP_NODE_INDICES if j != i
@@ -165,10 +165,10 @@ def add_load_continuity_constrs_2(model, x, l_D, l_P, departure_times, specific_
                       >=
 
                       l_P[v, i]
-                      - data.VESSELS[v].get_total_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
-                                                                                for t1 in departure_times[v][i][j]
-                                                                                for t2 in
-                                                                                specific_arrival_times[v][i][j][t1]))
+                      - data.VESSELS[v].get_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
+                                                                          for t1 in departure_times[v][i][j]
+                                                                          for t2 in
+                                                                          specific_arrival_times[v][i][j][t1]))
 
                       for i in data.ALL_NODE_INDICES
                       for j in data.DELIVERY_NODE_INDICES

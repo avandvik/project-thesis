@@ -994,38 +994,32 @@
   },
   "vessels": {
     "PSV_1": {
-      "deck_capacity": 100,
-      "bulk_capacity": 100,
+      "capacity": 100,
       "is_spot_vessel": "False",
       "return_day": 4
     },
     "PSV_2": {
-      "deck_capacity": 100,
-      "bulk_capacity": 100,
+      "capacity": 100,
       "is_spot_vessel": "False",
       "return_day": 0
     },
     "PSV_3": {
-      "deck_capacity": 100,
-      "bulk_capacity": 100,
+      "capacity": 100,
       "is_spot_vessel": "False",
       "return_day": 0
     },
     "PSV_4": {
-      "deck_capacity": 100,
-      "bulk_capacity": 100,
+      "capacity": 100,
       "is_spot_vessel": "False",
       "return_day": 0
     },
     "PSV_5": {
-      "deck_capacity": 100,
-      "bulk_capacity": 100,
+      "capacity": 100,
       "is_spot_vessel": "False",
       "return_day": 0
     },
     "SPOT_VESSEL": {
-      "deck_capacity": 100,
-      "bulk_capacity": 100,
+      "capacity": 100,
       "is_spot_vessel": "True",
       "return_day": 4
     }
@@ -1051,18 +1045,14 @@
   "orders": {
     "1": {
       "transport_type": "delivery",
-      "cargo_type": "deck",
       "mandatory": "True",
       "size": 15.0,
-      "deadline_day": 3,
       "installation": 2
     },
     "2": {
       "transport_type": "delivery",
-      "cargo_type": "deck",
       "mandatory": "True",
       "size": 10.0,
-      "deadline_day": 3,
       "installation": 15
     }
   },

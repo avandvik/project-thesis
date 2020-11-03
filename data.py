@@ -35,8 +35,7 @@ for vessel_name in input_data['vessels']:
         VESSELS.append(Vessel(index=index,
                               name=vessel_name,
                               return_day=return_day,
-                              deck_capacity=input_data['vessels'][vessel_name]['deck_capacity'],
-                              bulk_capacity=input_data['vessels'][vessel_name]['bulk_capacity'],
+                              capacity=input_data['vessels'][vessel_name]['capacity'],
                               is_spot_vessel=is_spot_vessel))
         index += 1
 
@@ -60,10 +59,8 @@ for index, order_identfifier in enumerate(input_data['orders']):
 
     order = Order(index=index,
                   transport_type=input_data['orders'][order_identfifier]['transport_type'],
-                  cargo_type=input_data['orders'][order_identfifier]['cargo_type'],
                   mandatory=True if input_data['orders'][order_identfifier]['mandatory'] == 'True' else False,
-                  size=input_data['orders'][order_identfifier]['size'],
-                  deadline=input_data['orders'][order_identfifier]['deadline_day'])
+                  size=input_data['orders'][order_identfifier]['size'])
 
     node = Node(index=index + 1, is_order=True, order=order, installation=installation)
 
