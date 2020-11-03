@@ -72,7 +72,7 @@ class ArcGenerator:
     def add_nodes_and_arcs(self, from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel):
         return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
         for arc_cost, arc_end_time in zip(arc_costs, arc_end_times):
-            if arc_end_time <= return_time:
+            if arc_end_time <= return_time:  # TODO: Expand this check for nodes that are not end depot
                 self.save_node_and_arc(from_node, to_node, arc_cost, arc_start_time, arc_end_time, vessel)
 
     def save_node_and_arc(self, fn, tn, ac, ast, aet, v):
@@ -218,5 +218,5 @@ def print_arc_info(from_node, to_node, distance, start_time, early, late, servic
               f'Checkpoints (A, I, S): {checkpoints}')
 
 
-ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1)
+ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1, True)
 ag.generate_arcs()
