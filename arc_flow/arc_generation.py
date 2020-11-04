@@ -19,6 +19,7 @@ class ArcGenerator:
 
     def generate_arcs(self):
 
+        # TODO: Move this to for loop below?
         for vessel in data.VESSELS:
             self.nodes[vessel.get_index()][0][self.preparation_end_time] = True
 
