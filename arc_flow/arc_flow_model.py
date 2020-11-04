@@ -61,7 +61,7 @@ class ArcFlowModel:
         cg.add_start_and_end_flow_constrs(self.model, self.x, self.departure_times, self.specific_arrival_times)
         cg.add_visit_limit_constrs(self.model, self.x, self.u, self.departure_times, self.specific_arrival_times)
         cg.add_initial_delivery_load_constrs(self.model, self.l_D, self.u)
-        cg.add_load_capacity_constrs(self.model, self.l_D, self.l_P)
+        cg.add_load_capacity_constrs(self.model, self.l_D, self.l_P, self.u)
         cg.add_load_continuity_constrs_1(self.model, self.x, self.l_D, self.l_P, self.u, self.departure_times,
                                          self.specific_arrival_times)
         cg.add_load_continuity_constrs_2(self.model, self.x, self.l_D, self.l_P, self.departure_times,
@@ -82,12 +82,6 @@ class ArcFlowModel:
                                 gp.quicksum(data.POSTPONE_PENALTIES[i] * (1 - self.u[v, i])
                                             for v in range(len(data.VESSELS))
                                             for i in data.OPTIONAL_NODE_INDICES)
-
-                                +
-
-                                gp.quicksum(self.l_D[v, i]
-                                            for v in range(len(data.VESSELS))
-                                            for i in data.ALL_NODE_INDICES)
 
                                 , gp.GRB.MINIMIZE)
 

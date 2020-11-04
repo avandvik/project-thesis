@@ -94,12 +94,12 @@ def add_initial_delivery_load_constrs(model, l_D, u):
                      , name=f'initial-delivery-load')
 
 
-def add_load_capacity_constrs(model, l_D, l_P):
+def add_load_capacity_constrs(model, l_D, l_P, u):
     model.addConstrs((l_D[v.get_index(), i] + l_P[v.get_index(), i]
 
                       <=
 
-                      v.get_capacity()
+                      v.get_capacity() * u[v.get_index(), i]
 
                       for i in data.ALL_NODE_INDICES
                       for v in data.VESSELS)

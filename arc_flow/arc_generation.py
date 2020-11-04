@@ -24,10 +24,11 @@ class ArcGenerator:
 
         for vessel in data.VESSELS:
             discretized_return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
+            explored_nodes = []
             for arc_start_time in range(self.preparation_end_time, discretized_return_time):
                 for from_node in data.ALL_NODES[:-1]:
                     if self.is_valid_start_node(vessel, from_node, arc_start_time):
-                        self.generate_arcs_from_node(vessel, from_node, arc_start_time)
+                        self.generate_arcs_from_node(vessel, from_node, arc_start_time, explored_nodes)
 
         print(f'Arc generation done! Number of arcs: {self.number_of_arcs}')
 
@@ -38,19 +39,25 @@ class ArcGenerator:
             return False
         return True
 
-    def generate_arcs_from_node(self, vessel, from_node, arc_start_time):
+    def generate_arcs_from_node(self, vessel, from_node, arc_start_time, explored_nodes):
         for to_node in data.ALL_NODES[1:]:
-            if from_node.get_index() == to_node.get_index() or is_illegal_arc(from_node, to_node):
+            explored_nodes.append(from_node)
+            if from_node.get_index() == to_node.get_index() or is_illegal_arc(from_node, to_node, explored_nodes):
                 continue
 
             distance = from_node.get_installation().get_distance_to_installation(to_node.get_installation())
             earliest_arrival_time, latest_arrival_time = get_arrival_time_span(distance, arc_start_time)
             service_duration = calculate_service_time(to_node)
 
-            # Checkpoints are in the form of (arrival time, idling end time, service end time)
+            # Checkpoints are in the form of (arrival time, idling end time/service start time, service end time)
             checkpoints = get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration, to_node)
 
-            # TODO: If there are no checkpoints, implement an idling arc
+            idling_performed = False
+
+            if not checkpoints:
+                checkpoints = get_all_idling_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration,
+                                                         to_node)
+                idling_performed = True
 
             print_arc_info(from_node, to_node, distance, arc_start_time, earliest_arrival_time,
                            latest_arrival_time, service_duration, checkpoints, self.verbose)
@@ -59,6 +66,8 @@ class ArcGenerator:
 
             if to_node.is_end_depot():
                 self.add_end_depot_node_and_arc(from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel)
+            elif idling_performed:
+                self.add_best_idling_arc(from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel)
             else:
                 self.add_nodes_and_arcs(from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel)
 
@@ -70,6 +79,12 @@ class ArcGenerator:
         feasible_return_arcs = [(ac, aet) for ac, aet in zip(arc_costs, arc_end_times) if aet <= return_time]
         best_return_arc = min(feasible_return_arcs)
         arc_cost, arc_end_time = best_return_arc
+        self.save_node_and_arc(from_node, to_node, arc_cost, arc_start_time, arc_end_time, vessel)
+
+    def add_best_idling_arc(self, from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel):
+        arcs = [(ac, aet) for ac, aet in zip(arc_costs, arc_end_times) if is_return_possible(to_node, aet, vessel)]
+        best_arc = min(arcs)
+        arc_cost, arc_end_time = best_arc
         self.save_node_and_arc(from_node, to_node, arc_cost, arc_start_time, arc_end_time, vessel)
 
     def add_nodes_and_arcs(self, from_node, to_node, arc_costs, arc_start_time, arc_end_times, vessel):
@@ -110,7 +125,9 @@ def is_return_possible(to_node, arc_end_time, vessel):
     return earliest_arrival_time <= return_time
 
 
-def is_illegal_arc(from_node, to_node):
+def is_illegal_arc(from_node, to_node, explored_nodes):
+    if to_node in explored_nodes:
+        return True
     if from_node.is_start_depot():
         return False
     if from_node.get_installation() != to_node.get_installation():
@@ -155,15 +172,42 @@ def get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration
         if to_node.is_end_depot():
             checkpoints.append((service_start_time, service_start_time, service_start_time))
         else:
-            worst_weather = max(data.WEATHER_FORECAST_DISC[service_start_time:service_start_time + service_duration])
-            start_daytime = hlp.disc_to_daytime(service_start_time)
-            end_daytime = hlp.disc_to_daytime(service_start_time + service_duration)
-            start_idx = opening_hours.index(start_daytime) if start_daytime in opening_hours else 100000
-            end_idx = opening_hours.index(end_daytime) if end_daytime in opening_hours else -100000
-            installation_open = start_idx < end_idx
-            if installation_open and worst_weather < data.WORST_WEATHER_STATE:
-                checkpoints.append((service_start_time, service_start_time, service_start_time + service_duration))
+            add_checkpoint(service_start_time, service_start_time, service_duration, opening_hours, checkpoints)
     return checkpoints
+
+
+def get_one_idling_checkpoint(latest_arrival_time, service_duration, to_node):
+    opening_hours = to_node.get_installation().get_opening_hours_as_list()
+    service_start_time = latest_arrival_time
+    checkpoints = []
+    while not checkpoints:
+        service_start_time += 1
+        add_checkpoint(latest_arrival_time, service_start_time, service_duration, opening_hours, checkpoints)
+    return checkpoints
+
+
+def get_all_idling_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration, to_node):
+    opening_hours = to_node.get_installation().get_opening_hours_as_list()
+    all_checkpoints = []
+    for arrival_time in range(earliest_arrival_time, latest_arrival_time + 1):
+        checkpoints = []
+        service_start_time = arrival_time
+        while not checkpoints:
+            service_start_time += 1
+            add_checkpoint(arrival_time, service_start_time, service_duration, opening_hours, checkpoints)
+        all_checkpoints.append(checkpoints[0])
+    return all_checkpoints
+
+
+def add_checkpoint(arrival_time, service_start_time, service_duration, opening_hours, checkpoints):
+    worst_weather = max(data.WEATHER_FORECAST_DISC[service_start_time:service_start_time + service_duration])
+    start_daytime = hlp.disc_to_daytime(service_start_time)
+    end_daytime = hlp.disc_to_daytime(service_start_time + service_duration)
+    start_idx = opening_hours.index(start_daytime) if start_daytime in opening_hours else 100000
+    end_idx = opening_hours.index(end_daytime) if end_daytime in opening_hours else -100000
+    installation_open = start_idx < end_idx
+    if installation_open and worst_weather < data.WORST_WEATHER_STATE:
+        checkpoints.append((arrival_time, service_start_time, service_start_time + service_duration))
 
 
 def calculate_arc_costs_and_end_times(arc_start_time, checkpoints, distance, vessel):
