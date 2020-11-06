@@ -81,7 +81,7 @@ def add_visit_limit_constrs(model, x, u, departure_times, specific_arrival_times
     # model.addConstr((u[1, 0] == 1), name='init-u-2')
 
 
-def add_initial_delivery_load_constrs(model, l_D, u):
+def add_initial_delivery_load_constrs(model, l_D, l_P, u):
     model.addConstrs((l_D[v, 0]
 
                       ==
@@ -92,6 +92,16 @@ def add_initial_delivery_load_constrs(model, l_D, u):
                       for v in range(len(data.VESSELS)))
 
                      , name=f'initial-delivery-load')
+
+    model.addConstrs((l_P[v, 0]
+
+                      ==
+
+                      0
+
+                      for v in range(len(data.VESSELS)))
+
+                     , name=f'initial-pickup-load')
 
 
 def add_load_capacity_constrs(model, l_D, l_P, u):
@@ -127,11 +137,11 @@ def add_load_continuity_constrs_1(model, x, l_D, l_P, u, departure_times, specif
 
     model.addConstrs((l_P[v, j]
 
-                      >=
+                      <=
 
                       l_P[v, i]
                       + data.ALL_NODES[j].get_order().get_size() * u[v, j]
-                      - data.VESSELS[v].get_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
+                      + data.VESSELS[v].get_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
                                                                           for t1 in departure_times[v][i][j]
                                                                           for t2 in
                                                                           specific_arrival_times[v][i][j][t1]))
@@ -162,10 +172,10 @@ def add_load_continuity_constrs_2(model, x, l_D, l_P, departure_times, specific_
 
     model.addConstrs((l_P[v, j]
 
-                      >=
+                      <=
 
                       l_P[v, i]
-                      - data.VESSELS[v].get_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
+                      + data.VESSELS[v].get_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
                                                                           for t1 in departure_times[v][i][j]
                                                                           for t2 in
                                                                           specific_arrival_times[v][i][j][t1]))
