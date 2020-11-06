@@ -6,7 +6,7 @@ from objects.vessel import Vessel
 from objects.order import Order
 from objects.node import Node
 
-file_number = 4
+file_number = 2
 file_path = f'{pathlib.Path(__file__).parent.absolute()}/input/mongstad/{file_number}.json'
 
 with open(file_path) as file:
@@ -77,7 +77,7 @@ OPTIONAL_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order
 DELIVERY_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order() and node.get_order().is_delivery()]
 PICKUP_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order() and node.get_order().is_pickup()]
 
-POSTPONE_PENALTIES = [100 for _ in range(len(ALL_NODES))]
+POSTPONE_PENALTIES = [1000 for _ in range(len(ALL_NODES))]
 
 """ ============================ TIME AND DISCRETIZATION ============================ """
 PERIOD_HOURS = input_data['planning_period_in_hours']

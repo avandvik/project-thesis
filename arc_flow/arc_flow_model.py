@@ -9,14 +9,14 @@ from pprint import pprint
 
 class ArcFlowModel:
 
-    def __init__(self, name):
+    def __init__(self, name, verbose):
         self.env = gp.Env(f'{name}.log')
         self.model = gp.Model(name=name, env=self.env)
         self.model.setParam('TimeLimit', 1 * 60 * 60)
 
         preparation_end_time = 16 * data.TIME_UNITS_PER_HOUR - 1
-        verbose = False
-        self.ag = ArcGenerator(preparation_end_time, verbose)
+        self.verbose = verbose
+        self.ag = ArcGenerator(preparation_end_time, self.verbose)
         self.nodes = None
         self.arc_costs = None
 
@@ -39,6 +39,8 @@ class ArcFlowModel:
         self.arc_costs = self.ag.get_arc_costs()
 
     def populate_sets(self):
+        if self.verbose:
+            print('Generating sets...', end=' ')
         self.node_time_points = sg.generate_node_time_points(self.nodes)
         self.from_nodes = sg.generate_from_orders(self.arc_costs, self.node_time_points)
         self.to_nodes = sg.generate_to_orders(self.arc_costs, self.node_time_points)
@@ -46,6 +48,8 @@ class ArcFlowModel:
         self.arrival_times = sg.generate_arrival_times(self.arc_costs)
         self.specific_departure_times = sg.generate_specific_departure_times(self.arc_costs, self.arrival_times)
         self.specific_arrival_times = sg.generate_specific_arrival_times(self.arc_costs, self.departure_times)
+        if self.verbose:
+            print('Done!')
 
     def add_variables(self):
         self.x = vg.initialize_arc_variables(self.model, self.departure_times, self.specific_arrival_times)
@@ -97,9 +101,12 @@ class ArcFlowModel:
         self.model.printStats()
         self.model.optimize()
 
+        for idx, node in enumerate(data.ALL_NODES):
+            print(f'{idx}: {node}')
+
         self.model.printAttr('x')
 
 
 if __name__ == '__main__':
-    afm = ArcFlowModel('test')
+    afm = ArcFlowModel('test', True)
     afm.run()

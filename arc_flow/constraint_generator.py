@@ -93,16 +93,6 @@ def add_initial_delivery_load_constrs(model, l_D, l_P, u):
 
                      , name=f'initial-delivery-load')
 
-    model.addConstrs((l_P[v, 0]
-
-                      ==
-
-                      0
-
-                      for v in range(len(data.VESSELS)))
-
-                     , name=f'initial-pickup-load')
-
 
 def add_load_capacity_constrs(model, l_D, l_P, u):
     model.addConstrs((l_D[v.get_index(), i] + l_P[v.get_index(), i]
@@ -137,11 +127,11 @@ def add_load_continuity_constrs_1(model, x, l_D, l_P, u, departure_times, specif
 
     model.addConstrs((l_P[v, j]
 
-                      <=
+                      >=
 
                       l_P[v, i]
                       + data.ALL_NODES[j].get_order().get_size() * u[v, j]
-                      + data.VESSELS[v].get_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
+                      - data.VESSELS[v].get_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
                                                                           for t1 in departure_times[v][i][j]
                                                                           for t2 in
                                                                           specific_arrival_times[v][i][j][t1]))
@@ -172,10 +162,10 @@ def add_load_continuity_constrs_2(model, x, l_D, l_P, departure_times, specific_
 
     model.addConstrs((l_P[v, j]
 
-                      <=
+                      >=
 
                       l_P[v, i]
-                      + data.VESSELS[v].get_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
+                      - data.VESSELS[v].get_capacity() * (1 - gp.quicksum(x[v, i, t1, j, t2]
                                                                           for t1 in departure_times[v][i][j]
                                                                           for t2 in
                                                                           specific_arrival_times[v][i][j][t1]))
@@ -192,7 +182,7 @@ def add_final_pickup_load_constrs(model, l_P, u):
 
                       ==
 
-                      gp.quicksum(data.ALL_NODES[i].get_size() * u[v, i]
+                      gp.quicksum(data.ALL_NODES[i].get_order().get_size() * u[v, i]
                                   for i in data.PICKUP_NODE_INDICES)
 
                       for v in range(len(data.VESSELS))),
