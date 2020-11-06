@@ -2,6 +2,7 @@ import math
 import data
 import helpers as hlp
 from collections import defaultdict as dd
+from pprint import pprint
 
 
 class ArcGenerator:
@@ -13,17 +14,23 @@ class ArcGenerator:
         # arc_costs[vessel][from_node][start_time][to_node][end_time]
         self.arc_costs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
 
+        # node_time_points[vessel][node][time]
+        self.node_time_points = [[[] for _ in data.ALL_NODES] for _ in data.VESSELS]
+
+        # from_orders[vessel][to_node][end_time][from_node]
+        self.from_nodes = [[[[] for _ in data.TIME_POINTS_DISC] for _ in data.ALL_NODES] for _ in data.VESSELS]
+
         self.preparation_end_time = preparation_end_time
         self.verbose = verbose
         self.number_of_arcs = 0
 
     def generate_arcs(self):
 
-        # TODO: Move this to for loop below?
         for vessel in data.VESSELS:
-            self.nodes[vessel.get_index()][0][self.preparation_end_time] = True
 
-        for vessel in data.VESSELS:
+            self.nodes[vessel.get_index()][0][self.preparation_end_time] = True
+            self.node_time_points[vessel.get_index()][0].append(self.preparation_end_time)
+
             discretized_return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
             explored_nodes = []
             for arc_start_time in range(self.preparation_end_time, discretized_return_time):
@@ -100,6 +107,12 @@ class ArcGenerator:
         self.arc_costs[v.get_index()][fn.get_index()][ast][tn.get_index()][aet] = ac
         self.number_of_arcs += 1
 
+        if aet not in self.node_time_points[v.get_index()][tn.get_index()]:
+            self.node_time_points[v.get_index()][tn.get_index()].append(aet)
+
+        if fn.get_index() not in self.from_nodes[v.get_index()][tn.get_index()][aet]:
+            self.from_nodes[v.get_index()][tn.get_index()][aet].append(fn.get_index())
+
     def get_nodes(self):
         return self.nodes
 
@@ -169,11 +182,11 @@ def calculate_service_time(to_node):
 def get_checkpoints(earliest_arrival_time, latest_arrival_time, service_duration, to_node):
     opening_hours = to_node.get_installation().get_opening_hours_as_list()
     checkpoints = []
-    for service_start_time in range(earliest_arrival_time, latest_arrival_time + 1):
+    for arrival_time in range(earliest_arrival_time, latest_arrival_time + 1):
         if to_node.is_end_depot():
-            checkpoints.append((service_start_time, service_start_time, service_start_time))
+            checkpoints.append((arrival_time, arrival_time, arrival_time))
         else:
-            add_checkpoint(service_start_time, service_start_time, service_duration, opening_hours, checkpoints)
+            add_checkpoint(arrival_time, arrival_time, service_duration, opening_hours, checkpoints)
     return checkpoints
 
 
@@ -284,5 +297,5 @@ def print_arc_info(from_node, to_node, distance, start_time, early, late, servic
               f'Checkpoints (A, I, S): {checkpoints}')
 
 
-# ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1, True)
-# ag.generate_arcs()
+ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1, False)
+ag.generate_arcs()

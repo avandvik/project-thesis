@@ -108,5 +108,5 @@ class ArcFlowModel:
 
 
 if __name__ == '__main__':
-    afm = ArcFlowModel('test', True)
+    afm = ArcFlowModel('test', False)
     afm.run()
