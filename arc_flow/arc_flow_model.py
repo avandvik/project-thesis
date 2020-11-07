@@ -52,24 +52,24 @@ class ArcFlowModel:
             print('Done!')
 
     def add_variables(self):
-        self.x = vg.initialize_arc_variables(self.model, self.departure_times, self.specific_arrival_times)
+        self.x = vg.initialize_arc_variables(self.model, self.ag.start_times, self.ag.specific_end_times)
         self.u = vg.initialize_order_served_variables(self.model)
         self.l_D = vg.initialize_delivery_load_variables(self.model)
         self.l_P = vg.initialize_pickup_load_variables(self.model)
         self.model.update()
 
     def add_constraints(self):
-        cg.add_flow_conservation_constrs(self.model, self.x, self.from_nodes, self.to_nodes,
-                                         self.specific_departure_times, self.specific_arrival_times,
-                                         self.node_time_points)
-        cg.add_start_and_end_flow_constrs(self.model, self.x, self.departure_times, self.specific_arrival_times)
-        cg.add_visit_limit_constrs(self.model, self.x, self.u, self.departure_times, self.specific_arrival_times)
+        cg.add_flow_conservation_constrs(self.model, self.x, self.ag.start_nodes, self.ag.end_nodes,
+                                         self.ag.specific_start_times, self.ag.specific_end_times,
+                                         self.ag.node_time_points)
+        cg.add_start_and_end_flow_constrs(self.model, self.x, self.ag.start_times, self.ag.specific_end_times)
+        cg.add_visit_limit_constrs(self.model, self.x, self.u, self.ag.start_times, self.ag.specific_end_times)
         cg.add_initial_delivery_load_constrs(self.model, self.l_D, self.l_P, self.u)
         cg.add_load_capacity_constrs(self.model, self.l_D, self.l_P, self.u)
-        cg.add_load_continuity_constrs_1(self.model, self.x, self.l_D, self.l_P, self.u, self.departure_times,
-                                         self.specific_arrival_times)
-        cg.add_load_continuity_constrs_2(self.model, self.x, self.l_D, self.l_P, self.departure_times,
-                                         self.specific_arrival_times)
+        cg.add_load_continuity_constrs_1(self.model, self.x, self.l_D, self.l_P, self.u, self.ag.start_times,
+                                         self.ag.specific_end_times)
+        cg.add_load_continuity_constrs_2(self.model, self.x, self.l_D, self.l_P, self.ag.start_times,
+                                         self.ag.specific_end_times)
         cg.add_final_pickup_load_constrs(self.model, self.l_P, self.u)
         self.model.update()
 
@@ -78,8 +78,8 @@ class ArcFlowModel:
                                             for v in range(len(data.VESSELS))
                                             for i in range(len(data.ALL_NODES))
                                             for j in range(len(data.ALL_NODES)) if i != j
-                                            for t1 in self.departure_times[v][i][j]
-                                            for t2 in self.specific_arrival_times[v][i][j][t1])
+                                            for t1 in self.ag.start_times[v][i][j]
+                                            for t2 in self.ag.specific_end_times[v][i][j][t1])
 
                                 +
 
@@ -93,7 +93,7 @@ class ArcFlowModel:
 
     def run(self):
         self.preprocess()
-        self.populate_sets()
+        # self.populate_sets()
         self.add_variables()
         self.add_constraints()
         self.set_objective()

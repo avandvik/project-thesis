@@ -6,7 +6,7 @@ from objects.vessel import Vessel
 from objects.order import Order
 from objects.node import Node
 
-file_number = 1
+file_number = 2
 file_path = f'{pathlib.Path(__file__).parent.absolute()}/input/mongstad/{file_number}.json'
 
 with open(file_path) as file:
