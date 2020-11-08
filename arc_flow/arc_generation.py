@@ -20,7 +20,7 @@ class ArcGenerator:
         # start_nodes[vessel][end_node][end_time][start_node]
         self.start_nodes = [[[[] for _ in data.TIME_POINTS_DISC] for _ in data.ALL_NODES] for _ in data.VESSELS]
 
-        # end_nodes[vessel][start_node][start_time][end_node]
+        # end_nodes[vessel][start_node][start_time] -> end_node
         self.end_nodes = [[[[] for _ in data.TIME_POINTS_DISC] for _ in data.ALL_NODES] for _ in data.VESSELS]
 
         # start_times[vessel][start_node][end_node][start_time]
@@ -41,27 +41,75 @@ class ArcGenerator:
         self.verbose = verbose
         self.number_of_arcs = 0
 
+    def generate_arcs_v2(self):
+        for vessel in data.VESSELS:
+            self.nodes[vessel.get_index()][0][self.preparation_end_time] = True
+            self.node_time_points[vessel.get_index()][0].append(self.preparation_end_time)
+            for start_node in data.ALL_NODES[:-1]:
+                for end_node in data.ALL_NODES[1:]:
+                    if is_illegal_arc(start_node, end_node):
+                        continue
+
+                    discretized_return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
+
+                    for start_time in range(self.preparation_end_time, discretized_return_time):
+                        if self.is_valid_start_node(vessel, start_node, start_time, end_node):
+                            self.generate_arcs_from_node_v2(vessel, start_node, start_time, end_node)
+
+        print(f'Arc generation done!\nTotal number of arcs: {self.number_of_arcs}\n'
+              f'Arcs per vessel: {int(self.number_of_arcs / len(data.VESSELS))}')
+
+    def generate_arcs_from_node_v2(self, vessel, start_node, start_time, end_node):
+        distance = start_node.get_installation().get_distance_to_installation(end_node.get_installation())
+        early_arrival, late_arrival = get_arrival_time_span(distance, start_time)
+        service_duration = calculate_service_time(end_node)
+
+        # Checkpoints are in the form of (arrival time, idling end time/service start time, service end time)
+        checkpoints, idling = get_checkpoints(early_arrival, late_arrival, service_duration, end_node)
+
+        print_arc_info(start_node, end_node, distance, start_time, early_arrival,
+                       late_arrival, service_duration, checkpoints, self.verbose)
+
+        arc_costs, arc_end_times = calculate_arc_costs_and_end_times(start_time, checkpoints, distance, vessel)
+
+        if end_node.is_end_depot():
+            self.add_end_depot_node_and_arc(start_node, end_node, arc_costs, start_time, arc_end_times, vessel)
+        elif idling:
+            self.add_best_idling_arc(start_node, end_node, arc_costs, start_time, arc_end_times, vessel)
+        else:
+            self.add_nodes_and_arcs(start_node, end_node, arc_costs, start_time, arc_end_times, vessel)
+
+        if self.verbose:
+            print()
+
     def generate_arcs(self):
         for vessel in data.VESSELS:
             self.nodes[vessel.get_index()][0][self.preparation_end_time] = True
             self.node_time_points[vessel.get_index()][0].append(self.preparation_end_time)
             discretized_return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
-            explored_nodes = []
             for arc_start_time in range(self.preparation_end_time, discretized_return_time):
                 for start_node in data.ALL_NODES[:-1]:
                     if self.is_valid_start_node(vessel, start_node, arc_start_time):
-                        explored_nodes.append(start_node)
-                        self.generate_arcs_from_node(vessel, start_node, arc_start_time, explored_nodes)
+                        self.generate_arcs_from_node(vessel, start_node, arc_start_time)
+
+            break
         print(f'Arc generation done! Number of arcs: {self.number_of_arcs}')
 
-    def is_valid_start_node(self, vessel, start_node, start_time):
+    def is_valid_start_node(self, vessel, start_node, start_time, end_node):
         if start_time != self.preparation_end_time and start_node.is_start_depot():
             return False
-        return self.nodes[vessel.get_index()][start_node.get_index()][start_time]
+        if not self.nodes[vessel.get_index()][start_node.get_index()][start_time]:
+            return False
 
-    def generate_arcs_from_node(self, vessel, start_node, start_time, explored_nodes):
+        for time in range(self.preparation_end_time, start_time):
+            if start_node.get_index() in self.end_nodes[vessel.get_index()][end_node.get_index()][time]:
+                return False
+
+        return True
+
+    def generate_arcs_from_node(self, vessel, start_node, start_time):
         for end_node in data.ALL_NODES[1:]:
-            if is_illegal_arc(start_node, end_node, explored_nodes):
+            if self.is_illegal_arc(vessel, start_node, start_time, end_node):
                 continue
 
             distance = start_node.get_installation().get_distance_to_installation(end_node.get_installation())
@@ -89,15 +137,17 @@ class ArcGenerator:
     def add_end_depot_node_and_arc(self, start_node, end_node, arc_costs, start_time, end_times, vessel):
         return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
         feasible_return_arcs = [(ac, aet) for ac, aet in zip(arc_costs, end_times) if aet <= return_time]
-        best_return_arc = min(feasible_return_arcs)
-        arc_cost, arc_end_time = best_return_arc
-        self.update_sets(start_node, end_node, arc_cost, start_time, arc_end_time, vessel)
+        if feasible_return_arcs:
+            best_return_arc = min(feasible_return_arcs)
+            arc_cost, arc_end_time = best_return_arc
+            self.update_sets(start_node, end_node, arc_cost, start_time, arc_end_time, vessel)
 
     def add_best_idling_arc(self, start_node, end_node, arc_costs, start_time, end_times, vessel):
         arcs = [(ac, aet) for ac, aet in zip(arc_costs, end_times) if is_return_possible(end_node, aet, vessel)]
-        best_arc = min(arcs)
-        arc_cost, arc_end_time = best_arc
-        self.update_sets(start_node, end_node, arc_cost, start_time, arc_end_time, vessel)
+        if arcs:
+            best_arc = min(arcs)
+            arc_cost, arc_end_time = best_arc
+            self.update_sets(start_node, end_node, arc_cost, start_time, arc_end_time, vessel)
 
     def add_nodes_and_arcs(self, start_node, end_node, arc_costs, start_time, end_time, vessel):
         for arc_cost, arc_end_time in zip(arc_costs, end_time):
@@ -155,10 +205,8 @@ class ArcGenerator:
         return self.specific_end_times
 
 
-def is_illegal_arc(start_node, end_node, explored_nodes):
+def is_illegal_arc(start_node, end_node):
     if start_node.get_index() == end_node.get_index():
-        return True
-    if end_node in explored_nodes:
         return True
     if start_node.is_start_depot():
         return False
@@ -173,6 +221,7 @@ def is_illegal_arc(start_node, end_node, explored_nodes):
                 return True
         elif start_node.get_order().is_optional_pickup():
             return True
+
     return False
 
 
@@ -336,4 +385,4 @@ def print_arc_info(start_node, end_node, distance, start_time, early, late, serv
 
 
 # ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1, True)
-# ag.generate_arcs()
+# ag.generate_arcs_v2()

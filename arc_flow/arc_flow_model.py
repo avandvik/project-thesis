@@ -14,11 +14,12 @@ class ArcFlowModel:
         self.model = gp.Model(name=name, env=self.env)
         self.model.setParam('TimeLimit', 1 * 60 * 60)
 
-        preparation_end_time = 16 * data.TIME_UNITS_PER_HOUR - 1
+        self.preparation_end_time = 16 * data.TIME_UNITS_PER_HOUR - 1
         self.verbose = verbose
-        self.ag = ArcGenerator(preparation_end_time, self.verbose)
+        self.ag = ArcGenerator(self.preparation_end_time, self.verbose)
         self.nodes = None
         self.arc_costs = None
+        self.penalty_costs = None
 
         self.node_time_points = None
         self.from_nodes = None
@@ -34,22 +35,28 @@ class ArcFlowModel:
         self.l_P = {}
 
     def preprocess(self):
-        self.ag.generate_arcs()
+        self.ag.generate_arcs_v2()
         self.nodes = self.ag.get_nodes()
         self.arc_costs = self.ag.get_arc_costs()
 
-    def populate_sets(self):
-        if self.verbose:
-            print('Generating sets...', end=' ')
-        self.node_time_points = sg.generate_node_time_points(self.nodes)
-        self.from_nodes = sg.generate_from_orders(self.arc_costs, self.node_time_points)
-        self.to_nodes = sg.generate_to_orders(self.arc_costs, self.node_time_points)
-        self.departure_times = sg.generate_departure_times(self.arc_costs)
-        self.arrival_times = sg.generate_arrival_times(self.arc_costs)
-        self.specific_departure_times = sg.generate_specific_departure_times(self.arc_costs, self.arrival_times)
-        self.specific_arrival_times = sg.generate_specific_arrival_times(self.arc_costs, self.departure_times)
-        if self.verbose:
-            print('Done!')
+    def set_penalty_costs(self):
+
+        self.penalty_costs = [[] for _ in range(len(data.VESSELS))]
+
+        for v in range(len(data.VESSELS)):
+            for j in data.ALL_NODE_INDICES:
+                if j not in data.OPTIONAL_NODE_INDICES:
+                    self.penalty_costs[v].append(0)
+                else:
+                    costs_from_depot = []
+                    for t in data.TIME_POINTS_DISC:
+                        if self.arc_costs[v][0][self.preparation_end_time][j][t] != 0:
+                            costs_from_depot.append(self.arc_costs[v][0][self.preparation_end_time][j][t])
+
+                    best_cost = min(costs_from_depot)
+                    self.penalty_costs[v].append(best_cost)
+
+        print(self.penalty_costs)
 
     def add_variables(self):
         self.x = vg.initialize_arc_variables(self.model, self.ag.start_times, self.ag.specific_end_times)
@@ -83,7 +90,7 @@ class ArcFlowModel:
 
                                 +
 
-                                gp.quicksum(data.POSTPONE_PENALTIES[i] * (1 - self.u[v, i])
+                                gp.quicksum(self.penalty_costs[v][i] * (1 - self.u[v, i])
                                             for v in range(len(data.VESSELS))
                                             for i in data.OPTIONAL_NODE_INDICES)
 
@@ -93,7 +100,7 @@ class ArcFlowModel:
 
     def run(self):
         self.preprocess()
-        # self.populate_sets()
+        self.set_penalty_costs()
         self.add_variables()
         self.add_constraints()
         self.set_objective()
