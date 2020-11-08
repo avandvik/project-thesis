@@ -93,6 +93,16 @@ def add_initial_delivery_load_constrs(model, l_D, l_P, u):
 
                      , name=f'initial-delivery-load')
 
+    model.addConstrs((l_P[v, 0]
+
+                      ==
+
+                      0
+
+                      for v in range(len(data.VESSELS)))
+
+                     , name=f'initial-pickup-load')
+
 
 def add_load_capacity_constrs(model, l_D, l_P, u):
     model.addConstrs((l_D[v.get_index(), i] + l_P[v.get_index(), i]

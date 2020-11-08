@@ -35,7 +35,7 @@ class ArcFlowModel:
         self.l_P = {}
 
     def preprocess(self):
-        self.ag.generate_arcs_v2()
+        self.ag.generate_arcs()
         self.nodes = self.ag.get_nodes()
         self.arc_costs = self.ag.get_arc_costs()
 
@@ -109,7 +109,10 @@ class ArcFlowModel:
         self.model.optimize()
 
         for idx, node in enumerate(data.ALL_NODES):
-            print(f'{idx}: {node}')
+            if node.is_order():
+                print(f'{idx}: {node} {node.get_order().get_size()}')
+            else:
+                print(f'{idx}: {node}')
 
         self.model.printAttr('x')
 

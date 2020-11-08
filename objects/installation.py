@@ -33,8 +33,14 @@ class Installation:
     def get_opening_hours_as_list(self):
         return list(range(self.opening_hour, self.closing_hour + 1))
 
+    def get_opening_and_closing_hours(self):
+        return self.opening_hour, self.closing_hour
+
     def get_distance_to_installation(self, destination_installation):
         return self.distances[destination_installation.get_index()]
 
     def get_index(self):
         return self.index
+
+    def get_name(self):
+        return self.name

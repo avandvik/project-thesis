@@ -6,7 +6,7 @@ from objects.vessel import Vessel
 from objects.order import Order
 from objects.node import Node
 
-file_number = 2
+file_number = 3
 file_path = f'{pathlib.Path(__file__).parent.absolute()}/input/mongstad/{file_number}.json'
 
 with open(file_path) as file:
@@ -82,6 +82,7 @@ POSTPONE_PENALTIES = [1000 for _ in range(len(ALL_NODES))]
 """ ============================ TIME AND DISCRETIZATION ============================ """
 PERIOD_HOURS = input_data['planning_period_in_hours']
 TIME_UNITS_PER_HOUR = input_data['time_units_per_hour']
+TIME_UNITS_24 = TIME_UNITS_PER_HOUR * 24
 PERIOD_DISC = PERIOD_HOURS * TIME_UNITS_PER_HOUR
 TIME_POINTS_DISC = [tp for tp in range(PERIOD_DISC)]
 

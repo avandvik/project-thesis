@@ -44,7 +44,7 @@ class Node:
                 out_str = 'OP'
             else:
                 out_str = 'UNKNOWN_NODE'
-            return f'{out_str}_I{self.installation.get_index()}'
+            return f'{out_str}_{self.installation.get_name()}'
 
     def __str__(self):
         return self.generate_representation()
