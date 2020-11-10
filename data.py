@@ -6,7 +6,7 @@ from objects.vessel import Vessel
 from objects.order import Order
 from objects.node import Node
 
-file_number = 3
+file_number = 4
 file_path = f'{pathlib.Path(__file__).parent.absolute()}/input/mongstad/{file_number}.json'
 
 with open(file_path) as file:
@@ -93,7 +93,7 @@ MIN_SPEED_DISC = MIN_SPEED * (1 / TIME_UNITS_PER_HOUR)
 
 """ ============================ WEATHER ============================ """
 WEATHER_FORECAST_HOURS = input_data['weather_forecast']
-WEATHER_FORECAST_DISC = [WEATHER_FORECAST_HOURS[math.floor(i / 4)] for i in range(PERIOD_DISC)]
+WEATHER_FORECAST_DISC = [WEATHER_FORECAST_HOURS[math.floor(i / TIME_UNITS_PER_HOUR)] for i in range(PERIOD_DISC)]
 BEST_WEATHER_STATE = input_data['best_possible_weather_state']
 WORST_WEATHER_STATE = input_data['worst_possible_weather_state']
 SPEED_IMPACTS = [input_data['weather_states'][weather_state]['speed_impact'] for weather_state in

@@ -41,20 +41,21 @@ class ArcFlowModel:
 
     def set_penalty_costs(self):
 
-        self.penalty_costs = [[] for _ in range(len(data.VESSELS))]
+        self.penalty_costs = []
 
-        for v in range(len(data.VESSELS)):
-            for j in data.ALL_NODE_INDICES:
-                if j not in data.OPTIONAL_NODE_INDICES:
-                    self.penalty_costs[v].append(0)
-                else:
-                    costs_from_depot = []
-                    for t in data.TIME_POINTS_DISC:
-                        if self.arc_costs[v][0][self.preparation_end_time][j][t] != 0:
-                            costs_from_depot.append(self.arc_costs[v][0][self.preparation_end_time][j][t])
+        for j in data.ALL_NODE_INDICES:
+            if j not in data.OPTIONAL_NODE_INDICES:
+                self.penalty_costs.append(0)
+            else:
+                costs_from_depot = []
+                for t in data.TIME_POINTS_DISC:
+                    if self.arc_costs[0][0][self.preparation_end_time][j][t] != 0:
+                        costs_from_depot.append(self.arc_costs[0][0][self.preparation_end_time][j][t])
 
-                    best_cost = min(costs_from_depot)
-                    self.penalty_costs[v].append(best_cost)
+                # best_cost = min(costs_from_depot)
+                # avg_cost = sum(costs_from_depot) / len(costs_from_depot)
+                worst_cost = max(costs_from_depot)
+                self.penalty_costs.append(worst_cost)
 
         print(self.penalty_costs)
 
@@ -90,9 +91,16 @@ class ArcFlowModel:
 
                                 +
 
-                                gp.quicksum(self.penalty_costs[v][i] * (1 - self.u[v, i])
+                                gp.quicksum(self.penalty_costs[i] * (1 - self.u[v, i])
                                             for v in range(len(data.VESSELS))
                                             for i in data.OPTIONAL_NODE_INDICES)
+
+                                +
+
+                                gp.quicksum(self.l_D[v, i] + self.l_P[v, i]
+                                            for v in range(len(data.VESSELS))
+                                            for i in data.ALL_NODE_INDICES)
+
 
                                 , gp.GRB.MINIMIZE)
 

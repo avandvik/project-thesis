@@ -53,6 +53,21 @@ def add_start_and_end_flow_constrs(model, x, departure_times, specific_arrival_t
 
 def add_visit_limit_constrs(model, x, u, departure_times, specific_arrival_times):
     model.addConstrs((gp.quicksum(x[v, i, t1, j, t2]
+                                  for v in range(len(data.VESSELS))
+                                  for i in data.ALL_NODE_INDICES[:-1] if i != j  # TODO: Find out if i != j is needed
+                                  for t1 in departure_times[v][i][j]
+                                  for t2 in specific_arrival_times[v][i][j][t1])
+
+                      ==
+
+                      gp.quicksum(u[v, j]
+                                  for v in range(len(data.VESSELS)))
+
+                      for j in data.ALL_NODE_INDICES[1:-1])
+
+                     , name=f'visit-limit-1')
+
+    model.addConstrs((gp.quicksum(x[v, i, t1, j, t2]
                                   for i in data.ALL_NODE_INDICES[:-1] if i != j  # TODO: Find out if i != j is needed
                                   for t1 in departure_times[v][i][j]
                                   for t2 in specific_arrival_times[v][i][j][t1])
@@ -61,10 +76,10 @@ def add_visit_limit_constrs(model, x, u, departure_times, specific_arrival_times
 
                       u[v, j]
 
-                      for j in data.ALL_NODE_INDICES[1:-1]
-                      for v in range(len(data.VESSELS)))
+                      for v in range(len(data.VESSELS))
+                      for j in data.ALL_NODE_INDICES[1:-1])
 
-                     , name=f'visit-limit')
+                     , name=f'visit-limit-2')
 
     model.addConstrs((gp.quicksum(u[v, i]
                                   for v in range(len(data.VESSELS)))
@@ -77,8 +92,16 @@ def add_visit_limit_constrs(model, x, u, departure_times, specific_arrival_times
 
                      , name=f'visit-all-mand')
 
-    # model.addConstr((u[0, 0] == 1), name='init-u')
-    # model.addConstr((u[1, 0] == 1), name='init-u-2')
+    model.addConstrs((gp.quicksum(u[v, i]
+                                  for v in range(len(data.VESSELS)))
+
+                      <=
+
+                      1
+
+                      for i in data.OPTIONAL_NODE_INDICES)
+
+                     , name=f'visit-opt')
 
 
 def add_initial_delivery_load_constrs(model, l_D, l_P, u):
@@ -92,16 +115,6 @@ def add_initial_delivery_load_constrs(model, l_D, l_P, u):
                       for v in range(len(data.VESSELS)))
 
                      , name=f'initial-delivery-load')
-
-    model.addConstrs((l_P[v, 0]
-
-                      ==
-
-                      0
-
-                      for v in range(len(data.VESSELS)))
-
-                     , name=f'initial-pickup-load')
 
 
 def add_load_capacity_constrs(model, l_D, l_P, u):
