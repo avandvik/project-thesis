@@ -1,3 +1,4 @@
+import os
 import json
 import random
 import pandas as pd
@@ -17,24 +18,32 @@ weather_forecasts = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                       2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]]
 
 
-def generate_test_instance(orders_file_path, sheet_name,
+def generate_test_instance(orders_file_path,
                            template_path,
                            number_of_vessels, return_day,
                            weather_scenario,
-                           outdir):
-    df = pd.read_excel(orders_file_path, index_col=0, sheet_name=sheet_name)
-    with open(template_path) as template:
-        json_file = json.load(template)
+                           outdir_path):
+    df = pd.read_excel(orders_file_path, None)
 
-    add_orders_to_json(json_file, df)
-    add_vessels_to_json(json_file, number_of_vessels, return_day)
-    add_weather_forecast_to_json(json_file, weather_forecasts[weather_scenario])
+    for sheet_name in df.keys():
+        sheet_df = df[sheet_name]
 
-    filename = get_filename(base=sheet_name, vessels=number_of_vessels, weather_scenario=weather_scenario)
-    output_file_path = f'{outdir}/{filename}'
+        with open(template_path) as template:
+            json_file = json.load(template)
 
-    with open(output_file_path, 'w') as ofp:
-        json.dump(json_file, ofp)
+        add_orders_to_json(json_file, sheet_df)
+        add_vessels_to_json(json_file, number_of_vessels, return_day)
+        add_weather_forecast_to_json(json_file, weather_forecasts[weather_scenario])
+
+        filename = get_filename(base=str(sheet_name), vessels=number_of_vessels, weather_scenario=weather_scenario)
+        for entry in os.listdir(outdir_path):
+            if os.path.isfile(os.path.join(outdir_path, entry)):
+                assert entry != filename, 'File already generated, check if we really want to overwrite!'
+
+        output_file_path = f'{outdir_path}/{filename}'
+
+        with open(output_file_path, 'w') as ofp:
+            json.dump(json_file, ofp)
 
 
 def draw_order_size(p, idx, l1=0.1, l2=0.3, l3=0.7, l4=0.9, l5=1):
@@ -55,11 +64,9 @@ def add_orders_to_json(json_file, df):
 
     for order_idx, row in df.iterrows():
         inst_idx = row['Installation idx']
-        name = row['Installation name']
         order_type = row['Order type']
         p = random.random()
         order_size = draw_order_size(p, inst_idx)
-        print(f'{name} ({inst_idx}) {order_type} {order_size}')
         add_order_to_json(json_file, order_idx, order_type, order_size, inst_idx)
 
 
@@ -89,10 +96,11 @@ def get_filename(base, vessels, weather_scenario):
 
 
 if __name__ == '__main__':
-    generate_test_instance(orders_file_path=f'{pathlib.Path(__file__).parent.absolute()}/orders.xlsx',
-                           sheet_name='CS-I2',
-                           template_path=f'{pathlib.Path(__file__).parent.absolute()}/templates/mongstad_template.json',
+    base_path = pathlib.Path(__file__).parent.absolute()
+
+    generate_test_instance(orders_file_path=f'{base_path}/orders.xlsx',
+                           template_path=f'{base_path}/templates/mongstad_template.json',
                            number_of_vessels=1,
                            return_day=3,
                            weather_scenario=0,
-                           outdir='mongstad')
+                           outdir_path=f'{base_path}/mongstad')
