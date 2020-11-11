@@ -1,11 +1,10 @@
 import gurobipy as gp
-from pprint import pprint
 
 import data
 import constants as cs
-from arc_flow.arc_generation import ArcGenerator
-import arc_flow.variable_generator as vg
-import arc_flow.constraint_generator as cg
+from arc_flow.arc_generation.arc_generator import ArcGenerator
+import arc_flow.model.variable_generator as vg
+import arc_flow.model.constraint_generator as cg
 import arc_flow.postprocessing as post
 
 
@@ -14,7 +13,7 @@ class ArcFlowModel:
     def __init__(self, name, verbose):
         self.env = gp.Env(f'{name}.log')
         self.model = gp.Model(name=name, env=self.env)
-        self.model.setParam('TimeLimit', 1 * 60 * 60)
+        self.model.setParam('TimeLimit', cs.TIME_LIMIT)
 
         self.preparation_end_time = 16 * data.TIME_UNITS_PER_HOUR - 1
         self.verbose = verbose
