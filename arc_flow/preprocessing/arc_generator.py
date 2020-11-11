@@ -1,6 +1,6 @@
 import math
 import data
-from arc_flow.arc_generation import helpers as hlp
+from arc_flow.preprocessing import helpers as hlp
 from collections import defaultdict as dd
 
 
