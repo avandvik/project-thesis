@@ -3,8 +3,8 @@ import gurobipy as gp
 import data
 import constants as cs
 from arc_flow.arc_generation.arc_generator import ArcGenerator
-import arc_flow.model.variable_generator as vg
-import arc_flow.model.constraint_generator as cg
+import arc_flow.mathematical_model.variable_generator as vg
+import arc_flow.mathematical_model.constraint_generator as cg
 import arc_flow.postprocessing as post
 
 
