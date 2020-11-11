@@ -2,7 +2,8 @@ import os
 import json
 import random
 import pandas as pd
-import pathlib
+
+import constants as cs
 
 """ ONLY RUN THIS FILE WHEN YOU WANT TO GENERATE A NEW PROBLEM INSTANCE """
 
@@ -96,11 +97,9 @@ def get_filename(base, vessels, weather_scenario):
 
 
 if __name__ == '__main__':
-    base_path = pathlib.Path(__file__).parent.absolute()
-
-    generate_test_instance(orders_file_path=f'{base_path}/orders.xlsx',
-                           template_path=f'{base_path}/templates/mongstad_template.json',
+    generate_test_instance(orders_file_path=f'{cs.PROJECT_DIR_PATH}/input/orders.xlsx',
+                           template_path=f'{cs.PROJECT_DIR_PATH}/input/templates/mongstad_template.json',
                            number_of_vessels=1,
                            return_day=3,
                            weather_scenario=0,
-                           outdir_path=f'{base_path}/mongstad')
+                           outdir_path=f'{cs.PROJECT_DIR_PATH}/input/mongstad')

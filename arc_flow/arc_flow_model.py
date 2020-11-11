@@ -1,10 +1,12 @@
 import gurobipy as gp
+from pprint import pprint
+
 import data
+import constants as cs
 from arc_flow.arc_generation import ArcGenerator
-import arc_flow.set_generator as sg
 import arc_flow.variable_generator as vg
 import arc_flow.constraint_generator as cg
-from pprint import pprint
+import arc_flow.postprocessing as post
 
 
 class ArcFlowModel:
@@ -91,8 +93,8 @@ class ArcFlowModel:
 
                                 +
 
-                                gp.quicksum(self.penalty_costs[i] * (1 - self.u[v, i])
-                                            for v in range(len(data.VESSELS))
+                                gp.quicksum(self.penalty_costs[i] * (1 - gp.quicksum(self.u[v, i]
+                                                                                     for v in range(len(data.VESSELS))))
                                             for i in data.OPTIONAL_NODE_INDICES)
 
                                 +
@@ -100,7 +102,6 @@ class ArcFlowModel:
                                 gp.quicksum(self.l_D[v, i] + self.l_P[v, i]
                                             for v in range(len(data.VESSELS))
                                             for i in data.ALL_NODE_INDICES)
-
 
                                 , gp.GRB.MINIMIZE)
 
@@ -113,18 +114,34 @@ class ArcFlowModel:
         self.add_constraints()
         self.set_objective()
 
-        self.model.printStats()
+        if self.verbose:
+            self.model.printStats()
+
         self.model.optimize()
 
+        print('\n\n')
         for idx, node in enumerate(data.ALL_NODES):
             if node.is_order():
                 print(f'{idx}: {node} {node.get_order().get_size()}')
             else:
                 print(f'{idx}: {node}')
+        print('\n')
 
-        self.model.printAttr('x')
+        if self.verbose:
+            self.model.printAttr('x', filter='*')
+
+        # Print routes in a nice format
+        post.print_routes(self.model.getVars())
+
+        print('\n')
+
+        # Separate objective value
+        arc_costs, penalty_costs = post.separate_objective(self.model.objVal, self.model.getVars(), self.arc_costs)
+        print(f'Objective: {self.model.objVal}'
+              f'\n\tArc costs: {arc_costs}'
+              f'\n\tPenalty costs: {penalty_costs}')
 
 
 if __name__ == '__main__':
-    afm = ArcFlowModel('test', False)
+    afm = ArcFlowModel(f'{cs.PROJECT_DIR_PATH}/output/{cs.FILE_NAME}', cs.VERBOSE)
     afm.run()

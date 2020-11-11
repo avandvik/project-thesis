@@ -1,13 +1,14 @@
 import pathlib
 import json
 import math
+
+import constants as cs
 from objects.installation import Installation
 from objects.vessel import Vessel
 from objects.order import Order
 from objects.node import Node
 
-file_number = 4
-file_path = f'{pathlib.Path(__file__).parent.absolute()}/input/mongstad/{file_number}.json'
+file_path = f'{cs.PROJECT_DIR_PATH}/input/{cs.INSTANCE_GROUP}/{cs.FILE_NAME}.json'
 
 with open(file_path) as file:
     input_data = json.load(file)

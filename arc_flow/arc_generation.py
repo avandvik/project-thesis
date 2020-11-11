@@ -2,16 +2,15 @@ import math
 import data
 import helpers as hlp
 from collections import defaultdict as dd
-from pprint import pprint
 
 
 class ArcGenerator:
 
     def __init__(self, preparation_end_time, verbose):
-        # nodes[vessel][node] -> time
+        # nodes[vessel][node][time] -> True/False
         self.nodes = dd(lambda: dd(lambda: dd(lambda: False)))
 
-        # arc_costs[vessel][start_node][start_time][end_node] -> end_times
+        # arc_costs[vessel][start_node][start_time][end_node][end_times] -> arc cost
         self.arc_costs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
 
         # node_time_points[vessel][node] -> time
