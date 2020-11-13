@@ -1,4 +1,3 @@
-import math
 import data
 from arc_flow.preprocessing import helpers as hlp
 from collections import defaultdict as dd
@@ -10,8 +9,11 @@ class ArcGenerator:
         # nodes[vessel][node][time] -> True/False
         self.nodes = dd(lambda: dd(lambda: dd(lambda: False)))
 
-        # arc_costs[vessel][start_node][start_time][end_node][end_times] -> arc cost
+        # arc_costs[vessel][start_node][start_time][end_node][end_time] -> arc cost
         self.arc_costs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
+
+        # arc_speeds[vessel][start_node][start_time][end_node][end_time] -> arc_speed
+        self.arc_speeds = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
 
         # node_time_points[vessel][node] -> time
         self.node_time_points = [[[] for _ in data.ALL_NODES] for _ in data.VESSELS]
@@ -67,16 +69,17 @@ class ArcGenerator:
         checkpoints, idling = hlp.get_checkpoints(early_arrival, late_arrival, service_duration, end_node)
 
         hlp.print_arc_info(start_node, end_node, distance, start_time, early_arrival,
-                       late_arrival, service_duration, checkpoints, self.verbose)
+                           late_arrival, service_duration, checkpoints, self.verbose)
 
-        arc_costs, arc_end_times = hlp.calculate_arc_costs_and_end_times(start_time, checkpoints, distance, vessel)
+        arc_costs, arc_end_times, arc_speeds = hlp.calculate_arc_data(start_time, checkpoints, distance, vessel)
 
         if end_node.is_end_depot():
-            self.add_end_depot_node_and_arc(start_node, end_node, arc_costs, start_time, arc_end_times, vessel)
+            self.add_end_depot_node_and_arc(start_node, end_node, arc_costs, start_time, arc_end_times, vessel,
+                                            arc_speeds)
         elif idling:
-            self.add_best_idling_arc(start_node, end_node, arc_costs, start_time, arc_end_times, vessel)
+            self.add_best_idling_arc(start_node, end_node, arc_costs, start_time, arc_end_times, vessel, arc_speeds)
         else:
-            self.add_nodes_and_arcs(start_node, end_node, arc_costs, start_time, arc_end_times, vessel)
+            self.add_nodes_and_arcs(start_node, end_node, arc_costs, start_time, arc_end_times, vessel, arc_speeds)
 
         if self.verbose:
             print()
@@ -93,32 +96,35 @@ class ArcGenerator:
 
         return True
 
-    def add_end_depot_node_and_arc(self, start_node, end_node, arc_costs, start_time, end_times, vessel):
+    def add_end_depot_node_and_arc(self, start_node, end_node, arc_costs, start_time, end_times, vessel, arc_speeds):
         return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
-        feasible_return_arcs = [(ac, aet) for ac, aet in zip(arc_costs, end_times) if aet <= return_time]
+        feasible_return_arcs = [(ac, aet, asp) for ac, aet, asp in zip(arc_costs, end_times, arc_speeds)
+                                if aet <= return_time]
         if feasible_return_arcs:
             best_return_arc = min(feasible_return_arcs)
-            arc_cost, arc_end_time = best_return_arc
-            self.update_sets(start_node, end_node, arc_cost, start_time, arc_end_time, vessel)
+            arc_cost, arc_end_time, arc_speed = best_return_arc
+            self.update_sets(start_node, end_node, arc_cost, start_time, arc_end_time, vessel, arc_speed)
 
-    def add_best_idling_arc(self, start_node, end_node, arc_costs, start_time, end_times, vessel):
-        arcs = [(ac, aet) for ac, aet in zip(arc_costs, end_times) if hlp.is_return_possible(end_node, aet, vessel)]
+    def add_best_idling_arc(self, start_node, end_node, arc_costs, start_time, end_times, vessel, arc_speeds):
+        arcs = [(ac, aet, asp) for ac, aet, asp in zip(arc_costs, end_times, arc_speeds)
+                if hlp.is_return_possible(end_node, aet, vessel)]
         if arcs:
             best_arc = min(arcs)
-            arc_cost, arc_end_time = best_arc
-            self.update_sets(start_node, end_node, arc_cost, start_time, arc_end_time, vessel)
+            arc_cost, arc_end_time, arc_speed = best_arc
+            self.update_sets(start_node, end_node, arc_cost, start_time, arc_end_time, vessel, arc_speed)
 
-    def add_nodes_and_arcs(self, start_node, end_node, arc_costs, start_time, end_time, vessel):
-        for arc_cost, arc_end_time in zip(arc_costs, end_time):
+    def add_nodes_and_arcs(self, start_node, end_node, arc_costs, start_time, end_times, vessel, arc_speeds):
+        for arc_cost, arc_end_time, arc_speed in zip(arc_costs, end_times, arc_speeds):
             if hlp.is_return_possible(end_node, arc_end_time, vessel):
-                self.update_sets(start_node, end_node, arc_cost, start_time, arc_end_time, vessel)
+                self.update_sets(start_node, end_node, arc_cost, start_time, arc_end_time, vessel, arc_speed)
 
-    def update_sets(self, sn, en, ac, ast, aet, v):
+    def update_sets(self, sn, en, ac, ast, aet, v, asp):
         if self.verbose:
             print(f'\tAdding arc: {ast} -> {aet} ({ac}) ')
 
         self.nodes[v.get_index()][en.get_index()][aet] = True
         self.arc_costs[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = ac
+        self.arc_speeds[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = asp
         self.number_of_arcs += 1
 
         if aet not in self.node_time_points[v.get_index()][en.get_index()]:
@@ -142,6 +148,9 @@ class ArcGenerator:
     def get_arc_costs(self):
         return self.arc_costs
 
+    def get_arc_speeds(self):
+        return self.arc_speeds
+
     def get_node_time_points(self):
         return self.node_time_points
 
@@ -162,7 +171,6 @@ class ArcGenerator:
 
     def get_specific_end_times(self):
         return self.specific_end_times
-
 
 # ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1, True)
 # ag.generate_arcs()

@@ -11,16 +11,21 @@ import arc_flow.postprocessing as post
 
 class ArcFlowModel:
 
-    def __init__(self, name, verbose):
-        self.env = gp.Env(f'{name}.log')
-        self.model = gp.Model(name=name, env=self.env)
+    def __init__(self):
+        self.verbose = cs.VERBOSE
+
+        self.log_output_path = f'{cs.PROJECT_DIR_PATH}/output/logs/{cs.FILE_NAME}.log'
+        self.results_output_path = f'{cs.PROJECT_DIR_PATH}/output/results/{cs.FILE_NAME}.json'
+
+        self.env = gp.Env(self.log_output_path)
+        self.model = gp.Model(name=self.log_output_path, env=self.env)
         self.model.setParam('TimeLimit', cs.TIME_LIMIT)
 
         self.preparation_end_time = 16 * data.TIME_UNITS_PER_HOUR - 1
-        self.verbose = verbose
         self.ag = ArcGenerator(self.preparation_end_time, self.verbose)
         self.nodes = None
         self.arc_costs = None
+        self.arc_speeds = None
         self.penalty_costs = None
 
         self.node_time_points = None
@@ -40,6 +45,7 @@ class ArcFlowModel:
         self.ag.generate_arcs()
         self.nodes = self.ag.get_nodes()
         self.arc_costs = self.ag.get_arc_costs()
+        self.arc_speeds = self.ag.get_arc_speeds()
         self.penalty_costs = calculate_penalty_costs(self.arc_costs, self.preparation_end_time)
 
         self.node_time_points = self.ag.get_node_time_points()
@@ -107,29 +113,13 @@ class ArcFlowModel:
 
         self.model.optimize()
 
-        print('\n\n')
-        for idx, node in enumerate(data.ALL_NODES):
-            if node.is_order():
-                print(f'{idx}: {node} {node.get_order().get_size()}')
-            else:
-                print(f'{idx}: {node}')
-        print('\n')
-
-        if self.verbose:
-            self.model.printAttr('x', filter='*')
-
-        # Print routes in a nice format
-        post.print_routes(self.model.getVars())
-
-        print('\n')
-
-        # Separate objective value
+        post.print_nodes_and_orders()
+        vessel_sequences = post.print_routes_and_get_sequence(self.model.getVars(), self.arc_speeds)
         arc_costs, penalty_costs = post.separate_objective(self.model.objVal, self.model.getVars(), self.arc_costs)
-        print(f'Objective: {self.model.objVal}'
-              f'\n\tArc costs: {arc_costs}'
-              f'\n\tPenalty costs: {penalty_costs}')
+        post.print_objective(self.model.objVal, arc_costs, penalty_costs)
+        post.save_results(vessel_sequences, arc_costs, penalty_costs, self.results_output_path)
 
 
 if __name__ == '__main__':
-    afm = ArcFlowModel(f'{cs.PROJECT_DIR_PATH}/output/{cs.FILE_NAME}', cs.VERBOSE)
+    afm = ArcFlowModel()
     afm.run()

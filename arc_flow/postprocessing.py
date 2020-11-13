@@ -1,4 +1,15 @@
+import json
 import data
+
+
+def print_nodes_and_orders():
+    print('\n\n')
+    for idx, node in enumerate(data.ALL_NODES):
+        if node.is_order():
+            print(f'{idx}: {node} {node.get_order().get_size()}')
+        else:
+            print(f'{idx}: {node}')
+    print('\n')
 
 
 def separate_objective(objective_value, variables, arc_costs):
@@ -20,9 +31,11 @@ def separate_objective(objective_value, variables, arc_costs):
     return objective_arc_costs, objective_penalty_costs
 
 
-def print_routes(variables):
+def print_routes_and_get_sequence(variables, arc_speeds):
     routes = create_routes_variable(variables)
+    sequences = {}
     for vessel in routes.keys():
+        sequence = []
         print(f'VESSEL {vessel}')
         next_to_destination_node = max(list(routes[vessel].keys()))
         destination_node = routes[vessel][next_to_destination_node][0][1]
@@ -31,13 +44,26 @@ def print_routes(variables):
         while end_node != destination_node:
             start_time, end_time = routes[vessel][start_node][0][0], routes[vessel][start_node][0][2]
             delivery_load, pickup_load = routes[vessel][start_node][1], routes[vessel][start_node][2]
+            arc_speed = arc_speeds[vessel][start_node][start_time][end_node][end_time]
+
+            sequence.append((start_node, start_time, end_node, end_time, delivery_load, pickup_load, arc_speed))
             print(f'\t{start_node} ({start_time}) -> {end_node} ({end_time}) '
-                  f'| l_D = {delivery_load} l_P = {pickup_load}')
+                  f'| l_D = {delivery_load} l_P = {pickup_load} | sailing speed = {arc_speed}')
+
             start_node = end_node
             end_node = routes[vessel][start_node][0][1]
 
         start_time, end_time = routes[vessel][start_node][0][0], routes[vessel][start_node][0][2]
-        print(f'\t{start_node} ({start_time}) -> {end_node} ({end_time})')
+        delivery_load, pickup_load = routes[vessel][start_node][1], routes[vessel][start_node][2]
+        arc_speed = arc_speeds[vessel][start_node][start_time][end_node][end_time]
+
+        print(f'\t{start_node} ({start_time}) -> {end_node} ({end_time}) | sailing speed = {arc_speed}')
+        sequence.append((start_node, start_time, 0, end_time, delivery_load, pickup_load, arc_speed))
+
+        sequences.update({vessel: sequence})
+
+    print('\n')
+    return sequences
 
 
 def create_routes_variable(variables):
@@ -58,6 +84,22 @@ def create_routes_variable(variables):
                 node, vessel = int(node), int(vessel)
                 for start_node in routes[vessel].keys():
                     if start_node == node:
-                        routes[vessel][start_node][1 if var_type == 'D' else 2] = round(v.x)
-
+                        routes[vessel][start_node][1 if var_type == 'D' else 2] = v.x
     return routes
+
+
+def print_objective(objective, arc_costs, penalty_costs):
+    print(f'Objective: {objective}'
+          f'\n\tArc costs: {arc_costs}'
+          f'\n\tPenalty costs: {penalty_costs}')
+
+
+def save_results(vessel_sequences, arc_costs, penalty_costs, output_path):
+    results = {}
+    for vessel in vessel_sequences.keys():
+        results.update({vessel: vessel_sequences[vessel]})
+
+    results.update({'objective': [arc_costs, penalty_costs]})
+
+    with open(output_path, 'w') as ofp:
+        json.dump(results, ofp)

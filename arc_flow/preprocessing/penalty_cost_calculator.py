@@ -19,4 +19,4 @@ def calculate_penalty_costs(arc_costs, preparation_end_time):
             worst_cost = max(costs_from_depot)
             penalty_costs.append(worst_cost)
 
-        return penalty_costs
+    return penalty_costs

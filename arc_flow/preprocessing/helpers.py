@@ -24,7 +24,7 @@ def is_illegal_arc(start_node, end_node):
 
 
 def get_arrival_time_span(distance, departure_time):
-    max_sailing_duration = math.ceil(distance / data.MIN_SPEED_DISC)  # TODO: Consider floor
+    max_sailing_duration = math.floor(distance / data.MIN_SPEED_DISC)  # TODO: Consider floor
     latest_arrival_time = departure_time + max_sailing_duration
 
     speed_impacts = [data.SPEED_IMPACTS[w] for w in data.WEATHER_FORECAST_DISC[departure_time:latest_arrival_time + 1]]
@@ -96,13 +96,15 @@ def get_checkpoint(arrival_time, service_start_time, service_duration, end_node)
         return None
 
 
-def calculate_arc_costs_and_end_times(start_time, checkpoints, distance, vessel):
-    arc_costs, arc_end_times = [], []
+def calculate_arc_data(start_time, checkpoints, distance, vessel):
+    arc_costs, arc_end_times, arc_speeds = [], [], []
     for checkpoint in checkpoints:
         arc_cost = calculate_arc_cost(start_time, checkpoint[-1], checkpoint, distance, vessel)
         arc_costs.append(arc_cost)
         arc_end_times.append(checkpoint[-1])
-    return arc_costs, arc_end_times
+        duration = disc_to_exact_hours(checkpoint[0] - start_time)
+        arc_speeds.append(distance/duration if duration > 0 else 0)
+    return arc_costs, arc_end_times, arc_speeds
 
 
 def calculate_arc_cost(start_time, end_time, checkpoints, distance, vessel):
