@@ -1,3 +1,4 @@
+import time
 import gurobipy as gp
 
 import data
@@ -103,7 +104,10 @@ class ArcFlowModel:
         self.model.update()
 
     def run(self):
+        preprocess_start = time.time()
         self.preprocess()
+        preprocess_runtime = (time.time() - preprocess_start)
+
         self.add_variables()
         self.add_constraints()
         self.set_objective()
@@ -111,13 +115,21 @@ class ArcFlowModel:
         if self.verbose:
             self.model.printStats()
 
+        model_start = time.time()
         self.model.optimize()
+        model_runtime = (time.time() - model_start)
 
         post.print_nodes_and_orders()
         vessel_sequences = post.print_routes_and_get_sequence(self.model.getVars(), self.arc_speeds)
         arc_costs, penalty_costs = post.separate_objective(self.model.objVal, self.model.getVars(), self.arc_costs)
         post.print_objective(self.model.objVal, arc_costs, penalty_costs)
-        post.save_results(vessel_sequences, arc_costs, penalty_costs, self.results_output_path)
+
+        post.save_results(vessel_sequences=vessel_sequences,
+                          arc_costs=arc_costs,
+                          penalty_costs=penalty_costs,
+                          preprocess_runtime=preprocess_runtime,
+                          model_runtime=model_runtime,
+                          output_path=self.results_output_path)
 
 
 if __name__ == '__main__':

@@ -94,12 +94,24 @@ def print_objective(objective, arc_costs, penalty_costs):
           f'\n\tPenalty costs: {penalty_costs}')
 
 
-def save_results(vessel_sequences, arc_costs, penalty_costs, output_path):
-    results = {}
+def save_results(vessel_sequences, arc_costs, penalty_costs, preprocess_runtime, model_runtime, output_path):
+    results = {'vessel_sequences': {}}
     for vessel in vessel_sequences.keys():
-        results.update({vessel: vessel_sequences[vessel]})
+        results['vessel_sequences'].update({vessel: vessel_sequences[vessel]})
 
-    results.update({'objective': [arc_costs, penalty_costs]})
+    results.update({'objective_info': {}})
+    results['objective_info'].update({'arc_costs': arc_costs,
+                                      'penalty_costs': penalty_costs})
+
+    results.update({'instance_info': {}})
+    results['instance_info'].update({'installation_ordering': data.INSTALLATION_ORDERING,
+                                     'number_of_installations_with_orders': data.NUMBER_OF_INSTALLATIONS_WITH_ORDERS,
+                                     'weather_scenario': data.WEATHER_SCENARIO,
+                                     'fleet_size': data.FLEET_SIZE})
+
+    results.update({'runtime_info': {}})
+    results['runtime_info'].update({'preprocess_runtime': preprocess_runtime,
+                                    'model_runtime': model_runtime})
 
     with open(output_path, 'w') as ofp:
         json.dump(results, ofp)

@@ -16,7 +16,30 @@ weather_forecasts = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                       1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
                       2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                       0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2,
+                      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                      1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+                      2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2,
+                      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                      1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+                      2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2,
                       2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]]
+
+
+def generate_test_instances():
+    weather_scenarios = [0, 1, 2]
+    max_number_of_vessels = 3
+    for weather_scenario in weather_scenarios:
+        for vessel_number in range(1, max_number_of_vessels + 1):
+            generate_test_instance(orders_file_path=f'{cs.PROJECT_DIR_PATH}/input/orders.xlsx',
+                                   template_path=f'{cs.PROJECT_DIR_PATH}/input/templates/mongstad_template.json',
+                                   number_of_vessels=vessel_number,
+                                   return_day=3,
+                                   weather_scenario=weather_scenario,
+                                   outdir_path=f'{cs.PROJECT_DIR_PATH}/input/mongstad')
 
 
 def generate_test_instance(orders_file_path,
@@ -32,8 +55,11 @@ def generate_test_instance(orders_file_path,
         with open(template_path) as template:
             json_file = json.load(template)
 
+        inst_ordering, number_of_insts = extract_instance_info(sheet_name)
+
         add_orders_to_json(json_file, sheet_df)
         add_vessels_to_json(json_file, number_of_vessels, return_day)
+        add_instance_info_to_json(json_file, inst_ordering, number_of_insts, weather_scenario, number_of_vessels)
         add_weather_forecast_to_json(json_file, weather_forecasts[weather_scenario])
 
         filename = get_filename(base=str(sheet_name), vessels=number_of_vessels, weather_scenario=weather_scenario)
@@ -47,17 +73,24 @@ def generate_test_instance(orders_file_path,
             json.dump(json_file, ofp)
 
 
-def draw_order_size(p, idx, l1=0.1, l2=0.3, l3=0.7, l4=0.9, l5=1):
-    if 0 <= p < l1:
-        return standard_order_sizes[idx] * variation_multipliers[1]
-    elif l1 <= p < l2:
-        return standard_order_sizes[idx] * variation_multipliers[2]
-    elif l2 <= p < l3:
-        return standard_order_sizes[idx] * variation_multipliers[3]
-    elif l3 <= p < l4:
-        return standard_order_sizes[idx] * variation_multipliers[4]
-    elif l4 <= p < l5:
-        return standard_order_sizes[idx] * variation_multipliers[5]
+def extract_instance_info(sheet_name):
+    sheet_info = sheet_name.split('-')
+
+    if sheet_info[0] == 'C':
+        inst_ordering = 'Clustered'
+    elif sheet_info[0] == 'E':
+        inst_ordering = 'Evenly spread'
+    elif sheet_info[0] == 'R':
+        inst_ordering = 'Random'
+    else:
+        inst_ordering = 'Not recognized'
+
+    number_of_insts = ''
+    for digit in list(sheet_info[1])[1:]:
+        number_of_insts += digit
+    number_of_insts = int(number_of_insts)
+
+    return inst_ordering, number_of_insts
 
 
 def add_orders_to_json(json_file, df):
@@ -69,6 +102,19 @@ def add_orders_to_json(json_file, df):
         p = random.random()
         order_size = draw_order_size(p, inst_idx)
         add_order_to_json(json_file, order_idx, order_type, order_size, inst_idx)
+
+
+def draw_order_size(p, idx, l1=0.1, l2=0.3, l3=0.7, l4=0.9, l5=1):
+    if 0 <= p < l1:
+        return standard_order_sizes[idx] * variation_multipliers[1]
+    elif l1 <= p < l2:
+        return standard_order_sizes[idx] * variation_multipliers[2]
+    elif l2 <= p < l3:
+        return standard_order_sizes[idx] * variation_multipliers[3]
+    elif l3 <= p < l4:
+        return standard_order_sizes[idx] * variation_multipliers[4]
+    elif l4 <= p < l5:
+        return standard_order_sizes[idx] * variation_multipliers[5]
 
 
 def add_order_to_json(json_file, order_idx, order_type, order_size, inst_idx):
@@ -88,6 +134,13 @@ def add_vessels_to_json(json_file, number_of_vessels, return_day, total_vessels_
         json_file['vessels'][vessel].update({'return_day': return_days[vessel_idx]})
 
 
+def add_instance_info_to_json(json_file, inst_ordering, number_of_insts, weather_scenario, number_of_vessels):
+    json_file.update({'installation_ordering': inst_ordering,
+                      'number_of_installations': number_of_insts,
+                      'weather_scenario': weather_scenario,
+                      'fleet_size': number_of_vessels})
+
+
 def add_weather_forecast_to_json(json_file, weather_forecast):
     json_file.update({'weather_forecast': weather_forecast})
 
@@ -97,9 +150,4 @@ def get_filename(base, vessels, weather_scenario):
 
 
 if __name__ == '__main__':
-    generate_test_instance(orders_file_path=f'{cs.PROJECT_DIR_PATH}/input/orders.xlsx',
-                           template_path=f'{cs.PROJECT_DIR_PATH}/input/templates/mongstad_template.json',
-                           number_of_vessels=1,
-                           return_day=3,
-                           weather_scenario=0,
-                           outdir_path=f'{cs.PROJECT_DIR_PATH}/input/mongstad')
+    generate_test_instances()

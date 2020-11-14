@@ -10,7 +10,7 @@ INSTANCE_GROUP = 'mongstad'
 
 # File name WITHOUT '.results'
 # FILE_NAME = 5
-FILE_NAME = 'CS-I3-V1-WS0'
+FILE_NAME = 'C-I3-V1-WS0'
 
 # Run program with lots of printing
 VERBOSE = True

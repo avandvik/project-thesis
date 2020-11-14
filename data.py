@@ -100,3 +100,9 @@ SPEED_IMPACTS = [input_data['weather_states'][weather_state]['speed_impact'] for
                  input_data['weather_states']]
 SERVICE_IMPACTS = [input_data['weather_states'][weather_state]['service_impact'] for weather_state in
                    input_data['weather_states']]
+
+""" ============================ INSTALLATION INFO ============================ """
+INSTALLATION_ORDERING = input_data['installation_ordering']
+NUMBER_OF_INSTALLATIONS_WITH_ORDERS = input_data['number_of_installations']
+WEATHER_SCENARIO = input_data['weather_scenario']
+FLEET_SIZE = input_data['fleet_size']
