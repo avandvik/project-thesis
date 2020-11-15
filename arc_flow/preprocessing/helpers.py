@@ -24,7 +24,7 @@ def is_illegal_arc(start_node, end_node):
 
 
 def get_arrival_time_span(distance, departure_time):
-    max_sailing_duration = math.floor(distance / data.MIN_SPEED_DISC)  # TODO: Consider floor
+    max_sailing_duration = math.floor(distance / data.MIN_SPEED_DISC)
     latest_arrival_time = departure_time + max_sailing_duration
 
     speed_impacts = [data.SPEED_IMPACTS[w] for w in data.WEATHER_FORECAST_DISC[departure_time:latest_arrival_time + 1]]

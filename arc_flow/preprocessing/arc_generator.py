@@ -57,8 +57,9 @@ class ArcGenerator:
                         if self.is_valid_start_node(vessel, start_node, start_time, end_node):
                             self.generate_arcs_from_node(vessel, start_node, start_time, end_node)
 
-        print(f'Arc generation done!\nTotal number of arcs: {self.number_of_arcs}\n'
-              f'Arcs per vessel: {int(self.number_of_arcs / len(data.VESSELS))}')
+        if self.verbose:
+            print(f'Arc generation done!\nTotal number of arcs: {self.number_of_arcs}\n'
+                  f'Arcs per vessel: {int(self.number_of_arcs / len(data.VESSELS))}')
 
     def generate_arcs_from_node(self, vessel, start_node, start_time, end_node):
         distance = start_node.get_installation().get_distance_to_installation(end_node.get_installation())

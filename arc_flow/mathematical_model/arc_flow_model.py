@@ -2,7 +2,6 @@ import time
 import gurobipy as gp
 
 import data
-import constants as cs
 from arc_flow.preprocessing.arc_generator import ArcGenerator
 from arc_flow.preprocessing.penalty_cost_calculator import calculate_penalty_costs
 import arc_flow.mathematical_model.variable_generator as vg
@@ -13,14 +12,17 @@ import arc_flow.postprocessing as post
 class ArcFlowModel:
 
     def __init__(self):
-        self.verbose = cs.VERBOSE
+        self.verbose = data.VERBOSE
 
-        self.log_output_path = f'{cs.PROJECT_DIR_PATH}/output/logs/{cs.FILE_NAME}.log'
-        self.results_output_path = f'{cs.PROJECT_DIR_PATH}/output/results/{cs.FILE_NAME}.json'
+        self.log_output_path = f'{data.PROJECT_DIR_PATH}/output/logs/{data.INSTANCE_NAME}.log'
+        self.results_output_path = f'{data.PROJECT_DIR_PATH}/output/results/{data.INSTANCE_NAME}.json'
 
-        self.env = gp.Env(self.log_output_path)
-        self.model = gp.Model(name=self.log_output_path, env=self.env)
-        self.model.setParam('TimeLimit', cs.TIME_LIMIT)
+        with gp.Env(self.log_output_path, empty=True) as env:
+            env.setParam('LogToConsole', 0)
+            env.start()
+            self.model = gp.Model(name=self.log_output_path, env=env)
+
+        self.model.setParam('TimeLimit', data.TIME_LIMIT)
 
         self.preparation_end_time = 16 * data.TIME_UNITS_PER_HOUR - 1
         self.ag = ArcGenerator(self.preparation_end_time, self.verbose)
@@ -119,10 +121,12 @@ class ArcFlowModel:
         self.model.optimize()
         model_runtime = (time.time() - model_start)
 
-        post.print_nodes_and_orders()
-        vessel_sequences = post.print_routes_and_get_sequence(self.model.getVars(), self.arc_speeds)
+        if self.verbose:
+            post.print_nodes_and_orders()
+
+        vessel_sequences = post.print_routes_and_get_sequence(self.model.getVars(), self.arc_speeds, self.verbose)
         arc_costs, penalty_costs = post.separate_objective(self.model.objVal, self.model.getVars(), self.arc_costs)
-        post.print_objective(self.model.objVal, arc_costs, penalty_costs)
+        post.print_objective(self.model.objVal, arc_costs, penalty_costs, self.verbose)
 
         post.save_results(vessel_sequences=vessel_sequences,
                           arc_costs=arc_costs,

@@ -5,3 +5,4 @@ venv
 output
 report/*
 input/mongstad/*
+solstorm

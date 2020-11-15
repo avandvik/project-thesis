@@ -1,15 +1,24 @@
+import os
 import json
 import math
+import pathlib
 
-import constants as cs
 from objects.installation import Installation
 from objects.vessel import Vessel
 from objects.order import Order
 from objects.node import Node
 
-file_path = f'{cs.PROJECT_DIR_PATH}/input/{cs.INSTANCE_GROUP}/{cs.FILE_NAME}.json'
 
-with open(file_path) as file:
+INSTANCE_NAME = os.environ.get('INSTANCE_NAME')
+
+PROJECT_DIR_PATH = f'{pathlib.Path(__file__).parent.absolute()}'  # Path of the root of the project
+VERBOSE = False
+TIME_LIMIT = 60 * 60  # Max run time of gurobi solver
+INSTANCE_GROUP = 'mongstad'
+
+FILE_PATH = f'{PROJECT_DIR_PATH}/input/{INSTANCE_GROUP}/{INSTANCE_NAME}.json'
+
+with open(FILE_PATH) as file:
     input_data = json.load(file)
 
 """ ============================ INSTALLATIONS ============================ """
@@ -76,8 +85,6 @@ MANDATORY_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_orde
 OPTIONAL_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order() and node.get_order().is_optional()]
 DELIVERY_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order() and node.get_order().is_delivery()]
 PICKUP_NODE_INDICES = [node.get_index() for node in ALL_NODES if node.is_order() and node.get_order().is_pickup()]
-
-POSTPONE_PENALTIES = [1000 for _ in range(len(ALL_NODES))]
 
 """ ============================ TIME AND DISCRETIZATION ============================ """
 PERIOD_HOURS = input_data['planning_period_in_hours']

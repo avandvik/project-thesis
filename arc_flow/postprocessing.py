@@ -31,12 +31,15 @@ def separate_objective(objective_value, variables, arc_costs):
     return objective_arc_costs, objective_penalty_costs
 
 
-def print_routes_and_get_sequence(variables, arc_speeds):
+def print_routes_and_get_sequence(variables, arc_speeds, verbose):
     routes = create_routes_variable(variables)
     sequences = {}
     for vessel in routes.keys():
         sequence = []
-        print(f'VESSEL {vessel}')
+
+        if verbose:
+            print(f'VESSEL {vessel}')
+
         next_to_destination_node = max(list(routes[vessel].keys()))
         destination_node = routes[vessel][next_to_destination_node][0][1]
         start_node = 0
@@ -47,8 +50,9 @@ def print_routes_and_get_sequence(variables, arc_speeds):
             arc_speed = arc_speeds[vessel][start_node][start_time][end_node][end_time]
 
             sequence.append((start_node, start_time, end_node, end_time, delivery_load, pickup_load, arc_speed))
-            print(f'\t{start_node} ({start_time}) -> {end_node} ({end_time}) '
-                  f'| l_D = {delivery_load} l_P = {pickup_load} | sailing speed = {arc_speed}')
+            if verbose:
+                print(f'\t{start_node} ({start_time}) -> {end_node} ({end_time}) '
+                      f'| l_D = {delivery_load} l_P = {pickup_load} | sailing speed = {arc_speed}')
 
             start_node = end_node
             end_node = routes[vessel][start_node][0][1]
@@ -57,12 +61,13 @@ def print_routes_and_get_sequence(variables, arc_speeds):
         delivery_load, pickup_load = routes[vessel][start_node][1], routes[vessel][start_node][2]
         arc_speed = arc_speeds[vessel][start_node][start_time][end_node][end_time]
 
-        print(f'\t{start_node} ({start_time}) -> {end_node} ({end_time}) | sailing speed = {arc_speed}')
+        if verbose:
+            print(f'\t{start_node} ({start_time}) -> {end_node} ({end_time}) | sailing speed = {arc_speed}')
+
         sequence.append((start_node, start_time, 0, end_time, delivery_load, pickup_load, arc_speed))
 
         sequences.update({vessel: sequence})
 
-    print('\n')
     return sequences
 
 
@@ -88,10 +93,11 @@ def create_routes_variable(variables):
     return routes
 
 
-def print_objective(objective, arc_costs, penalty_costs):
-    print(f'Objective: {objective}'
-          f'\n\tArc costs: {arc_costs}'
-          f'\n\tPenalty costs: {penalty_costs}')
+def print_objective(objective, arc_costs, penalty_costs, verbose):
+    if verbose:
+        print(f'Objective: {objective}'
+              f'\n\tArc costs: {arc_costs}'
+              f'\n\tPenalty costs: {penalty_costs}')
 
 
 def save_results(vessel_sequences, arc_costs, penalty_costs, preprocess_runtime, model_runtime, output_path):
@@ -107,7 +113,14 @@ def save_results(vessel_sequences, arc_costs, penalty_costs, preprocess_runtime,
     results['instance_info'].update({'installation_ordering': data.INSTALLATION_ORDERING,
                                      'number_of_installations_with_orders': data.NUMBER_OF_INSTALLATIONS_WITH_ORDERS,
                                      'weather_scenario': data.WEATHER_SCENARIO,
-                                     'fleet_size': data.FLEET_SIZE})
+                                     'fleet_size': data.FLEET_SIZE,
+                                     'order_composition': {}})
+
+    for order_number, order_node in enumerate(data.ALL_NODES[1:-1]):
+        results['instance_info']['order_composition'].update({str(order_number): {}})
+        results['instance_info']['order_composition'][str(order_number)].update(
+            {'order': order_node.generate_representation(),
+             'size': order_node.get_order().get_size()})
 
     results.update({'runtime_info': {}})
     results['runtime_info'].update({'preprocess_runtime': preprocess_runtime,
