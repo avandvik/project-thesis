@@ -28,7 +28,8 @@ class ArcFlowModel:
         self.ag = ArcGenerator(self.preparation_end_time, self.verbose)
         self.nodes = None
         self.arc_costs = None
-        self.arc_speeds = None
+        self.sep_arc_costs = None
+        self.arc_arrival_times = None
         self.penalty_costs = None
 
         self.node_time_points = None
@@ -48,7 +49,9 @@ class ArcFlowModel:
         self.ag.generate_arcs()
         self.nodes = self.ag.get_nodes()
         self.arc_costs = self.ag.get_arc_costs()
-        self.arc_speeds = self.ag.get_arc_speeds()
+        self.sep_arc_costs = self.ag.get_sep_arc_costs()
+
+        self.arc_arrival_times = self.ag.get_arc_arrival_times()
         self.penalty_costs = calculate_penalty_costs(self.arc_costs, self.preparation_end_time)
 
         self.node_time_points = self.ag.get_node_time_points()
@@ -124,16 +127,20 @@ class ArcFlowModel:
         if self.verbose:
             post.print_nodes_and_orders()
 
-        vessel_sequences = post.print_routes_and_get_sequence(self.model.getVars(), self.arc_speeds, self.verbose)
-        arc_costs, penalty_costs = post.separate_objective(self.model.objVal, self.model.getVars(), self.arc_costs)
-        post.print_objective(self.model.objVal, arc_costs, penalty_costs, self.verbose)
-
-        post.save_results(vessel_sequences=vessel_sequences,
-                          arc_costs=arc_costs,
-                          penalty_costs=penalty_costs,
-                          preprocess_runtime=preprocess_runtime,
-                          model_runtime=model_runtime,
-                          output_path=self.results_output_path)
+        voyages = post.create_voyages_variable(self.model.getVars(), self.arc_arrival_times, self.sep_arc_costs)
+        fuel_costs, charter_costs, arc_costs, penalty_costs = post.separate_objective(self.model.objVal,
+                                                                                      self.model.getVars(),
+                                                                                      self.arc_costs, voyages)
+        postponed_orders, serviced_orders = post.find_postponed_orders(voyages)
+        post.save_results_new(voyages=voyages,
+                              postponed_orders=postponed_orders,
+                              serviced_orders=serviced_orders,
+                              preprocess_runtime=preprocess_runtime,
+                              model_runtime=model_runtime,
+                              fuel_costs=fuel_costs,
+                              charter_costs=charter_costs,
+                              penalty_costs=penalty_costs,
+                              output_path=self.results_output_path)
 
 
 if __name__ == '__main__':

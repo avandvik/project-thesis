@@ -97,19 +97,18 @@ def get_checkpoint(arrival_time, service_start_time, service_duration, end_node)
 
 
 def calculate_arc_data(start_time, checkpoints, distance, vessel):
-    arc_costs, arc_end_times, arc_speeds = [], [], []
+    arc_costs, arc_end_times, arc_arr_times = [], [], []
     for checkpoint in checkpoints:
-        arc_cost = calculate_arc_cost(start_time, checkpoint[-1], checkpoint, distance, vessel)
-        arc_costs.append(arc_cost)
+        fuel_cost, charter_cost = calculate_arc_cost(start_time, checkpoint[-1], checkpoint, distance, vessel)
+        arc_costs.append((fuel_cost, charter_cost, fuel_cost + charter_cost + 0.00000002))
         arc_end_times.append(checkpoint[-1])
-        duration = disc_to_exact_hours(checkpoint[0] - start_time)
-        arc_speeds.append(distance/duration if duration > 0 else 0)
-    return arc_costs, arc_end_times, arc_speeds
+        arc_arr_times.append(checkpoint[0])
+    return arc_costs, arc_end_times, arc_arr_times
 
 
 def calculate_arc_cost(start_time, end_time, checkpoints, distance, vessel):
-    return calculate_total_fuel_cost(start_time, checkpoints, distance) \
-           + calculate_charter_cost(vessel, start_time, end_time) + 0.00001  # TODO: Find out effect of this
+    return calculate_total_fuel_cost(start_time, checkpoints, distance), \
+           calculate_charter_cost(vessel, start_time, end_time)
 
 
 def calculate_total_fuel_cost(start_time, checkpoints, distance):
@@ -222,7 +221,7 @@ def get_disc_time_interval(start_hour, end_hour):
 
 
 def get_time_in_each_weather_state(start_time, end_time):
-    return [get_time_in_weather_state(start_time, end_time, ws) for ws in range(data.WORST_WEATHER_STATE+1)]
+    return [get_time_in_weather_state(start_time, end_time, ws) for ws in range(data.WORST_WEATHER_STATE + 1)]
 
 
 def get_time_in_weather_state(start_time, end_time, weather_state):
