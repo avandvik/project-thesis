@@ -131,7 +131,8 @@ def save_results_new(voyages, postponed_orders, serviced_orders, preprocess_runt
         results['instance_info']['order_composition'][order_number + 1].update(
             {'order': order_node.generate_representation(),
              'size': order_node.get_order().get_size(),
-             'installation': order_node.get_installation().get_index()})
+             'installation': order_node.get_installation().get_index(),
+             'node': order_node.get_index()})
     results.update({'voyages': voyages})
     results.update({'order_fulfillment': {'postponed_orders': list(postponed_orders),
                                           'serviced_orders': list(serviced_orders)}})

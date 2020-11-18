@@ -7,3 +7,4 @@ report/*
 input/mongstad/*
 solstorm
 report/.ipynb_checkpoints/*
+.config_ipynb
