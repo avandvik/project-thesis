@@ -1,13 +1,14 @@
 {
-  "fuel_price": 0.2755,
-  "min_speed": 7,
-  "max_speed": 14,
-  "fuel_consumption_depot": 170,
-  "fuel_consumption_idling": 120,
+  "fuel_price": 0.276,
   "spot_hour_rate": 608,
+  "min_speed": 10,
+  "max_speed": 14,
+  "design_speed": 12,
+  "fuel_consumption_design_speed": 600,
+  "fuel_consumption_depot": 45,
+  "fuel_consumption_idling": 120,
+  "fuel_consumption_servicing": 170,
   "real_service_time_per_unit": 0.1,
-  "planning_period_in_hours": 144,
-  "time_units_per_hour": 4,
   "best_possible_weather_state": 0,
   "worst_possible_weather_state": 3,
   "installations": {
@@ -183,12 +184,12 @@
   "vessels": {
     "PSV_1": {
       "id": 1,
-      "capacity": 100,
+      "capacity": 110,
       "is_spot_vessel": "False"
     },
     "PSV_2": {
       "id": 2,
-      "capacity": 100,
+      "capacity": 105,
       "is_spot_vessel": "False"
     },
     "PSV_3": {
@@ -198,12 +199,12 @@
     },
     "PSV_4": {
       "id": 4,
-      "capacity": 100,
+      "capacity": 95,
       "is_spot_vessel": "False"
     },
     "PSV_5": {
       "id": 5,
-      "capacity": 100,
+      "capacity": 90,
       "is_spot_vessel": "False"
     },
     "SPOT_VESSEL": {

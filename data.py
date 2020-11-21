@@ -48,12 +48,15 @@ for vessel_name in input_data['vessels']:
                               is_spot_vessel=is_spot_vessel))
         index += 1
 
+FUEL_PRICE = input_data['fuel_price']
+SPOT_RATE = input_data['spot_hour_rate']
 MIN_SPEED = input_data['min_speed']
 MAX_SPEED = input_data['max_speed']
-FUEL_PRICE = input_data['fuel_price']
+DESIGN_SPEED = input_data['design_speed']
+FUEL_CONSUMPTION_DESIGN_SPEED = input_data['fuel_consumption_design_speed']
 FUEL_CONSUMPTION_DEPOT = input_data['fuel_consumption_depot']
 FUEL_CONSUMPTION_IDLING = input_data['fuel_consumption_idling']
-SPOT_RATE = input_data['spot_hour_rate']
+FUEL_CONSUMPTION_SERVICING = input_data['fuel_consumption_servicing']
 
 """ ============================ ORDERS ============================ """
 ALL_NODES = []
@@ -97,6 +100,8 @@ TIME_UNIT_DISC = 1.0 / TIME_UNITS_PER_HOUR
 UNIT_SERVICE_TIME_DISC = UNIT_SERVICE_TIME_HOUR * TIME_UNITS_PER_HOUR
 
 MIN_SPEED_DISC = MIN_SPEED * (1 / TIME_UNITS_PER_HOUR)
+
+MAX_DISTANCE_UNIT = MAX_SPEED * TIME_UNIT_DISC
 
 """ ============================ WEATHER ============================ """
 WEATHER_FORECAST_HOURS = input_data['weather_forecast']

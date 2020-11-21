@@ -3,7 +3,7 @@ import json
 import random
 import pandas as pd
 
-import constants as cs
+import data
 
 """ ONLY RUN THIS FILE WHEN YOU WANT TO GENERATE A NEW PROBLEM INSTANCE """
 
@@ -12,40 +12,39 @@ variation_multipliers = [0, 0.5, 0.75, 1.0, 1.25, 1.5]
 standard_order_sizes = [0.0, 15.0, 20.0, 15.0, 20.0, 20.0, 20.0, 20.0, 15.0, 15.0, 15.0, 15.0, 7.5, 15.0, 20.0, 10.0,
                         15.0, 15.0, 15.0, 15.0, 10.0, 17.5, 17.5, 17.5, 17.5, 17.5, 17.5, 15.0]
 
-weather_forecasts = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                      1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-                      2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2,
-                      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                      1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-                      2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2,
-                      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                      1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-                      2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2,
-                      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]]
+weather_forecasts = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2,
+     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+     1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]]
 
 
 def generate_test_instances():
-    weather_scenarios = [0, 1, 2]
-    max_number_of_vessels = 3
-    for weather_scenario in weather_scenarios:
-        for vessel_number in range(1, max_number_of_vessels + 1):
-            generate_test_instance(orders_file_path=f'{cs.PROJECT_DIR_PATH}/input/orders.xlsx',
-                                   template_path=f'{cs.PROJECT_DIR_PATH}/input/templates/mongstad_template.json',
-                                   number_of_vessels=vessel_number,
-                                   return_day=3,
-                                   weather_scenario=weather_scenario,
-                                   outdir_path=f'{cs.PROJECT_DIR_PATH}/input/mongstad')
+    weather_scenario = 0
+    number_of_vessels = 4
+    return_day = 4
+    planning_period_hours = 96
+    time_units_per_hour = 4
+    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/orders_20.xlsx',
+                           template_path=f'{data.PROJECT_DIR_PATH}/input/templates/mongstad_template.json',
+                           number_of_vessels=number_of_vessels,
+                           return_day=return_day,
+                           weather_scenario=weather_scenario,
+                           planning_period_hours=planning_period_hours,
+                           time_units_per_hour=time_units_per_hour,
+                           outdir_path=f'{data.PROJECT_DIR_PATH}/input/mongstad')
 
 
 def generate_test_instance(orders_file_path,
                            template_path,
                            number_of_vessels, return_day,
                            weather_scenario,
+                           planning_period_hours, time_units_per_hour,
                            outdir_path):
     df = pd.read_excel(orders_file_path, None)
 
@@ -59,6 +58,7 @@ def generate_test_instance(orders_file_path,
 
         add_orders_to_json(json_file, sheet_df)
         add_vessels_to_json(json_file, number_of_vessels, return_day)
+        add_time_info_to_json(json_file, planning_period_hours, time_units_per_hour)
         add_instance_info_to_json(json_file, inst_ordering, number_of_insts, weather_scenario, number_of_vessels)
         add_weather_forecast_to_json(json_file, weather_forecasts[weather_scenario])
 
@@ -83,7 +83,7 @@ def extract_instance_info(sheet_name):
     elif sheet_info[0] == 'R':
         inst_ordering = 'Random'
     else:
-        inst_ordering = 'Not recognized'
+        inst_ordering = 'Random'
 
     number_of_insts = ''
     for digit in list(sheet_info[1])[1:]:
@@ -97,7 +97,7 @@ def add_orders_to_json(json_file, df):
     json_file.update({'orders': {}})
 
     for order_idx, row in df.iterrows():
-        inst_idx = row['Installation idx']
+        inst_idx = row['Installation ID']
         order_type = row['Order type']
         p = random.random()
         order_size = draw_order_size(p, inst_idx)
@@ -132,6 +132,11 @@ def add_vessels_to_json(json_file, number_of_vessels, return_day, total_vessels_
 
     for vessel_idx, vessel in enumerate(json_file['vessels']):
         json_file['vessels'][vessel].update({'return_day': return_days[vessel_idx]})
+
+
+def add_time_info_to_json(json_file, planning_period_in_hours, time_units_per_hour):
+    json_file.update({'planning_period_in_hours': planning_period_in_hours,
+                      'time_units_per_hour': time_units_per_hour})
 
 
 def add_instance_info_to_json(json_file, inst_ordering, number_of_insts, weather_scenario, number_of_vessels):

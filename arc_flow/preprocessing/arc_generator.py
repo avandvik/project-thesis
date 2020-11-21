@@ -129,7 +129,12 @@ class ArcGenerator:
 
     def update_sets(self, sn, en, ac, sac, ast, aet, v, aat):
         if self.verbose:
-            print(f'\tAdding arc: {ast} -> {aet} ({ac}) ')
+            distance = sn.get_installation().get_distance_to_installation(en.get_installation())
+            if aat - ast > 0:
+                speed = distance / hlp.disc_to_exact_hours(aat - ast)
+            else:
+                speed = 0
+            print(f'\tAdding arc: {ast} -> {aet} ({ac}) {speed}')
 
         self.number_of_arcs += 1
 

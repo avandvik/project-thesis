@@ -24,20 +24,19 @@ def is_illegal_arc(start_node, end_node):
 
 
 def get_arrival_time_span(distance, departure_time):
-    max_sailing_duration = math.floor(distance / data.MIN_SPEED_DISC)
-    latest_arrival_time = departure_time + max_sailing_duration
+    max_sailing_duration = hour_to_disc(distance / data.MIN_SPEED)
+    min_sailing_duration = hour_to_disc(distance / data.MAX_SPEED)
 
-    speed_impacts = [data.SPEED_IMPACTS[w] for w in data.WEATHER_FORECAST_DISC[departure_time:latest_arrival_time + 1]]
-    adjusted_max_speeds = [data.MAX_SPEED - speed_impact for speed_impact in speed_impacts]
+    if math.floor(min_sailing_duration) == math.floor(max_sailing_duration):
+        sailing_duration = math.floor(max_sailing_duration)
+        max_distance = sailing_duration * data.MAX_DISTANCE_UNIT
+        if max_distance < distance:
+            return departure_time, departure_time
 
-    sailed_distance, min_sailing_duration = 0, 0
-    while sailed_distance < distance:
-        sailed_distance += adjusted_max_speeds[min_sailing_duration] * data.TIME_UNIT_DISC
-        min_sailing_duration += 1
+    min_sailing_duration = math.ceil(min_sailing_duration)
+    max_sailing_duration = math.floor(max_sailing_duration)
 
-    earliest_arrival_time = departure_time + min_sailing_duration
-
-    return earliest_arrival_time, latest_arrival_time
+    return departure_time + min_sailing_duration, departure_time + max_sailing_duration
 
 
 def calculate_service_time(to_node):
@@ -112,7 +111,7 @@ def calculate_arc_cost(start_time, end_time, checkpoints, distance, vessel):
 
 
 def calculate_total_fuel_cost(start_time, checkpoints, distance):
-    sail_cost = calculate_fuel_cost_sailing(start_time, checkpoints[0], distance)
+    sail_cost = calculate_fuel_cost_sailing_v2(start_time, checkpoints[0], distance)
     idle_cost = calculate_fuel_cost_idling(checkpoints[0], checkpoints[1])
     service_cost = calculate_fuel_cost_servicing(checkpoints[1], checkpoints[2])
     total_cost = sail_cost + idle_cost + service_cost
@@ -132,9 +131,30 @@ def calculate_fuel_cost_sailing(start_time, arrival_time, distance):
     if speed > max_speed_ws3:
         penalty_speed += (time_in_each_ws[-1] * (speed - max_speed_ws3)) / sum(time_in_each_ws[:-1])
 
-    consumption = (time_in_each_ws[0] + time_in_each_ws[1]) * get_consumption(speed + penalty_speed) \
-                  + time_in_each_ws[2] * get_consumption(min(speed + data.SPEED_IMPACTS[2], data.MAX_SPEED)) \
-                  + time_in_each_ws[3] * get_consumption(min(speed + data.SPEED_IMPACTS[3], data.MAX_SPEED))
+    consumption = (time_in_each_ws[0] + time_in_each_ws[1]) * get_fc_mo(speed + penalty_speed) \
+                  + time_in_each_ws[2] * get_fc_mo(min(speed + data.SPEED_IMPACTS[2], data.MAX_SPEED)) \
+                  + time_in_each_ws[3] * get_fc_mo(min(speed + data.SPEED_IMPACTS[3], data.MAX_SPEED))
+
+    return consumption * data.FUEL_PRICE
+
+
+def calculate_fuel_cost_sailing_v2(start_time, arrival_time, distance):
+    if distance == 0 or start_time == arrival_time:
+        return 0
+    time_in_each_ws = get_time_in_each_weather_state(start_time, arrival_time)
+    speed = distance / disc_to_exact_hours(arrival_time - start_time)
+    distance_in_each_ws = [speed * time_in_each_ws[ws] for ws in range(4)]
+    max_speed_ws2, max_speed_ws3 = data.MAX_SPEED - data.SPEED_IMPACTS[-2], data.MAX_SPEED - data.SPEED_IMPACTS[-1]
+
+    penalty_speed = 0
+    if speed > max_speed_ws2:
+        penalty_speed += (time_in_each_ws[-2] * (speed - max_speed_ws2)) / sum(time_in_each_ws[:-2])
+    if speed > max_speed_ws3:
+        penalty_speed += (time_in_each_ws[-1] * (speed - max_speed_ws3)) / sum(time_in_each_ws[:-1])
+
+    consumption = get_fc_ngl(distance_in_each_ws[0] + distance_in_each_ws[1], speed + penalty_speed, 0) \
+                  + get_fc_ngl(distance_in_each_ws[2], speed, 2) \
+                  + get_fc_ngl(distance_in_each_ws[3], speed, 3)
 
     return consumption * data.FUEL_PRICE
 
@@ -151,7 +171,7 @@ def calculate_fuel_cost_servicing(servicing_start_time, servicing_end_time):
     time_in_each_ws = get_time_in_each_weather_state(servicing_start_time, servicing_end_time)
     cost = 0
     for ws in range(data.WORST_WEATHER_STATE + 1):
-        cost += time_in_each_ws[ws] * data.SERVICE_IMPACTS[ws] * data.FUEL_CONSUMPTION_DEPOT * data.FUEL_PRICE
+        cost += time_in_each_ws[ws] * data.SERVICE_IMPACTS[ws] * data.FUEL_CONSUMPTION_SERVICING * data.FUEL_PRICE
     return cost
 
 
@@ -159,12 +179,15 @@ def calculate_charter_cost(vessel, start_time, end_time):
     return data.SPOT_RATE * disc_to_exact_hours(end_time - start_time) if vessel.is_spot_vessel() else 0.0
 
 
-def get_consumption(speed):
+def get_fc_mo(speed):
     return 11.111 * speed * speed - 177.78 * speed + 1011.1
 
 
-# TODO: This could be solved by modifing the arrival time interval instead
-# TODO: This must be verified for a case where return is not possible for certain arcs
+def get_fc_ngl(distance, speed, weather):
+    return (distance / (speed - data.SPEED_IMPACTS[weather])) \
+           * data.FUEL_CONSUMPTION_DESIGN_SPEED * math.pow((speed / data.DESIGN_SPEED), 3)
+
+
 def is_return_possible(end_node, arc_end_time, vessel):
     distance = end_node.get_installation().get_distance_to_installation(data.DEPOT)
 

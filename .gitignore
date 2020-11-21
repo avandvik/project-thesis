@@ -5,6 +5,7 @@ venv
 output
 report/*
 input/mongstad/*
+input/data/*
 solstorm
 report/.ipynb_checkpoints/*
 .config_ipynb
