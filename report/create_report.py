@@ -3,18 +3,22 @@
 import os
 import data
 
-RESULTS_DIR = 'output/results'
+LOCAL = False
+if LOCAL:
+    RESULTS_DIR = 'output/local/results'
+else:
+    RESULTS_DIR = 'output/solstorm/211120-131600/results'
+
 RESULTS_PATH = f'{data.PROJECT_DIR_PATH}/{RESULTS_DIR}'
 IPYNB_FILENAME = 'template.ipynb'
 CONFIG_FILENAME = '.config_ipynb'
 REPORT_DIR = f'{data.PROJECT_DIR_PATH}/report/reports'
-RUN_NAME = 'local'
-REPORT_NAME = f'{data.INSTANCE_NAME}'
 
-files = [f for f in os.listdir(RESULTS_PATH) if os.path.isfile(os.path.join(RESULTS_PATH, f))]
-
-for file in files:
+file_paths = [os.path.join(RESULTS_PATH, f) for f in os.listdir(RESULTS_PATH)
+              if os.path.isfile(os.path.join(RESULTS_PATH, f))]
+for file_path in file_paths:
     with open(CONFIG_FILENAME, 'w') as f:
-        f.write(' '.join(['data_file', file]))
+        f.write(' '.join(['file_path', file_path]))
+    REPORT_NAME = os.path.basename(file_path).split('.')[0]
     os.system(f'jupyter nbconvert --execute {IPYNB_FILENAME} --to html --no-input '
-              f'--output="{REPORT_DIR}/{RUN_NAME}/{REPORT_NAME}"')
+              f'--output="{REPORT_DIR}/{REPORT_NAME}"')
