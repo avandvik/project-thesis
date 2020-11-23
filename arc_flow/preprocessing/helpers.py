@@ -190,19 +190,14 @@ def get_fc_ngl(distance, speed, weather):
 
 def is_return_possible(end_node, arc_end_time, vessel):
     distance = end_node.get_installation().get_distance_to_installation(data.DEPOT)
-
     speed_impacts = [data.SPEED_IMPACTS[w] for w in data.WEATHER_FORECAST_DISC[arc_end_time:]]
     adjusted_max_speeds = [data.MAX_SPEED - speed_impact for speed_impact in speed_impacts]
-
-    sailed_distance, min_sailing_duration = 0, 0
-    while sailed_distance < distance:
-        sailed_distance += adjusted_max_speeds[min_sailing_duration] * data.TIME_UNIT_DISC
-        min_sailing_duration += 1
-
-    earliest_arrival_time = arc_end_time + min_sailing_duration
+    if len(adjusted_max_speeds) == 0:
+        return False
+    avg_max_speed = sum(adjusted_max_speeds) / len(adjusted_max_speeds)
+    earliest_arr_time = arc_end_time + distance / avg_max_speed
     return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
-
-    return earliest_arrival_time <= return_time
+    return earliest_arr_time <= return_time
 
 
 def print_arc_info(start_node, end_node, distance, start_time, early, late, service, checkpoints, verbose):

@@ -14,13 +14,10 @@ class ArcFlowModel:
     def __init__(self):
         self.verbose = data.VERBOSE
 
-        self.log_output_path = f'{data.PROJECT_DIR_PATH}/output/logs/{data.INSTANCE_NAME}.log'
-        self.results_output_path = f'{data.PROJECT_DIR_PATH}/output/results/{data.INSTANCE_NAME}.json'
-
-        with gp.Env(self.log_output_path, empty=True) as env:
+        with gp.Env(data.LOG_OUTPUT_PATH, empty=True) as env:
             env.setParam('LogToConsole', 0)
             env.start()
-            self.model = gp.Model(name=self.log_output_path, env=env)
+            self.model = gp.Model(name=data.LOG_OUTPUT_PATH, env=env)
 
         self.model.setParam('TimeLimit', data.TIME_LIMIT)
 
@@ -140,7 +137,7 @@ class ArcFlowModel:
                               fuel_costs=fuel_costs,
                               charter_costs=charter_costs,
                               penalty_costs=penalty_costs,
-                              output_path=self.results_output_path)
+                              output_path=data.RESULTS_OUTPUT_PATH)
 
 
 if __name__ == '__main__':

@@ -59,7 +59,6 @@ class ArcGenerator:
                     for start_time in range(self.preparation_end_time, discretized_return_time):
                         if self.is_valid_start_node(vessel, start_node, start_time, end_node):
                             self.generate_arcs_from_node(vessel, start_node, start_time, end_node)
-
         if self.verbose:
             print(f'Arc generation done!\nTotal number of arcs: {self.number_of_arcs}\n'
                   f'Arcs per vessel: {int(self.number_of_arcs / len(data.VESSELS))}')
@@ -74,6 +73,9 @@ class ArcGenerator:
 
         hlp.print_arc_info(start_node, end_node, distance, start_time, early_arrival,
                            late_arrival, service_duration, checkpoints, self.verbose)
+
+        return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR - 1
+        checkpoints = [ckp for ckp in checkpoints if ckp[-1] <= return_time]
 
         arc_costs, arc_end_times, arc_arr_times = hlp.calculate_arc_data(start_time, checkpoints, distance, vessel)
 

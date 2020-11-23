@@ -8,17 +8,24 @@ from objects.vessel import Vessel
 from objects.order import Order
 from objects.node import Node
 
-
-INSTANCE_NAME = os.environ.get('INSTANCE_NAME')
-
 PROJECT_DIR_PATH = f'{pathlib.Path(__file__).parent.absolute()}'  # Path of the root of the project
+
+LOCAL = True
+if LOCAL:
+    INSTANCE_NAME = 'O20-I16-C1-V4-WS0'
+    INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/mongstad/{INSTANCE_NAME}.json'
+    LOG_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/logs/{INSTANCE_NAME}.log'
+    RESULTS_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/results/{INSTANCE_NAME}.json'
+else:
+    INSTANCE_NAME = os.environ.get('INSTANCE_NAME')
+    INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/mongstad/{INSTANCE_NAME}.json'
+    LOG_OUTPUT_PATH = f'/storage/users/anderhva/{os.environ.get("current_time")}/logs/{INSTANCE_NAME}.log'
+    RESULTS_OUTPUT_PATH = f'/storage/users/anderhva/{os.environ.get("current_time")}/results/{INSTANCE_NAME}.json'
+
 VERBOSE = False
 TIME_LIMIT = 60 * 60  # Max run time of gurobi solver
-INSTANCE_GROUP = 'mongstad'
 
-FILE_PATH = f'{PROJECT_DIR_PATH}/input/{INSTANCE_GROUP}/{INSTANCE_NAME}.json'
-
-with open(FILE_PATH) as file:
+with open(INPUT_FILE_PATH) as file:
     input_data = json.load(file)
 
 """ ============================ INSTALLATIONS ============================ """
