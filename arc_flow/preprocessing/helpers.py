@@ -3,11 +3,10 @@ import math
 
 
 def is_illegal_arc(start_node, end_node):
-    if start_node.is_start_depot():
+    if start_node.is_start_depot() and end_node.is_end_depot():
         return False
     if start_node.get_index() == end_node.get_index():
         return True
-
     if start_node.get_installation() != end_node.get_installation():
         if end_node.get_installation().has_mandatory_order() and end_node.get_order().is_optional():
             return True
@@ -19,23 +18,19 @@ def is_illegal_arc(start_node, end_node):
                 return True
         elif start_node.get_order().is_optional_pickup():
             return True
-
     return False
 
 
 def get_arrival_time_span(distance, departure_time):
     max_sailing_duration = hour_to_disc(distance / data.MIN_SPEED)
     min_sailing_duration = hour_to_disc(distance / data.MAX_SPEED)
-
     if math.floor(min_sailing_duration) == math.floor(max_sailing_duration):
         sailing_duration = math.floor(max_sailing_duration)
         max_distance = sailing_duration * data.MAX_DISTANCE_UNIT
         if max_distance < distance:
             return departure_time, departure_time
-
     min_sailing_duration = math.ceil(min_sailing_duration)
     max_sailing_duration = math.floor(max_sailing_duration)
-
     return departure_time + min_sailing_duration, departure_time + max_sailing_duration
 
 
@@ -43,44 +38,44 @@ def calculate_service_time(to_node):
     return 0 if to_node.is_end_depot() else math.ceil(to_node.get_order().get_size() * data.UNIT_SERVICE_TIME_DISC)
 
 
-def get_checkpoints(early_arrival, late_arrival, service_duration, end_node):
+def get_checkpoints(early_arrival, late_arrival, service_duration, end_node, vessel):
     if end_node.is_end_depot():
         return [(at, at, at) for at in range(early_arrival, late_arrival + 1)], False
     else:
-        checkpoints = get_no_idling_checkpoints(early_arrival, late_arrival, service_duration, end_node)
+        checkpoints = get_no_idling_checkpoints(early_arrival, late_arrival, service_duration, end_node, vessel)
         if checkpoints:
             return checkpoints, False
-        checkpoints = get_idling_checkpoints(early_arrival, late_arrival, service_duration, end_node)
+        checkpoints = get_idling_checkpoints(early_arrival, late_arrival, service_duration, end_node, vessel)
         return checkpoints, True
 
 
-def get_no_idling_checkpoints(early_arrival, late_arrival, service_duration, end_node):
+def get_no_idling_checkpoints(early_arrival, late_arrival, service_duration, end_node, vessel):
     checkpoints = []
     for arrival_time in range(early_arrival, late_arrival + 1):
-        checkpoint = get_checkpoint(arrival_time, arrival_time, service_duration, end_node)
-        if checkpoint:
-            checkpoints.append(checkpoint)
+        if not is_return_possible(end_node, arrival_time + service_duration, vessel):
+            break
+        if is_continuous_servicing_possible(arrival_time, service_duration, end_node):
+            checkpoints.append((arrival_time, arrival_time, arrival_time + service_duration))
     return checkpoints
 
 
-def get_idling_checkpoints(early_arrival, late_arrival, service_duration, end_node):
+def get_idling_checkpoints(early_arrival, late_arrival, service_duration, end_node, vessel):
     checkpoints = []
     for arrival_time in range(early_arrival, late_arrival + 1):
         service_start_time = arrival_time
-        checkpoint = get_checkpoint(arrival_time, service_start_time, service_duration, end_node)
-        while not checkpoint:
+        while not is_continuous_servicing_possible(service_start_time, service_duration, end_node) \
+                and service_start_time < vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR:
             service_start_time += 1
-            checkpoint = get_checkpoint(arrival_time, service_start_time, service_duration, end_node)
-        checkpoints.append(checkpoint)
+        if not is_return_possible(end_node, service_start_time + service_duration, vessel):
+            break
+        checkpoints.append((arrival_time, service_start_time, service_start_time + service_duration))
     return checkpoints
 
 
-def get_checkpoint(arrival_time, service_start_time, service_duration, end_node):
+def is_continuous_servicing_possible(service_start_time, service_duration, end_node):
     worst_weather = max(data.WEATHER_FORECAST_DISC[service_start_time:service_start_time + service_duration])
-
     opening_hour, closing_hour = end_node.get_installation().get_opening_and_closing_hours()
     disc_opening_time, disc_closing_time = hour_to_disc(opening_hour), hour_to_disc(closing_hour)
-
     installation_open = True
     if disc_opening_time != 0 and disc_closing_time != data.TIME_UNITS_24:
         start_daytime = disc_to_disc_daytime(service_start_time)
@@ -88,11 +83,19 @@ def get_checkpoint(arrival_time, service_start_time, service_duration, end_node)
         if start_daytime > disc_closing_time or start_daytime < disc_opening_time or \
                 end_daytime > disc_closing_time or end_daytime < disc_opening_time:
             installation_open = False
+    return installation_open and worst_weather < data.WORST_WEATHER_STATE
 
-    if installation_open and worst_weather < data.WORST_WEATHER_STATE:
-        return arrival_time, service_start_time, service_start_time + service_duration
-    else:
-        return None
+
+def is_return_possible(end_node, arc_end_time, vessel):
+    distance = end_node.get_installation().get_distance_to_installation(data.DEPOT)
+    speed_impacts = [data.SPEED_IMPACTS[w] for w in data.WEATHER_FORECAST_DISC[arc_end_time:]]
+    adjusted_max_speeds = [data.MAX_SPEED - speed_impact for speed_impact in speed_impacts]
+    if len(adjusted_max_speeds) == 0:
+        return False
+    avg_max_speed = sum(adjusted_max_speeds) / len(adjusted_max_speeds)
+    earliest_arr_time = arc_end_time + hour_to_disc(distance / avg_max_speed)
+    return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
+    return earliest_arr_time <= return_time
 
 
 def calculate_arc_data(start_time, checkpoints, distance, vessel):
@@ -111,7 +114,7 @@ def calculate_arc_cost(start_time, end_time, checkpoints, distance, vessel):
 
 
 def calculate_total_fuel_cost(start_time, checkpoints, distance):
-    sail_cost = calculate_fuel_cost_sailing_v2(start_time, checkpoints[0], distance)
+    sail_cost = calculate_fuel_cost_sailing(start_time, checkpoints[0], distance)
     idle_cost = calculate_fuel_cost_idling(checkpoints[0], checkpoints[1])
     service_cost = calculate_fuel_cost_servicing(checkpoints[1], checkpoints[2])
     total_cost = sail_cost + idle_cost + service_cost
@@ -119,43 +122,20 @@ def calculate_total_fuel_cost(start_time, checkpoints, distance):
 
 
 def calculate_fuel_cost_sailing(start_time, arrival_time, distance):
-    if distance == 0:
-        return 0
-    time_in_each_ws = get_time_in_each_weather_state(start_time, arrival_time)
-    speed = distance / disc_to_exact_hours(arrival_time - start_time)
-    max_speed_ws2, max_speed_ws3 = data.MAX_SPEED - data.SPEED_IMPACTS[-2], data.MAX_SPEED - data.SPEED_IMPACTS[-1]
-
-    penalty_speed = 0
-    if speed > max_speed_ws2:
-        penalty_speed += (time_in_each_ws[-2] * (speed - max_speed_ws2)) / sum(time_in_each_ws[:-2])
-    if speed > max_speed_ws3:
-        penalty_speed += (time_in_each_ws[-1] * (speed - max_speed_ws3)) / sum(time_in_each_ws[:-1])
-
-    consumption = (time_in_each_ws[0] + time_in_each_ws[1]) * get_fc_mo(speed + penalty_speed) \
-                  + time_in_each_ws[2] * get_fc_mo(min(speed + data.SPEED_IMPACTS[2], data.MAX_SPEED)) \
-                  + time_in_each_ws[3] * get_fc_mo(min(speed + data.SPEED_IMPACTS[3], data.MAX_SPEED))
-
-    return consumption * data.FUEL_PRICE
-
-
-def calculate_fuel_cost_sailing_v2(start_time, arrival_time, distance):
     if distance == 0 or start_time == arrival_time:
         return 0
     time_in_each_ws = get_time_in_each_weather_state(start_time, arrival_time)
     speed = distance / disc_to_exact_hours(arrival_time - start_time)
     distance_in_each_ws = [speed * time_in_each_ws[ws] for ws in range(4)]
     max_speed_ws2, max_speed_ws3 = data.MAX_SPEED - data.SPEED_IMPACTS[-2], data.MAX_SPEED - data.SPEED_IMPACTS[-1]
-
     penalty_speed = 0
     if speed > max_speed_ws2:
         penalty_speed += (time_in_each_ws[-2] * (speed - max_speed_ws2)) / sum(time_in_each_ws[:-2])
     if speed > max_speed_ws3:
         penalty_speed += (time_in_each_ws[-1] * (speed - max_speed_ws3)) / sum(time_in_each_ws[:-1])
-
-    consumption = get_fc_ngl(distance_in_each_ws[0] + distance_in_each_ws[1], speed + penalty_speed, 0) \
-                  + get_fc_ngl(distance_in_each_ws[2], speed, 2) \
-                  + get_fc_ngl(distance_in_each_ws[3], speed, 3)
-
+    consumption = get_fuel_consumption(distance_in_each_ws[0] + distance_in_each_ws[1], speed + penalty_speed, 0) \
+                  + get_fuel_consumption(distance_in_each_ws[2], speed, 2) \
+                  + get_fuel_consumption(distance_in_each_ws[3], speed, 3)
     return consumption * data.FUEL_PRICE
 
 
@@ -179,25 +159,9 @@ def calculate_charter_cost(vessel, start_time, end_time):
     return data.SPOT_RATE * disc_to_exact_hours(end_time - start_time) if vessel.is_spot_vessel() else 0.0
 
 
-def get_fc_mo(speed):
-    return 11.111 * speed * speed - 177.78 * speed + 1011.1
-
-
-def get_fc_ngl(distance, speed, weather):
+def get_fuel_consumption(distance, speed, weather):
     return (distance / (speed - data.SPEED_IMPACTS[weather])) \
            * data.FUEL_CONSUMPTION_DESIGN_SPEED * math.pow((speed / data.DESIGN_SPEED), 3)
-
-
-def is_return_possible(end_node, arc_end_time, vessel):
-    distance = end_node.get_installation().get_distance_to_installation(data.DEPOT)
-    speed_impacts = [data.SPEED_IMPACTS[w] for w in data.WEATHER_FORECAST_DISC[arc_end_time:]]
-    adjusted_max_speeds = [data.MAX_SPEED - speed_impact for speed_impact in speed_impacts]
-    if len(adjusted_max_speeds) == 0:
-        return False
-    avg_max_speed = sum(adjusted_max_speeds) / len(adjusted_max_speeds)
-    earliest_arr_time = arc_end_time + distance / avg_max_speed
-    return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
-    return earliest_arr_time <= return_time
 
 
 def print_arc_info(start_node, end_node, distance, start_time, early, late, service, checkpoints, verbose):
