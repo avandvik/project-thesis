@@ -1,7 +1,6 @@
 import data
 from arc_flow.preprocessing import helpers as hlp
 from collections import defaultdict as dd
-from pprint import pprint
 
 
 class ArcGenerator:
@@ -177,5 +176,5 @@ class ArcGenerator:
         return self.specific_end_times
 
 
-# ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1, True)
-# ag.generate_arcs()
+ag = ArcGenerator(16 * data.TIME_UNITS_PER_HOUR - 1, True)
+ag.generate_arcs()

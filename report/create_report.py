@@ -3,11 +3,11 @@
 import os
 import data
 
-LOCAL = True
+LOCAL = False
 if LOCAL:
     RESULTS_DIR = 'output/local/results'
 else:
-    RESULTS_DIR = 'output/solstorm/211120-131600/results'
+    RESULTS_DIR = 'output/solstorm/251120-090530/results'
 
 RESULTS_PATH = f'{data.PROJECT_DIR_PATH}/{RESULTS_DIR}'
 IPYNB_FILENAME = 'template.ipynb'

@@ -12,12 +12,12 @@ PROJECT_DIR_PATH = f'{pathlib.Path(__file__).parent.absolute()}'  # Path of the 
 
 LOCAL = True
 if LOCAL:
-    INSTANCE_NAME = 'O4-I3-C1-V4-WS0'
+    INSTANCE_NAME = 'test_1'
     INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/mongstad/{INSTANCE_NAME}.json'
     LOG_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/logs/{INSTANCE_NAME}.log'
     RESULTS_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/results/{INSTANCE_NAME}.json'
 else:
-    INSTANCE_NAME = os.environ.get('INSTANCE_NAME')
+    INSTANCE_NAME = os.environ.get('instance_name')
     INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/mongstad/{INSTANCE_NAME}.json'
     LOG_OUTPUT_PATH = f'/storage/users/anderhva/{os.environ.get("current_time")}/logs/{INSTANCE_NAME}.log'
     RESULTS_OUTPUT_PATH = f'/storage/users/anderhva/{os.environ.get("current_time")}/results/{INSTANCE_NAME}.json'
@@ -109,6 +109,9 @@ UNIT_SERVICE_TIME_DISC = UNIT_SERVICE_TIME_HOUR * TIME_UNITS_PER_HOUR
 MIN_SPEED_DISC = MIN_SPEED * (1 / TIME_UNITS_PER_HOUR)
 
 MAX_DISTANCE_UNIT = MAX_SPEED * TIME_UNIT_DISC
+
+# TODO: Make part of input file
+PREPARATION_END_TIME = 16 * TIME_UNITS_PER_HOUR - 1
 
 """ ============================ WEATHER ============================ """
 WEATHER_FORECAST_HOURS = input_data['weather_forecast']

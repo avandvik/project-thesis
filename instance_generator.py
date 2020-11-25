@@ -30,7 +30,7 @@ def generate_test_instances():
     return_day = 4
     planning_period_hours = 96
     time_units_per_hour = 4
-    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/data/orders_4.xlsx',
+    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/data/sequence_orders.xlsx',
                            template_path=f'{data.PROJECT_DIR_PATH}/input/templates/mongstad_template.json',
                            number_of_vessels=number_of_vessels,
                            return_day=return_day,
@@ -62,7 +62,10 @@ def generate_test_instance(orders_file_path,
         add_instance_info_to_json(json_file, inst_ordering, number_of_insts, weather_scenario, number_of_vessels)
         add_weather_forecast_to_json(json_file, weather_forecasts[weather_scenario])
 
-        filename = get_filename(base=str(sheet_name), vessels=number_of_vessels, weather_scenario=weather_scenario)
+        filename = get_filename(base=str(sheet_name),
+                                vessels=number_of_vessels,
+                                weather_scenario=weather_scenario)
+
         for entry in os.listdir(outdir_path):
             if os.path.isfile(os.path.join(outdir_path, entry)):
                 assert entry != filename, 'File already generated, check if we really want to overwrite!'

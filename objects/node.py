@@ -21,7 +21,7 @@ class Node:
     def is_end_depot(self):
         return self._is_depot and self._is_end_depot
 
-    def get_order(self):  # TODO: Raise a modified error if the node is depot
+    def get_order(self):
         return self.order
 
     def get_installation(self):

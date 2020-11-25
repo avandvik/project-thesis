@@ -40,7 +40,8 @@ def calculate_service_time(to_node):
 
 def get_checkpoints(early_arrival, late_arrival, service_duration, end_node, vessel):
     if end_node.is_end_depot():
-        return [(at, at, at) for at in range(early_arrival, late_arrival + 1)], False
+        return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR - 1
+        return [(at, at, at) for at in range(early_arrival, late_arrival + 1) if at <= return_time], False
     else:
         checkpoints = get_no_idling_checkpoints(early_arrival, late_arrival, service_duration, end_node, vessel)
         if checkpoints:
@@ -54,7 +55,7 @@ def get_no_idling_checkpoints(early_arrival, late_arrival, service_duration, end
     for arrival_time in range(early_arrival, late_arrival + 1):
         if not is_return_possible(end_node, arrival_time + service_duration, vessel):
             break
-        if is_continuous_servicing_possible(arrival_time, service_duration, end_node):
+        if is_servicing_possible(arrival_time, service_duration, end_node):
             checkpoints.append((arrival_time, arrival_time, arrival_time + service_duration))
     return checkpoints
 
@@ -63,8 +64,8 @@ def get_idling_checkpoints(early_arrival, late_arrival, service_duration, end_no
     checkpoints = []
     for arrival_time in range(early_arrival, late_arrival + 1):
         service_start_time = arrival_time
-        while not is_continuous_servicing_possible(service_start_time, service_duration, end_node) \
-                and service_start_time < vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR:
+        while service_start_time < vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR \
+                and not is_servicing_possible(service_start_time, service_duration, end_node):
             service_start_time += 1
         if not is_return_possible(end_node, service_start_time + service_duration, vessel):
             break
@@ -72,7 +73,7 @@ def get_idling_checkpoints(early_arrival, late_arrival, service_duration, end_no
     return checkpoints
 
 
-def is_continuous_servicing_possible(service_start_time, service_duration, end_node):
+def is_servicing_possible(service_start_time, service_duration, end_node):
     worst_weather = max(data.WEATHER_FORECAST_DISC[service_start_time:service_start_time + service_duration])
     opening_hour, closing_hour = end_node.get_installation().get_opening_and_closing_hours()
     disc_opening_time, disc_closing_time = hour_to_disc(opening_hour), hour_to_disc(closing_hour)
@@ -94,7 +95,7 @@ def is_return_possible(end_node, arc_end_time, vessel):
         return False
     avg_max_speed = sum(adjusted_max_speeds) / len(adjusted_max_speeds)
     earliest_arr_time = arc_end_time + hour_to_disc(distance / avg_max_speed)
-    return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR
+    return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR - 1
     return earliest_arr_time <= return_time
 
 
