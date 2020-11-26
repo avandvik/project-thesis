@@ -2,6 +2,20 @@ import data
 import math
 
 
+def generate_visit_list():
+    visit_list = []
+    installations = set()
+    for node in data.ALL_NODES[1:]:
+        if node.get_installation() in installations:
+            continue
+        if node.get_installation().has_multiple_orders():
+            visit_list.append(data.ALL_NODES[node.get_installation().get_most_dominating_order().get_index() + 1])
+        else:
+            visit_list.append(node)
+        installations.add(node.get_installation())
+    return visit_list
+
+
 def is_illegal_arc(start_node, end_node):
     if start_node.is_start_depot() and end_node.is_end_depot():
         return False
@@ -21,6 +35,24 @@ def is_illegal_arc(start_node, end_node):
     return False
 
 
+def get_internal_nodes(end_node):
+    orders = end_node.get_installation().get_orders()
+    internal_nodes = [data.ALL_NODES[o.get_index() + 1] for o in orders]
+    md_node, od_node, op_node = None, None, None
+    for internal_node in internal_nodes:
+        if internal_node.get_order().is_mandatory_delivery():
+            md_node = internal_node
+        elif internal_node.get_order().is_optional_delivery():
+            od_node = internal_node
+        elif internal_node.get_order().is_optional_pickup():
+            op_node = internal_node
+    ordered_internal_nodes = []
+    for node in [md_node, od_node, op_node]:
+        if node:
+            ordered_internal_nodes.append(node)
+    return ordered_internal_nodes
+
+
 def get_arrival_time_span(distance, departure_time):
     max_sailing_duration = hour_to_disc(distance / data.MIN_SPEED)
     min_sailing_duration = hour_to_disc(distance / data.MAX_SPEED)
@@ -35,7 +67,12 @@ def get_arrival_time_span(distance, departure_time):
 
 
 def calculate_service_time(to_node):
-    return 0 if to_node.is_end_depot() else math.ceil(to_node.get_order().get_size() * data.UNIT_SERVICE_TIME_DISC)
+    if to_node.is_end_depot():
+        return 0
+    elif to_node.get_order().is_optional_pickup():
+        return 1
+    else:
+        return math.ceil(to_node.get_order().get_size() * data.UNIT_SERVICE_TIME_DISC)
 
 
 def get_checkpoints(early_arrival, late_arrival, service_duration, end_node, vessel):
