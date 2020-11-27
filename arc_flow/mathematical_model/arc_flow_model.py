@@ -3,6 +3,7 @@ import gurobipy as gp
 
 import data
 from arc_flow.preprocessing.arc_generator import ArcGenerator
+from arc_flow.preprocessing.arc_generator_x import ArcGeneratorX
 from arc_flow.preprocessing.penalty_cost_calculator import calculate_penalty_costs
 import arc_flow.mathematical_model.variable_generator as vg
 import arc_flow.mathematical_model.constraint_generator as cg
@@ -22,7 +23,8 @@ class ArcFlowModel:
         self.model.setParam('TimeLimit', data.TIME_LIMIT)
 
         self.preparation_end_time = 16 * data.TIME_UNITS_PER_HOUR - 1
-        self.ag = ArcGenerator(self.preparation_end_time, self.verbose)
+        # self.ag = ArcGenerator(self.preparation_end_time, self.verbose)
+        self.ag = ArcGeneratorX()
         self.nodes = None
         self.arc_costs = None
         self.sep_arc_costs = None
@@ -44,7 +46,6 @@ class ArcFlowModel:
 
     def preprocess(self):
         self.ag.generate_arcs()
-        self.nodes = self.ag.get_nodes()
         self.arc_costs = self.ag.get_arc_costs()
         self.sep_arc_costs = self.ag.get_sep_arc_costs()
 
