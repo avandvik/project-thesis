@@ -12,7 +12,7 @@ PROJECT_DIR_PATH = f'{pathlib.Path(__file__).parent.absolute()}'  # Path of the 
 
 LOCAL = True
 if LOCAL:
-    INSTANCE_NAME = 'O8-I6-C1-V1-WS0'
+    INSTANCE_NAME = 'test_4'
     INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/mongstad/{INSTANCE_NAME}.json'
     LOG_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/logs/{INSTANCE_NAME}.log'
     RESULTS_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/results/{INSTANCE_NAME}.json'
@@ -46,11 +46,11 @@ VESSELS = []
 index = 0
 for vessel_name in input_data['vessels']:
     is_spot_vessel = True if input_data['vessels'][vessel_name]['is_spot_vessel'] == 'True' else False
-    return_day = input_data['vessels'][vessel_name]['return_day']
-    if return_day != 0:
+    return_time = input_data['vessels'][vessel_name]['return_time']
+    if return_time != 0:
         VESSELS.append(Vessel(index=index,
                               name=vessel_name,
-                              return_day=return_day,
+                              return_time=return_time,
                               capacity=input_data['vessels'][vessel_name]['capacity'],
                               is_spot_vessel=is_spot_vessel))
         index += 1

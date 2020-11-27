@@ -45,11 +45,16 @@ class ArcGeneratorX:
     def visit_nodes(self, start_node, end_node, visit_list, start_time, vessel):
         if hlp.is_illegal_arc(start_node, end_node):
             return
+
+        tabs = '\t' * (len(data.ALL_NODES) - 2 - len(visit_list))
+        print(f'{tabs} {start_node} ({start_time}) -> {end_node}', end=' ')
+
+        inbound_et, idling = self.inbound_arc_calc(start_node, end_node, start_time, vessel)
+
+        print(inbound_et)
+
         if not visit_list:
             return
-
-        inbound_et = self.inbound_arc_calc(start_node, end_node, start_time, vessel)
-
         if end_node.is_end_depot():
             return
 
@@ -72,13 +77,10 @@ class ArcGeneratorX:
 
     def generate_outbound_arcs(self, start_node, visit_list, start_times, vessel):
         for start_time in start_times:
-            if len(visit_list) == 1 and visit_list[0].is_end_depot():
-                self.visit_nodes(start_node, visit_list[0], visit_list, start_time, vessel)
-            else:
-                for not_visited_node in visit_list:
-                    new_visit_list = visit_list.copy()
-                    new_visit_list.remove(not_visited_node)
-                    self.visit_nodes(start_node, not_visited_node, new_visit_list, start_time, vessel)
+            for not_visited_node in visit_list:
+                new_visit_list = visit_list.copy()
+                new_visit_list.remove(not_visited_node)
+                self.visit_nodes(start_node, not_visited_node, new_visit_list, start_time, vessel)
 
     def inbound_arc_calc(self, start_node, end_node, start_time, vessel):
         distance = start_node.get_installation().get_distance_to_installation(end_node.get_installation())
@@ -86,14 +88,16 @@ class ArcGeneratorX:
         service_duration = hlp.calculate_service_time(end_node)
         checkpoints, idling = hlp.get_checkpoints(early_arrival, late_arrival, service_duration, end_node, vessel)
         costs, end_times, arr_times = hlp.calculate_arc_data(start_time, checkpoints, distance, vessel)
-        self.save_inbound_arcs(start_node, end_node, start_time, arr_times, end_times, costs, vessel, idling)
-        return list(dict.fromkeys(end_times))
+        end_times = self.save_inbound_arcs(start_node, end_node, start_time, arr_times, end_times, costs, vessel, idling)
+        return end_times, idling
 
     def save_inbound_arcs(self, start_node, end_node, start_time, arr_times, end_times, costs, vessel, idling):
         if end_node.is_end_depot() or idling:
-            self.add_best_arc(start_node, end_node, costs, start_time, arr_times, end_times, vessel)
+            end_time = self.add_best_arc(start_node, end_node, costs, start_time, arr_times, end_times, vessel)
+            return [end_time]
         else:
             self.add_arcs(start_node, end_node, costs, start_time, arr_times, end_times, vessel)
+            return end_times
 
     def internal_arc_calc(self, internal_nodes, start_times, vessel):
         end_times = []
@@ -132,6 +136,7 @@ class ArcGeneratorX:
         best_return_arc = min(arcs)
         cost, sep_cost, end_time, arr_time = best_return_arc
         self.update_sets(start_node, end_node, cost, sep_cost, start_time, end_time, vessel, arr_time)
+        return end_time
 
     def add_arcs(self, start_node, end_node, costs, start_time, arr_times, end_times, vessel):
         for cost, end_time, arr_time in zip(costs, end_times, arr_times):
@@ -144,7 +149,7 @@ class ArcGeneratorX:
                 speed = distance / hlp.disc_to_exact_hours(aat - ast)
             else:
                 speed = 0
-            print(f'Adding arc: {sn} ({ast}) -> {en} ({aet}) ({ac}) {speed}')
+            # print(f'Adding arc: {sn} ({ast}) -> {en} ({aet}) ({ac}) {speed}')
 
         self.arcs[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = True
         self.arc_costs[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = ac
