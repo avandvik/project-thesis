@@ -1,6 +1,7 @@
 import data
 import arc_flow.preprocessing.helpers as hlp
 from collections import defaultdict as dd
+import time
 
 
 class ArcGeneratorX:
@@ -215,5 +216,7 @@ class ArcGeneratorX:
 
 
 ag = ArcGeneratorX()
+start = time.time()
 ag.generate_arcs()
+print(f'Runtime: {time.time() - start}')
 ag.print_arcs()
