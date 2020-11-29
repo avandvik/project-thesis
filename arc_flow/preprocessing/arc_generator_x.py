@@ -47,12 +47,12 @@ class ArcGeneratorX:
         if hlp.is_illegal_arc(start_node, end_node):
             return
 
-        tabs = '\t' * (len(data.ALL_NODES) - 2 - len(visit_list))
-        print(f'{tabs} {start_node} ({start_time}) -> {end_node}', end=' ')
+        # tabs = '\t' * (len(data.ALL_NODES) - 2 - len(visit_list))
+        # print(f'{tabs} {start_node} ({start_time}) -> {end_node}', end=' ')
 
         inbound_et, idling = self.inbound_arc_calc(start_node, end_node, start_time, vessel)
 
-        print(inbound_et)
+        # print(inbound_et)
 
         if not visit_list:
             return
