@@ -3,7 +3,6 @@ import gurobipy as gp
 
 import data
 from arc_flow.preprocessing.arc_generator import ArcGenerator
-from arc_flow.preprocessing.arc_generator_x import ArcGeneratorX
 from arc_flow.preprocessing.penalty_cost_calculator import calculate_penalty_costs
 import arc_flow.mathematical_model.variable_generator as vg
 import arc_flow.mathematical_model.constraint_generator as cg
@@ -13,8 +12,6 @@ import arc_flow.postprocessing as post
 class ArcFlowModel:
 
     def __init__(self):
-        self.verbose = data.VERBOSE
-
         with gp.Env(data.LOG_OUTPUT_PATH, empty=True) as env:
             env.setParam('LogToConsole', 0)
             env.start()
@@ -22,9 +19,7 @@ class ArcFlowModel:
 
         self.model.setParam('TimeLimit', data.TIME_LIMIT)
 
-        self.preparation_end_time = 16 * data.TIME_UNITS_PER_HOUR - 1
-        # self.ag = ArcGenerator(self.preparation_end_time, self.verbose)
-        self.ag = ArcGeneratorX()
+        self.ag = ArcGenerator(data.VERBOSE)
         self.nodes = None
         self.arc_costs = None
         self.sep_arc_costs = None
@@ -50,7 +45,7 @@ class ArcFlowModel:
         self.sep_arc_costs = self.ag.get_sep_arc_costs()
 
         self.arc_arrival_times = self.ag.get_arc_arrival_times()
-        self.penalty_costs = calculate_penalty_costs(self.arc_costs, self.preparation_end_time)
+        self.penalty_costs = calculate_penalty_costs(self.arc_costs)
 
         self.node_time_points = self.ag.get_node_time_points()
         self.start_nodes = self.ag.get_start_nodes()
@@ -94,7 +89,7 @@ class ArcFlowModel:
 
                                 gp.quicksum(self.penalty_costs[i] * (1 - gp.quicksum(self.u[v, i]
                                                                                      for v in range(len(data.VESSELS))))
-                                            for i in data.OPTIONAL_NODE_INDICES)
+                                            for i in data.ALL_NODE_INDICES)
 
                                 +
 
@@ -115,14 +110,14 @@ class ArcFlowModel:
         self.add_constraints()
         self.set_objective()
 
-        if self.verbose:
+        if data.VERBOSE:
             self.model.printStats()
 
         model_start = time.time()
         self.model.optimize()
         model_runtime = (time.time() - model_start)
 
-        if self.verbose:
+        if data.VERBOSE:
             post.print_nodes_and_orders()
 
         voyages = post.create_voyages_variable(self.model.getVars(), self.arc_arrival_times, self.sep_arc_costs)

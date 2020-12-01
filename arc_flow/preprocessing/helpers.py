@@ -165,7 +165,7 @@ def get_idling_checkpoints_v2(early_arrival, late_arrival, service_duration, end
     checkpoints = []
     for arrival_time in range(early_arrival, late_arrival + 1):
         service_start_time = arrival_time
-        if service_start_time < vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR:
+        if service_start_time >= vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR:
             break
         while not is_servicing_possible(service_start_time, service_duration, end_node):
             service_start_time += 1
