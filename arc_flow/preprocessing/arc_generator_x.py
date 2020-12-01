@@ -88,7 +88,7 @@ class ArcGeneratorX:
         early_arrival, late_arrival = hlp.get_arrival_time_span(distance, start_time)
         service_duration = hlp.calculate_service_time(end_node)
         checkpoints, idling = hlp.get_checkpoints(early_arrival, late_arrival, service_duration, end_node, vessel)
-        costs, end_times, arr_times = hlp.calculate_arc_data(start_time, checkpoints, distance, vessel)
+        end_times, costs, arr_times = hlp.calculate_arc_data(start_time, checkpoints, distance, vessel)
         end_times = self.save_inbound_arcs(start_node, end_node, start_time, arr_times, end_times, costs, vessel, idling)
         return end_times, idling
 
@@ -119,7 +119,7 @@ class ArcGeneratorX:
 
             if hlp.is_return_possible(end_node, end_time, vessel) \
                     and hlp.is_servicing_possible(start_time, total_service_duration, end_node):
-                costs, end_times, arr_times = hlp.calculate_arc_data(start_time, checkpoints, 0, vessel)
+                end_times, costs, arr_times = hlp.calculate_arc_data(start_time, checkpoints, 0, vessel)
 
                 self.save_internal_arcs(internal_nodes, checkpoints, arr_times, end_times, costs, vessel)
         return end_times
@@ -180,7 +180,7 @@ class ArcGeneratorX:
                     for end_time in range(data.PREPARATION_END_TIME, data.PERIOD_DISC):
                         if self.arcs[0][start_node.get_index()][start_time][end_node.get_index()][end_time]:
                             arc_cost = self.arc_costs[0][start_node.get_index()][start_time][end_node.get_index()][end_time]
-                            print(f'{start_node} ({start_time}) -> {end_node} ({end_time}): {arc_cost}')
+                            # print(f'{start_node} ({start_time}) -> {end_node} ({end_time}): {arc_cost}')
                             counter += 1
         print(counter)
 

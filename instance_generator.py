@@ -62,7 +62,7 @@ def generate_test_instance(orders_file_path,
         # add_instance_info_to_json(json_file, inst_ordering, number_of_insts, weather_scenario, number_of_vessels)
         add_weather_forecast_to_json(json_file, weather_forecasts[weather_scenario])
 
-        filename = str(sheet_name)
+        filename = str(sheet_name) + '.json'
 
         # filename = get_filename(base=str(sheet_name),
         #                         vessels=number_of_vessels,

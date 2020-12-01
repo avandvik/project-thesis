@@ -12,7 +12,7 @@ PROJECT_DIR_PATH = f'{pathlib.Path(__file__).parent.absolute()}'  # Path of the 
 
 LOCAL = True
 if LOCAL:
-    INSTANCE_NAME = 'test_3'
+    INSTANCE_NAME = 'test_2'
     INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/mongstad/{INSTANCE_NAME}.json'
     LOG_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/logs/{INSTANCE_NAME}.log'
     RESULTS_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/results/{INSTANCE_NAME}.json'
