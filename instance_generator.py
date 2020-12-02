@@ -30,14 +30,14 @@ def generate_test_instances():
     return_time = 80
     planning_period_hours = 80
     time_units_per_hour = 4
-    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/data/sequence_orders.xlsx',
+    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/data/base_cases.xlsx',
                            template_path=f'{data.PROJECT_DIR_PATH}/input/templates/mongstad_template.json',
                            number_of_vessels=number_of_vessels,
                            return_time=return_time,
                            weather_scenario=weather_scenario,
                            planning_period_hours=planning_period_hours,
                            time_units_per_hour=time_units_per_hour,
-                           outdir_path=f'{data.PROJECT_DIR_PATH}/input/mongstad')
+                           outdir_path=f'{data.PROJECT_DIR_PATH}/input/mongstad/base_case')
 
 
 def generate_test_instance(orders_file_path,
@@ -54,19 +54,18 @@ def generate_test_instance(orders_file_path,
         with open(template_path) as template:
             json_file = json.load(template)
 
-        # inst_ordering, number_of_insts = extract_instance_info(sheet_name)
+        number_of_orders, number_of_insts, inst_ordering = extract_instance_info(sheet_name)
 
         add_orders_to_json(json_file, sheet_df)
         add_vessels_to_json(json_file, number_of_vessels, return_time)
         add_time_info_to_json(json_file, planning_period_hours, time_units_per_hour)
-        # add_instance_info_to_json(json_file, inst_ordering, number_of_insts, weather_scenario, number_of_vessels)
+        add_instance_info_to_json(json_file, number_of_orders, number_of_insts, inst_ordering, weather_scenario,
+                                  number_of_vessels)
         add_weather_forecast_to_json(json_file, weather_forecasts[weather_scenario])
 
-        filename = str(sheet_name) + '.json'
-
-        # filename = get_filename(base=str(sheet_name),
-        #                         vessels=number_of_vessels,
-        #                         weather_scenario=weather_scenario)
+        filename = get_filename(base=str(sheet_name),
+                                vessels=number_of_vessels,
+                                weather_scenario=weather_scenario)
 
         for entry in os.listdir(outdir_path):
             if os.path.isfile(os.path.join(outdir_path, entry)):
@@ -80,22 +79,10 @@ def generate_test_instance(orders_file_path,
 
 def extract_instance_info(sheet_name):
     sheet_info = sheet_name.split('-')
-
-    if sheet_info[0] == 'C':
-        inst_ordering = 'Clustered'
-    elif sheet_info[0] == 'E':
-        inst_ordering = 'Evenly spread'
-    elif sheet_info[0] == 'R':
-        inst_ordering = 'Random'
-    else:
-        inst_ordering = 'Random'
-
-    number_of_insts = ''
-    for digit in list(sheet_info[1])[1:]:
-        number_of_insts += digit
-    number_of_insts = int(number_of_insts)
-
-    return inst_ordering, number_of_insts
+    number_of_orders = int(list(sheet_info[0])[1])
+    number_of_insts = int(number_of_orders / 2)
+    inst_ordering = 'Random'
+    return number_of_orders, number_of_insts, inst_ordering
 
 
 def add_orders_to_json(json_file, df):
@@ -144,9 +131,11 @@ def add_time_info_to_json(json_file, planning_period_in_hours, time_units_per_ho
                       'time_units_per_hour': time_units_per_hour})
 
 
-def add_instance_info_to_json(json_file, inst_ordering, number_of_insts, weather_scenario, number_of_vessels):
-    json_file.update({'installation_ordering': inst_ordering,
+def add_instance_info_to_json(json_file, number_of_orders, number_of_insts, inst_ordering, weather_scenario,
+                              number_of_vessels):
+    json_file.update({'number_of_orders': number_of_orders,
                       'number_of_installations': number_of_insts,
+                      'installation_ordering': inst_ordering,
                       'weather_scenario': weather_scenario,
                       'fleet_size': number_of_vessels})
 

@@ -6,7 +6,7 @@ output
 report/*
 input/mongstad/*
 input/data/*
-input/backup/*
+input/run/*
 output/solstorm
 report/.ipynb_checkpoints/*
 .config_ipynb

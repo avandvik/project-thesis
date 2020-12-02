@@ -31,6 +31,7 @@ class ArcGenerator:
         self.specific_end_times = [[[[[] for _ in data.TIME_POINTS_DISC] for _ in data.ALL_NODES]
                                     for _ in data.ALL_NODES] for _ in data.VESSELS]
         self.verbose = verbose
+        self.number_of_arcs = 0
 
     def generate_arcs(self):
         for vessel in data.VESSELS:
@@ -68,6 +69,7 @@ class ArcGenerator:
         self.arc_costs[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = ac
         self.sep_arc_costs[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = sac
         self.arc_arrival_times[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = aat
+        self.number_of_arcs += 1
 
         if aet not in self.node_time_points[v.get_index()][en.get_index()]:
             self.node_time_points[v.get_index()][en.get_index()].append(aet)
@@ -85,6 +87,8 @@ class ArcGenerator:
             self.specific_end_times[v.get_index()][sn.get_index()][en.get_index()][ast].append(aet)
 
     def print_arcs(self):
+        print(f'Orders: {data.ALL_NODES}')
+
         counter = 0
         for start_node in data.ALL_NODES[:-1]:
             for end_node in data.ALL_NODES[1:]:
@@ -125,6 +129,9 @@ class ArcGenerator:
 
     def get_specific_end_times(self):
         return self.specific_end_times
+
+    def get_number_of_arcs(self):
+        return self.number_of_arcs
 
 
 # ag = ArcGenerator(verbose=True)

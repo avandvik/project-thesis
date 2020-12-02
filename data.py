@@ -12,13 +12,13 @@ PROJECT_DIR_PATH = f'{pathlib.Path(__file__).parent.absolute()}'  # Path of the 
 
 LOCAL = True
 if LOCAL:
-    INSTANCE_NAME = 'test_8'
-    INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/mongstad/{INSTANCE_NAME}.json'
+    INSTANCE_NAME = 'O4-C1-V1-WS0'
+    INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/run/{INSTANCE_NAME}.json'
     LOG_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/logs/{INSTANCE_NAME}.log'
     RESULTS_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/results/{INSTANCE_NAME}.json'
 else:
     INSTANCE_NAME = os.environ.get('instance_name')
-    INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/mongstad/{INSTANCE_NAME}.json'
+    INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/run/{INSTANCE_NAME}.json'
     LOG_OUTPUT_PATH = f'/storage/users/anderhva/{os.environ.get("current_time")}/logs/{INSTANCE_NAME}.log'
     RESULTS_OUTPUT_PATH = f'/storage/users/anderhva/{os.environ.get("current_time")}/results/{INSTANCE_NAME}.json'
 

@@ -13,7 +13,7 @@ class ArcFlowModel:
 
     def __init__(self):
         with gp.Env(data.LOG_OUTPUT_PATH, empty=True) as env:
-            env.setParam('LogToConsole', 0)
+            env.setParam('LogToConsole', 1)
             env.start()
             self.model = gp.Model(name=data.LOG_OUTPUT_PATH, env=env)
 
@@ -104,7 +104,7 @@ class ArcFlowModel:
     def run(self):
         preprocess_start = time.time()
         self.preprocess()
-        preprocess_runtime = (time.time() - preprocess_start)
+        preprocess_runtime = round(time.time() - preprocess_start, 4)
 
         self.add_variables()
         self.add_constraints()
@@ -113,27 +113,38 @@ class ArcFlowModel:
         if data.VERBOSE:
             self.model.printStats()
 
-        model_start = time.time()
         self.model.optimize()
-        model_runtime = (time.time() - model_start)
+        model_runtime = round(self.model.Runtime, 4)
 
         if data.VERBOSE:
             post.print_nodes_and_orders()
+            self.model.printAttr('X')
 
         voyages = post.create_voyages_variable(self.model.getVars(), self.arc_arrival_times, self.sep_arc_costs)
-        fuel_costs, charter_costs, arc_costs, penalty_costs = post.separate_objective(self.model.objVal,
-                                                                                      self.model.getVars(),
-                                                                                      self.arc_costs, voyages)
         postponed_orders, serviced_orders = post.find_postponed_orders(voyages)
-        post.save_results_new(voyages=voyages,
-                              postponed_orders=postponed_orders,
-                              serviced_orders=serviced_orders,
-                              preprocess_runtime=preprocess_runtime,
-                              model_runtime=model_runtime,
-                              fuel_costs=fuel_costs,
-                              charter_costs=charter_costs,
-                              penalty_costs=penalty_costs,
-                              output_path=data.RESULTS_OUTPUT_PATH)
+        bound, fuel_costs, charter_costs, arc_costs, penalty_costs = post.separate_objective(self.model.objVal,
+                                                                                             self.model.objBound,
+                                                                                             self.model.getVars(),
+                                                                                             self.arc_costs, voyages)
+        optimality_gap = self.model.MIPGap
+        number_of_variables = self.model.NumVars
+        number_of_bin_variables = self.model.NumBinVars
+        number_of_cont_variables = number_of_variables - number_of_bin_variables
+        post.save_results(voyages=voyages,
+                          postponed_orders=postponed_orders,
+                          serviced_orders=serviced_orders,
+                          preprocess_runtime=preprocess_runtime,
+                          model_runtime=model_runtime,
+                          fuel_costs=fuel_costs,
+                          charter_costs=charter_costs,
+                          penalty_costs=penalty_costs,
+                          objective_bound=bound,
+                          optimality_gap=optimality_gap,
+                          number_of_variables=number_of_variables,
+                          number_of_bin_variables=number_of_bin_variables,
+                          number_of_arcs=self.ag.get_number_of_arcs(),
+                          number_of_cont_variables=number_of_cont_variables,
+                          output_path=data.RESULTS_OUTPUT_PATH)
 
 
 if __name__ == '__main__':

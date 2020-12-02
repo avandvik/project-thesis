@@ -1,6 +1,5 @@
 import json
 import data
-from pprint import pprint
 
 
 def print_nodes_and_orders():
@@ -13,7 +12,7 @@ def print_nodes_and_orders():
     print('\n')
 
 
-def separate_objective(objective_value, variables, arc_costs, routes):
+def separate_objective(objective_value, objective_bound, variables, arc_costs, routes):
     objective_fuel_costs = 0
     objective_charter_costs = 0
     objective_arc_costs = 0
@@ -31,50 +30,13 @@ def separate_objective(objective_value, variables, arc_costs, routes):
             objective_load_costs += v.x
 
     true_objective = objective_value - objective_load_costs
-    objective_penalty_costs = true_objective - objective_arc_costs
+    objective_bound = round(objective_bound - objective_load_costs, 4)
+    objective_fuel_costs = round(objective_fuel_costs, 4)
+    objective_charter_costs = round(objective_charter_costs, 4)
+    objective_arc_costs = round(objective_arc_costs, 4)
+    objective_penalty_costs = round(true_objective - objective_arc_costs, 4)
 
-    return objective_fuel_costs, objective_charter_costs, objective_arc_costs, objective_penalty_costs
-
-
-def print_routes_and_get_sequence(variables, arc_speeds, verbose):
-    routes = create_routes_variable(variables)
-    sequences = {}
-    for vessel in routes.keys():
-        sequence = []
-
-        if verbose:
-            print(f'VESSEL {vessel}')
-
-        next_to_destination_node = max(list(routes[vessel].keys()))
-        destination_node = routes[vessel][next_to_destination_node][0][1]
-        start_node = 0
-        end_node = routes[vessel][start_node][0][1]
-        while end_node != destination_node:
-            start_time, end_time = routes[vessel][start_node][0][0], routes[vessel][start_node][0][2]
-            delivery_load, pickup_load = routes[vessel][start_node][1], routes[vessel][start_node][2]
-            arc_speed = arc_speeds[vessel][start_node][start_time][end_node][end_time]
-
-            if verbose:
-                print(f'\t{start_node} ({start_time}) -> {end_node} ({end_time}) '
-                      f'| l_D = {delivery_load} l_P = {pickup_load} | sailing speed = {arc_speed}')
-
-            sequence.append((start_node, start_time, end_node, end_time, delivery_load, pickup_load, arc_speed))
-
-            start_node = end_node
-            end_node = routes[vessel][start_node][0][1]
-
-        start_time, end_time = routes[vessel][start_node][0][0], routes[vessel][start_node][0][2]
-        delivery_load, pickup_load = routes[vessel][start_node][1], routes[vessel][start_node][2]
-        arc_speed = arc_speeds[vessel][start_node][start_time][end_node][end_time]
-
-        if verbose:
-            print(f'\t{start_node} ({start_time}) -> {end_node} ({end_time}) | sailing speed = {arc_speed}')
-
-        sequence.append((start_node, start_time, 0, end_time, delivery_load, pickup_load, arc_speed))
-
-        sequences.update({vessel: sequence})
-
-    return sequences
+    return objective_bound, objective_fuel_costs, objective_charter_costs, objective_arc_costs, objective_penalty_costs
 
 
 def create_voyages_variable(variables, arc_arrival_times, sep_arc_costs):
@@ -117,8 +79,12 @@ def find_postponed_orders(voyages):
     return not_serviced_orders, serviced_orders
 
 
-def save_results_new(voyages, postponed_orders, serviced_orders, preprocess_runtime, model_runtime, fuel_costs,
-                     charter_costs, penalty_costs, output_path):
+def save_results(voyages,
+                 postponed_orders, serviced_orders,
+                 preprocess_runtime, model_runtime,
+                 fuel_costs, charter_costs, penalty_costs, objective_bound, optimality_gap,
+                 number_of_variables, number_of_bin_variables, number_of_arcs, number_of_cont_variables,
+                 output_path):
     results = {}
     results.update({'instance_info': {}})
     results['instance_info'].update({'installation_ordering': data.INSTALLATION_ORDERING,
@@ -136,9 +102,15 @@ def save_results_new(voyages, postponed_orders, serviced_orders, preprocess_runt
     results.update({'voyages': voyages})
     results.update({'order_fulfillment': {'postponed_orders': list(postponed_orders),
                                           'serviced_orders': list(serviced_orders)}})
-    results.update({'objective': {'fuel_costs': fuel_costs,
+    results.update({'objective': {'objective_bound': objective_bound,
+                                  'fuel_costs': fuel_costs,
                                   'charter_costs': charter_costs,
-                                  'penalty_costs': penalty_costs}})
+                                  'penalty_costs': penalty_costs,
+                                  'optimality_gap': optimality_gap}})
+    results.update({'variables': {'number_of_variables': number_of_variables,
+                                  'number_of_bin_variables': number_of_bin_variables,
+                                  'number_of_arcs': number_of_arcs,
+                                  'number_of_cont_variables': number_of_cont_variables}})
     results.update({'runtime': {'preprocess_runtime': preprocess_runtime,
                                 'model_runtime': model_runtime}})
     with open(output_path, 'w') as ofp:
