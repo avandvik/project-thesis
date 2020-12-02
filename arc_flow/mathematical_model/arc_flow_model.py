@@ -122,6 +122,7 @@ class ArcFlowModel:
 
         voyages = post.create_voyages_variable(self.model.getVars(), self.arc_arrival_times, self.sep_arc_costs)
         postponed_orders, serviced_orders = post.find_postponed_orders(voyages)
+        fleet_vessels, chartered_vessels = post.find_vessels_used(voyages)
         bound, fuel_costs, charter_costs, arc_costs, penalty_costs = post.separate_objective(self.model.objVal,
                                                                                              self.model.objBound,
                                                                                              self.model.getVars(),
@@ -133,6 +134,8 @@ class ArcFlowModel:
         post.save_results(voyages=voyages,
                           postponed_orders=postponed_orders,
                           serviced_orders=serviced_orders,
+                          fleet_vessels=fleet_vessels,
+                          chartered_vessels=chartered_vessels,
                           preprocess_runtime=preprocess_runtime,
                           model_runtime=model_runtime,
                           fuel_costs=fuel_costs,

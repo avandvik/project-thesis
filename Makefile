@@ -7,4 +7,4 @@ remove-config-files:
 	rm .config_ipynb && rm report/.config_ipynb
 
 upload-instances:
-	scp -r /Users/andersvandvik/Repositories/project-thesis/input/mongstad/ anderhva@solstorm-login.iot.ntnu.no:/home/anderhva/project-thesis-lean/input/
+	scp -r /Users/andersvandvik/Repositories/project-thesis/input/run/ anderhva@solstorm-login.iot.ntnu.no:/home/anderhva/project-thesis-lean/input/

@@ -25,19 +25,19 @@ weather_forecasts = [
 
 
 def generate_test_instances():
-    weather_scenario = 0
-    number_of_vessels = 1
+    weather_scenario = 2
+    number_of_vessels = 2
     return_time = 80
     planning_period_hours = 80
     time_units_per_hour = 4
-    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/data/base_cases.xlsx',
+    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/data/weather_cases.xlsx',
                            template_path=f'{data.PROJECT_DIR_PATH}/input/templates/mongstad_template.json',
                            number_of_vessels=number_of_vessels,
                            return_time=return_time,
                            weather_scenario=weather_scenario,
                            planning_period_hours=planning_period_hours,
                            time_units_per_hour=time_units_per_hour,
-                           outdir_path=f'{data.PROJECT_DIR_PATH}/input/mongstad/base_case')
+                           outdir_path=f'{data.PROJECT_DIR_PATH}/input/mongstad/weather')
 
 
 def generate_test_instance(orders_file_path,

@@ -79,8 +79,20 @@ def find_postponed_orders(voyages):
     return not_serviced_orders, serviced_orders
 
 
+def find_vessels_used(voyages):
+    fleet_vessels, chartered_vessels = 0, 0
+    for vessel_idx in voyages:
+        if len(voyages[vessel_idx].keys()) > 1:
+            if data.VESSELS[vessel_idx].is_spot_vessel():
+                chartered_vessels += 1
+            else:
+                fleet_vessels += 1
+    return fleet_vessels, chartered_vessels
+
+
 def save_results(voyages,
                  postponed_orders, serviced_orders,
+                 fleet_vessels, chartered_vessels,
                  preprocess_runtime, model_runtime,
                  fuel_costs, charter_costs, penalty_costs, objective_bound, optimality_gap,
                  number_of_variables, number_of_bin_variables, number_of_arcs, number_of_cont_variables,
@@ -102,6 +114,8 @@ def save_results(voyages,
     results.update({'voyages': voyages})
     results.update({'order_fulfillment': {'postponed_orders': list(postponed_orders),
                                           'serviced_orders': list(serviced_orders)}})
+    results.update({'vessels': {'fleet_vessels': fleet_vessels,
+                                'chartered_vessels': chartered_vessels}})
     results.update({'objective': {'objective_bound': objective_bound,
                                   'fuel_costs': fuel_costs,
                                   'charter_costs': charter_costs,
