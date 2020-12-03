@@ -10,7 +10,7 @@ mkdir "logs"
 mkdir "results"
 cd /home/anderhva/project-thesis-lean || exit
 
-for file_path in ./input/mongstad/*
+for file_path in ./input/run/*
 do
 	file_name="$(basename -- "$file_path")"
 	instance_name=${file_name%.*}
