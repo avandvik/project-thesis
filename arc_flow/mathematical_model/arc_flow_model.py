@@ -21,9 +21,11 @@ class ArcFlowModel:
 
         self.ag = ArcGenerator(data.VERBOSE)
         self.nodes = None
+        self.arcs = None
         self.arc_costs = None
         self.sep_arc_costs = None
         self.arc_arrival_times = None
+        self.arc_speeds = None
         self.penalty_costs = None
 
         self.node_time_points = None
@@ -41,11 +43,12 @@ class ArcFlowModel:
 
     def preprocess(self):
         self.ag.generate_arcs()
+        self.arcs = self.ag.get_arcs()
         self.arc_costs = self.ag.get_arc_costs()
         self.sep_arc_costs = self.ag.get_sep_arc_costs()
-
         self.arc_arrival_times = self.ag.get_arc_arrival_times()
-        self.penalty_costs = calculate_penalty_costs(self.arc_costs)
+        self.arc_speeds = self.ag.get_arc_speeds()
+        self.penalty_costs = calculate_penalty_costs(self.arcs, self.arc_costs)
 
         self.node_time_points = self.ag.get_node_time_points()
         self.start_nodes = self.ag.get_start_nodes()
@@ -120,7 +123,8 @@ class ArcFlowModel:
             post.print_nodes_and_orders()
             self.model.printAttr('X')
 
-        voyages = post.create_voyages_variable(self.model.getVars(), self.arc_arrival_times, self.sep_arc_costs)
+        voyages = post.create_voyages_variable(self.model.getVars(), self.arc_arrival_times, self.arc_speeds,
+                                               self.sep_arc_costs)
         postponed_orders, serviced_orders = post.find_postponed_orders(voyages)
         fleet_vessels, chartered_vessels = post.find_vessels_used(voyages)
         bound, fuel_costs, charter_costs, arc_costs, penalty_costs = post.separate_objective(self.model.objVal,

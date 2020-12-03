@@ -8,12 +8,14 @@ class ArcGenerator:
     def __init__(self, verbose):
         # arcs[vessel][start_node][start_time][end_node][end_time] -> True/False
         self.arcs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: False)))))
-        # arc_costs[vessel][start_node][start_time][end_node][end_time] -> arc_costs
+        # arc_costs[vessel][start_node][start_time][end_node][end_time] -> arc_cost
         self.arc_costs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
         # sep_arc_costs[vessel][start_node][start_time][end_node][end_time] -> (fuel_cost, charter_cost)
-        self.sep_arc_costs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
+        self.sep_arc_costs = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: (0, 0))))))
         # arc_arrival_times[vessel][start_node][start_time][end_node][end_time] -> arrival_time
         self.arc_arrival_times = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
+        # arc_speeds[vessel][start_node][start_time][end_node][end_time] -> arc_speed
+        self.arc_speeds = dd(lambda: dd(lambda: dd(lambda: dd(lambda: dd(lambda: 0)))))
         # node_time_points[vessel][node] -> time
         self.node_time_points = [[[] for _ in data.ALL_NODES] for _ in data.VESSELS]
         # start_nodes[vessel][end_node][end_time] -> start_node
@@ -41,34 +43,39 @@ class ArcGenerator:
                     if hlp.is_illegal_arc(start_node, end_node):
                         continue
                     for start_time in start_times:
-                        end_times, costs, arr_times, idling = hlp.get_arc_data(start_node, end_node, start_time, vessel)
-                        if not end_times:
+                        arr_times_to_arc_data, idling = hlp.get_arc_data(start_node, end_node, start_time, vessel)
+                        if not arr_times_to_arc_data:
                             continue
-                        self.save_arcs(start_node, end_node, start_time, arr_times, end_times, costs, vessel, idling)
+                        self.save_arcs(start_node, end_node, start_time, arr_times_to_arc_data, vessel, idling)
 
-    def save_arcs(self, start_node, end_node, start_time, arr_times, end_times, costs, vessel, idling):
+    def save_arcs(self, start_node, end_node, start_time, arr_times_to_arc_data, vessel, idling):
         if end_node.is_end_depot() or idling:
-            self.add_best_arc(start_node, end_node, costs, start_time, arr_times, end_times, vessel)
+            self.add_best_arc(start_node, end_node, start_time, arr_times_to_arc_data, vessel)
         else:
-            self.add_arcs(start_node, end_node, costs, start_time, arr_times, end_times, vessel)
+            self.add_arcs(start_node, end_node, start_time, arr_times_to_arc_data, vessel)
 
-    def add_best_arc(self, start_node, end_node, costs, start_time, arr_times, end_times, vessel):
-        arcs = [(ac[-1], ac[:-1], aet, aat) for ac, aet, aat in zip(costs, end_times, arr_times)]
-        if not arcs:
-            return
-        best_return_arc = min(arcs)
-        cost, sep_cost, end_time, arr_time = best_return_arc
-        self.update_sets(start_node, end_node, cost, sep_cost, start_time, end_time, vessel, arr_time)
+    def add_best_arc(self, start_node, end_node, start_time, arr_times_to_arc_data, vessel):
+        best_arr_time, best_cost = 1E10, 1E10
+        for arr_time in arr_times_to_arc_data:
+            cost = arr_times_to_arc_data[arr_time][-1] + arr_times_to_arc_data[arr_time][-2]
+            if cost < best_cost:
+                best_arr_time, best_cost = arr_time, cost
+        end_time, speed, fuel_cost, charter_cost = arr_times_to_arc_data[best_arr_time][1:]
+        self.update_sets(start_node, end_node, fuel_cost, charter_cost, start_time, best_arr_time, end_time, speed,
+                         vessel)
 
-    def add_arcs(self, start_node, end_node, costs, start_time, arr_times, end_times, vessel):
-        for cost, end_time, arr_time in zip(costs, end_times, arr_times):
-            self.update_sets(start_node, end_node, cost[-1], cost[:-1], start_time, end_time, vessel, arr_time)
+    def add_arcs(self, start_node, end_node, start_time, arr_times_to_arc_data, vessel):
+        for arr_time in arr_times_to_arc_data:
+            end_time, speed, fuel_cost, charter_cost = arr_times_to_arc_data[arr_time][1:]
+            self.update_sets(start_node, end_node, fuel_cost, charter_cost, start_time, arr_time, end_time, speed,
+                             vessel)
 
-    def update_sets(self, sn, en, ac, sac, ast, aet, v, aat):
+    def update_sets(self, sn, en, fc, cc, ast, aat, aet, s, v):
         self.arcs[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = True
-        self.arc_costs[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = ac
-        self.sep_arc_costs[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = sac
+        self.arc_costs[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = fc + cc
+        self.sep_arc_costs[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = (fc, cc)
         self.arc_arrival_times[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = aat
+        self.arc_speeds[v.get_index()][sn.get_index()][ast][en.get_index()][aet] = s
         self.number_of_arcs += 1
 
         if aet not in self.node_time_points[v.get_index()][en.get_index()]:
@@ -88,17 +95,23 @@ class ArcGenerator:
 
     def print_arcs(self):
         print(f'Orders: {data.ALL_NODES}')
-
         counter = 0
         for start_node in data.ALL_NODES[:-1]:
             for end_node in data.ALL_NODES[1:]:
                 for start_time in range(data.PREPARATION_END_TIME, data.PERIOD_DISC):
                     for end_time in range(data.PREPARATION_END_TIME, data.PERIOD_DISC):
                         if self.arcs[0][start_node.get_index()][start_time][end_node.get_index()][end_time]:
-                            arc_cost = self.arc_costs[0][start_node.get_index()][start_time][end_node.get_index()][end_time]
-                            print(f'{start_node} ({start_time}) -> {end_node} ({end_time}): {arc_cost}')
+                            arc_cost = self.arc_costs[0][start_node.get_index()][start_time][end_node.get_index()][
+                                end_time]
+                            arc_speed = self.arc_speeds[0][start_node.get_index()][start_time][end_node.get_index()][
+                                end_time]
+                            print(f'{start_node} ({start_time}) -> {end_node} ({end_time}): '
+                                  f'{round(arc_cost, 4)} {arc_speed}')
                             counter += 1
         print(f'Number of arcs: {counter}')
+
+    def get_arcs(self):
+        return self.arcs
 
     def get_arc_costs(self):
         return self.arc_costs
@@ -108,6 +121,9 @@ class ArcGenerator:
 
     def get_arc_arrival_times(self):
         return self.arc_arrival_times
+
+    def get_arc_speeds(self):
+        return self.arc_speeds
 
     def get_node_time_points(self):
         return self.node_time_points

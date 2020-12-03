@@ -1,7 +1,7 @@
 import data
 
 
-def calculate_penalty_costs(arc_costs):
+def calculate_penalty_costs(arcs, arc_costs):
 
     preparation_end_time = data.PREPARATION_END_TIME
 
@@ -27,7 +27,7 @@ def calculate_penalty_costs(arc_costs):
     for opt_node, mand_node in nodes_to_visit:
         service_from_depot_costs = []
         for t in data.TIME_POINTS_DISC:
-            if arc_costs[0][0][preparation_end_time][mand_node.get_index()][t] != 0:
+            if arcs[0][0][preparation_end_time][mand_node.get_index()][t]:
                 service_from_depot_costs.append(arc_costs[0][0][preparation_end_time][mand_node.get_index()][t] * 2)
         worst_cost = max(service_from_depot_costs)
         idx = opt_node.get_index()

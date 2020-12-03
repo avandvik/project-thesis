@@ -3,7 +3,7 @@
 import os
 import data
 
-LOCAL = False
+LOCAL = True
 if LOCAL:
     RESULTS_DIR = 'output/local/results'
 else:

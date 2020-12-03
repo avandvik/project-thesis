@@ -39,7 +39,7 @@ def separate_objective(objective_value, objective_bound, variables, arc_costs, r
     return objective_bound, objective_fuel_costs, objective_charter_costs, objective_arc_costs, objective_penalty_costs
 
 
-def create_voyages_variable(variables, arc_arrival_times, sep_arc_costs):
+def create_voyages_variable(variables, arc_arrival_times, arc_speeds, sep_arc_costs):
     routes = {v: {} for v in range(len(data.VESSELS))}
     for v in variables:
         if v.x > 0.1:
@@ -50,16 +50,18 @@ def create_voyages_variable(variables, arc_arrival_times, sep_arc_costs):
                 start_node, start_time, end_node, end_time, vessel = int(start_node), int(start_time), int(
                     end_node), int(end_time), int(vessel)
                 arrival_time = arc_arrival_times[vessel][start_node][start_time][end_node][end_time]
+                speed = arc_speeds[vessel][start_node][start_time][end_node][end_time]
                 fuel_cost, charter_cost = sep_arc_costs[vessel][start_node][start_time][end_node][end_time]
                 routes[vessel].update(
-                    {start_node: [end_node, (start_time, arrival_time, end_time), [0, 0], (fuel_cost, charter_cost)]})
+                    {start_node: [end_node, (start_time, arrival_time, end_time), speed, [0, 0],
+                                  (fuel_cost, charter_cost)]})
             elif var_name == 'l':
                 var_type = split_var[1]
                 node, vessel = split_var[2:]
                 node, vessel = int(node), int(vessel)
                 for start_node in routes[vessel].keys():
                     if start_node == node:
-                        routes[vessel][start_node][2][0 if var_type == 'D' else 1] = v.x
+                        routes[vessel][start_node][3][0 if var_type == 'D' else 1] = v.x
     return routes
 
 
