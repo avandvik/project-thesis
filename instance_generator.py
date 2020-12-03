@@ -25,19 +25,19 @@ weather_forecasts = [
 
 
 def generate_test_instances():
-    weather_scenario = 2
-    number_of_vessels = 2
+    weather_scenario = 0
+    number_of_vessels = 1
     return_time = 80
     planning_period_hours = 80
     time_units_per_hour = 4
-    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/data/weather_cases_large.xlsx',
+    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/data/order_composition.xlsx',
                            template_path=f'{data.PROJECT_DIR_PATH}/input/templates/mongstad_template.json',
                            number_of_vessels=number_of_vessels,
                            return_time=return_time,
                            weather_scenario=weather_scenario,
                            planning_period_hours=planning_period_hours,
                            time_units_per_hour=time_units_per_hour,
-                           outdir_path=f'{data.PROJECT_DIR_PATH}/input/mongstad/weather')
+                           outdir_path=f'{data.PROJECT_DIR_PATH}/input/mongstad/order_composition')
 
 
 def generate_test_instance(orders_file_path,
@@ -79,7 +79,7 @@ def generate_test_instance(orders_file_path,
 
 def extract_instance_info(sheet_name):
     sheet_info = sheet_name.split('-')
-    number_of_orders = int(list(sheet_info[0])[1])
+    number_of_orders = int(''.join(list(sheet_info[0])[1:]))
     number_of_insts = int(number_of_orders / 2)
     inst_ordering = 'Random'
     return number_of_orders, number_of_insts, inst_ordering
