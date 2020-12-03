@@ -6,13 +6,14 @@ import data
 LOCAL = True
 if LOCAL:
     RESULTS_DIR = 'output/local/results'
+    REPORT_DIR = f'{data.PROJECT_DIR_PATH}/report/reports/local'
 else:
     RESULTS_DIR = 'output/solstorm/021220-133641/results'
+    REPORT_DIR = f'{data.PROJECT_DIR_PATH}/report/reports/solstorm'
 
 RESULTS_PATH = f'{data.PROJECT_DIR_PATH}/{RESULTS_DIR}'
 IPYNB_FILENAME = 'template.ipynb'
 CONFIG_FILENAME = '.config_ipynb'
-REPORT_DIR = f'{data.PROJECT_DIR_PATH}/report/reports'
 
 file_paths = [os.path.join(RESULTS_PATH, f) for f in os.listdir(RESULTS_PATH)
               if os.path.isfile(os.path.join(RESULTS_PATH, f))]

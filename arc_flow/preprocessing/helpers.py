@@ -15,17 +15,15 @@ def get_start_times(start_node, vessel):
         latest_start_time -= 1
 
     opening_hours = start_node.get_installation().get_opening_hours_as_list()
-    if len(opening_hours) < 24:
-        start_times = []
-        disc_opening_hours = get_disc_time_interval(opening_hours[0], opening_hours[-1])
-        for start_time in range(earliest_start_time, latest_start_time + 1):
-            disc_daytime = disc_to_disc_daytime(start_time)
-            if disc_daytime not in disc_opening_hours:
-                continue
-            start_times.append(start_time)
-        return start_times
 
-    return [start_time for start_time in range(earliest_start_time, latest_start_time + 1)]
+    start_times = []
+    disc_opening_hours = get_disc_time_interval(opening_hours[0], opening_hours[-1])
+    for start_time in range(earliest_start_time, latest_start_time + 1):
+        disc_daytime = disc_to_disc_daytime(start_time)
+        if disc_daytime not in disc_opening_hours or data.WEATHER_FORECAST_DISC[start_time+1] == 3:
+            continue
+        start_times.append(start_time)
+    return start_times
 
 
 def is_illegal_arc(start_node, end_node):
@@ -72,7 +70,6 @@ def get_intermediate_arc_data(start_node, end_node, start_time, vessel):
 
     arr_times_to_arc_data, idling = get_arr_times_to_arc_data(start_time, arr_times_to_speeds, service_duration,
                                                               end_node, distance, vessel)
-
     return arr_times_to_arc_data, idling
 
 
@@ -95,8 +92,8 @@ def get_possible_speeds(distance, start_time):
     weather_states = data.WEATHER_FORECAST_DISC[start_time:start_time + max_duration]
     max_speeds = [data.MAX_SPEED - data.SPEED_IMPACTS[ws] for ws in weather_states]
     avg_max_speed = sum(max_speeds) / len(max_speeds)
-    speeds = [speed for speed in np.arange(data.MIN_SPEED, data.MAX_SPEED, 0.5) if speed < avg_max_speed]
-    speeds.append(avg_max_speed)
+    speeds = [float(speed) for speed in np.arange(data.MIN_SPEED, data.MAX_SPEED, 1) if speed < avg_max_speed]
+    speeds.append(float(avg_max_speed))
     return speeds
 
 
@@ -130,6 +127,17 @@ def get_arr_times_to_arc_data(start_time, arr_times_to_speeds, service_duration,
 
     arr_times_to_arc_data = get_no_idling_arcs(start_time, arr_times_to_speeds, service_duration, end_node, distance,
                                                vessel)
+    """
+    limit = 4
+    if len(arr_times_to_arc_data.keys()) > limit:
+        number_to_remove = len(arr_times_to_arc_data.keys()) - limit
+        while number_to_remove > 0:
+            remove_idx = math.floor(len(arr_times_to_arc_data.keys()) / 2)
+            remove_key = list(arr_times_to_arc_data.keys())[remove_idx]
+            del arr_times_to_arc_data[remove_key]
+            number_to_remove -= 1
+    """
+
     if arr_times_to_arc_data.keys():
         return arr_times_to_arc_data, False
 
@@ -170,9 +178,8 @@ def get_idling_arcs(start_time, arr_times_to_speeds, service_duration, end_node,
     arr_times_to_arc_data = {}
     for arr_time, speed in arr_times_to_speeds.items():
         service_time = arr_time
-        if service_time >= vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR:
-            break
-        while not is_servicing_possible(service_time, service_duration, end_node):
+        while service_time < vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR - service_duration and \
+                not is_servicing_possible(service_time, service_duration, end_node):
             service_time += 1
         if not is_return_possible(end_node, service_time + service_duration, vessel):
             break

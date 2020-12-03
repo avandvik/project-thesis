@@ -34,7 +34,7 @@ def separate_objective(objective_value, objective_bound, variables, arc_costs, r
     objective_fuel_costs = round(objective_fuel_costs, 4)
     objective_charter_costs = round(objective_charter_costs, 4)
     objective_arc_costs = round(objective_arc_costs, 4)
-    objective_penalty_costs = round(true_objective - objective_arc_costs, 4)
+    objective_penalty_costs = abs(round(true_objective - objective_arc_costs, 4))
 
     return objective_bound, objective_fuel_costs, objective_charter_costs, objective_arc_costs, objective_penalty_costs
 
