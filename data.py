@@ -23,6 +23,7 @@ else:
     RESULTS_OUTPUT_PATH = f'/storage/users/anderhva/{os.environ.get("current_time")}/results/{INSTANCE_NAME}.json'
 
 VERBOSE = True
+SPEED_OPTIMIZATION = True
 TIME_LIMIT = 60 * 60  # Max run time of gurobi solver
 
 with open(INPUT_FILE_PATH) as file:

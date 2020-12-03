@@ -86,6 +86,9 @@ def get_internal_arc_data(end_node, start_time, vessel):
 
 
 def get_possible_speeds(distance, start_time):
+    if not data.SPEED_OPTIMIZATION:
+        return [data.DESIGN_SPEED]
+
     max_duration = math.ceil(hour_to_disc(distance / data.MIN_SPEED))  # ceil because we want upper limit
     if max_duration == 0:
         return None
