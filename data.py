@@ -18,7 +18,8 @@ if LOCAL:
     RESULTS_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/results/{INSTANCE_NAME}.json'
 else:
     INSTANCE_NAME = os.environ.get('instance_name')
-    INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/run/{INSTANCE_NAME}.json'
+    DIR_NAME = os.environ.get('dir_name')
+    INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/{DIR_NAME}/{INSTANCE_NAME}.json'
     LOG_OUTPUT_PATH = f'/storage/users/anderhva/{os.environ.get("current_time")}/logs/{INSTANCE_NAME}.log'
     RESULTS_OUTPUT_PATH = f'/storage/users/anderhva/{os.environ.get("current_time")}/results/{INSTANCE_NAME}.json'
 

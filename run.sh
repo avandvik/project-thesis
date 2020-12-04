@@ -10,7 +10,10 @@ mkdir "logs"
 mkdir "results"
 cd /home/anderhva/project-thesis-lean || exit
 
-for file_path in ./input/run/*
+dir_name="$1"
+export dir_name
+
+for file_path in ./input/"$1"/*
 do
 	file_name="$(basename -- "$file_path")"
 	instance_name=${file_name%.*}
@@ -18,6 +21,4 @@ do
 	echo "Running $instance_name"
 
 	python3 -m arc_flow.mathematical_model.arc_flow_model
-
-	sleep 1
 done
