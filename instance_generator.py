@@ -27,7 +27,7 @@ weather_forecasts = [
 
 def generate_test_instances():
     weather_scenario = 0
-    number_of_vessels = 4
+    number_of_vessels = 5
     return_time = 80
     planning_period_hours = 80
     time_units_per_hour = 4
