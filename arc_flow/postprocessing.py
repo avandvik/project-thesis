@@ -75,7 +75,6 @@ def find_postponed_orders(voyages):
         for start_node in voyages[vessel].keys():
             if data.ALL_NODES[start_node].is_order():
                 serviced_orders.add(start_node)
-
     not_serviced_orders = all_orders.difference(serviced_orders)
 
     return not_serviced_orders, serviced_orders

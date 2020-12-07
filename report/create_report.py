@@ -5,7 +5,7 @@ import data
 
 LOCAL = True
 if LOCAL:
-    RESULTS_DIR = 'local/speed_opt'
+    RESULTS_DIR = 'local/order_selection'
     RESULTS_PATH = f'{data.PROJECT_DIR_PATH}/output/{RESULTS_DIR}/results'
     REPORT_PATH = f'{data.PROJECT_DIR_PATH}/report/reports/{RESULTS_DIR}'
 else:
