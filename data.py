@@ -12,7 +12,7 @@ PROJECT_DIR_PATH = f'{pathlib.Path(__file__).parent.absolute()}'  # Path of the 
 
 LOCAL = True
 if LOCAL:
-    INSTANCE_NAME = 'O4-C1-V1-WS0'
+    INSTANCE_NAME = 'O6-C2-V1-WS0_nso'
     RUN_CATEGORY = 'speed_opt'
     INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/run/{INSTANCE_NAME}.json'
     LOG_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/{RUN_CATEGORY}/logs/{INSTANCE_NAME}.log'
@@ -25,7 +25,7 @@ else:
     RESULTS_OUTPUT_PATH = f'/storage/users/anderhva/{os.environ.get("current_time")}/results/{INSTANCE_NAME}.json'
 
 VERBOSE = True
-SPEED_OPTIMIZATION = True
+SPEED_OPTIMIZATION = False
 TIME_LIMIT = 60 * 60  # Max run time of gurobi solver
 
 with open(INPUT_FILE_PATH) as file:
