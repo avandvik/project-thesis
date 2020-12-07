@@ -1,0 +1,58 @@
+
+Gurobi 9.0.2 (linux64, Python) logging started Fri Dec  4 11:01:00 2020
+
+Using license file /share/apps/gurobi/9.0.2/gurobi_client.lic
+Set parameter TokenServer to value 10.1.1.1
+Set parameter LogFile to value /storage/users/anderhva/041220-084956/logs/O8-CL-V1-WS0.log
+Set parameter LogToConsole to value 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+Optimize a model with 3448 rows, 21618 columns and 116736 nonzeros
+Model fingerprint: 0x8c7d2280
+Variable types: 40 continuous, 21578 integer (21578 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 236 rows and 614 columns
+Presolve time: 0.34s
+Presolved: 3212 rows, 21004 columns, 92988 nonzeros
+Variable types: 32 continuous, 20972 integer (20970 binary)
+
+Root relaxation: objective 1.116045e+03, 6530 iterations, 1.14 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 1116.04469    0   64          - 1116.04469      -     -    1s
+H    0     0                    24139.400833 1116.04469  95.4%     -    2s
+H    0     0                    1900.6533333 1116.04469  41.3%     -    2s
+     0     0 1681.81578    0   26 1900.65333 1681.81578  11.5%     -    2s
+     0     0 1708.94802    0   39 1900.65333 1708.94802  10.1%     -    3s
+     0     0 1709.62548    0   34 1900.65333 1709.62548  10.1%     -    3s
+     0     0 1726.46491    0   48 1900.65333 1726.46491  9.16%     -    3s
+     0     0 1726.46491    0   13 1900.65333 1726.46491  9.16%     -    3s
+     0     0 1732.38190    0   34 1900.65333 1732.38190  8.85%     -    4s
+     0     0 1753.67852    0   45 1900.65333 1753.67852  7.73%     -    4s
+     0     0 1775.77381    0   44 1900.65333 1775.77381  6.57%     -    4s
+     0     0 1778.92460    0   25 1900.65333 1778.92460  6.40%     -    4s
+     0     0 1780.04307    0   64 1900.65333 1780.04307  6.35%     -    4s
+     0     0 1797.92830    0   63 1900.65333 1797.92830  5.40%     -    5s
+
+Cutting planes:
+  Gomory: 2
+  MIR: 9
+  Flow cover: 1
+  Inf proof: 1
+  Zero half: 1
+  RLT: 5
+
+Explored 1 nodes (14849 simplex iterations) in 5.12 seconds
+Thread count was 20 (of 40 available processors)
+
+Solution count 2: 1900.65 24139.4 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.900653333333e+03, best bound 1.900653333333e+03, gap 0.0000%

@@ -2,10 +2,12 @@
 __pycache__
 .DS_Store
 venv
-output
-report/*
 input/data/*
 input/run/*
-output/solstorm
+output/local
 report/.ipynb_checkpoints/*
+report/plots
+report/reports
+report/runtime_analysis
+report/.config_ipynb
 .config_ipynb

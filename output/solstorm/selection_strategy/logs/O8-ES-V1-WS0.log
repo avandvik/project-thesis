@@ -1,0 +1,57 @@
+
+Gurobi 9.0.2 (linux64, Python) logging started Fri Dec  4 11:01:09 2020
+
+Using license file /share/apps/gurobi/9.0.2/gurobi_client.lic
+Set parameter TokenServer to value 10.1.1.1
+Set parameter LogFile to value /storage/users/anderhva/041220-084956/logs/O8-ES-V1-WS0.log
+Set parameter LogToConsole to value 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+Optimize a model with 2576 rows, 27360 columns and 152650 nonzeros
+Model fingerprint: 0xf255f143
+Variable types: 40 continuous, 27320 integer (27320 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 312 rows and 1928 columns
+Presolve time: 0.46s
+Presolved: 2264 rows, 25432 columns, 117866 nonzeros
+Variable types: 32 continuous, 25400 integer (25398 binary)
+
+Root relaxation: objective 2.960805e+03, 3163 iterations, 0.47 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 2966.18268    0   42          - 2966.18268      -     -    1s
+H    0     0                    9050.8550000 2966.18268  67.2%     -    1s
+H    0     0                    7563.5216667 2966.18268  60.8%     -    1s
+     0     0 3385.66979    0   30 7563.52167 3385.66979  55.2%     -    1s
+H    0     0                    3788.6366667 3385.66979  10.6%     -    2s
+     0     0 3432.80786    0   31 3788.63667 3432.80786  9.39%     -    2s
+     0     0 3432.89965    0   40 3788.63667 3432.89965  9.39%     -    2s
+     0     0 3462.81578    0   35 3788.63667 3462.81578  8.60%     -    2s
+     0     0 3462.81578    0   18 3788.63667 3462.81578  8.60%     -    2s
+     0     0 3527.04967    0   33 3788.63667 3527.04967  6.90%     -    3s
+H    0     0                    3739.2633333 3527.04967  5.68%     -    3s
+     0     0 3608.71278    0   27 3739.26333 3608.71278  3.49%     -    3s
+     0     0 3638.99326    0   63 3739.26333 3638.99326  2.68%     -    3s
+
+Cutting planes:
+  Gomory: 1
+  Implied bound: 4
+  Clique: 1
+  MIR: 12
+  Zero half: 10
+  Relax-and-lift: 1
+
+Explored 1 nodes (6991 simplex iterations) in 3.31 seconds
+Thread count was 20 (of 40 available processors)
+
+Solution count 4: 3739.26 3788.64 7563.52 9050.86 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.739263333333e+03, best bound 3.739263333333e+03, gap 0.0000%

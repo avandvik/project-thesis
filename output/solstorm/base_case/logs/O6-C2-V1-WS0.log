@@ -1,0 +1,52 @@
+
+Gurobi 9.0.2 (linux64, Python) logging started Thu Dec  3 20:31:38 2020
+
+Using license file /share/apps/gurobi/9.0.2/gurobi_client.lic
+Set parameter TokenServer to value 10.1.1.1
+Set parameter LogFile to value /storage/users/anderhva/031220-153353/logs/O6-C2-V1-WS0.log
+Set parameter LogToConsole to value 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+Optimize a model with 2172 rows, 16986 columns and 92840 nonzeros
+Model fingerprint: 0x007bec05
+Variable types: 32 continuous, 16954 integer (16954 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 237 rows and 1227 columns
+Presolve time: 0.63s
+Presolved: 1935 rows, 15759 columns, 71184 nonzeros
+Variable types: 24 continuous, 15735 integer (15733 binary)
+
+Root relaxation: objective 1.948513e+03, 2727 iterations, 0.35 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 1962.91500    0   32          - 1962.91500      -     -    1s
+H    0     0                    24193.408333 1962.91500  91.9%     -    1s
+     0     0 2457.88485    0   19 24193.4083 2457.88485  89.8%     -    1s
+H    0     0                    2519.1916667 2457.88485  2.43%     -    1s
+     0     0 2467.97993    0   19 2519.19167 2467.97993  2.03%     -    1s
+     0     0 2495.11267    0   14 2519.19167 2495.11267  0.96%     -    1s
+
+Cutting planes:
+  Gomory: 3
+  Cover: 3
+  Implied bound: 5
+  Clique: 4
+  MIR: 5
+  Zero half: 3
+  RLT: 11
+  Relax-and-lift: 1
+
+Explored 1 nodes (3381 simplex iterations) in 1.97 seconds
+Thread count was 20 (of 40 available processors)
+
+Solution count 2: 2519.19 24193.4 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 2.519191666667e+03, best bound 2.519191666667e+03, gap 0.0000%

@@ -1,0 +1,51 @@
+
+Gurobi 9.0.2 (linux64, Python) logging started Thu Dec  3 20:32:34 2020
+
+Using license file /share/apps/gurobi/9.0.2/gurobi_client.lic
+Set parameter TokenServer to value 10.1.1.1
+Set parameter LogFile to value /storage/users/anderhva/031220-153353/logs/O8-C4-V1-WS0.log
+Set parameter LogToConsole to value 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+Optimize a model with 3656 rows, 40792 columns and 230918 nonzeros
+Model fingerprint: 0x75ae451f
+Variable types: 40 continuous, 40752 integer (40752 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 8e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Found heuristic solution: objective 29003.873542
+Presolve removed 226 rows and 754 columns
+Presolve time: 0.64s
+Presolved: 3430 rows, 40038 columns, 186798 nonzeros
+Variable types: 32 continuous, 40006 integer (40004 binary)
+
+Root relaxation: objective 1.305907e+03, 6354 iterations, 1.75 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 1308.34406    0  150 29003.8735 1308.34406  95.5%     -    4s
+     0     0 2255.87371    0  132 29003.8735 2255.87371  92.2%     -    7s
+H    0     0                    16211.893750 2255.87371  86.1%     -    7s
+H    0     0                    2779.6354167 2255.87371  18.8%     -    8s
+     0     0 2388.57702    0   45 2779.63542 2388.57702  14.1%     -    9s
+     0     0 2407.51944    0   45 2779.63542 2407.51944  13.4%     -    9s
+     0     0 2447.85136    0   74 2779.63542 2447.85136  11.9%     -    9s
+     0     0 2519.06787    0   15 2779.63542 2519.06787  9.37%     -   11s
+     0     0 2637.62860    0   52 2779.63542 2637.62860  5.11%     -   11s
+
+Cutting planes:
+  Implied bound: 4
+  MIR: 9
+  RLT: 1
+
+Explored 1 nodes (16086 simplex iterations) in 11.50 seconds
+Thread count was 20 (of 40 available processors)
+
+Solution count 3: 2779.64 16211.9 29003.9 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 2.779635416667e+03, best bound 2.779635416667e+03, gap 0.0000%

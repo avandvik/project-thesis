@@ -1,0 +1,77 @@
+
+Gurobi 9.0.2 (linux64, Python) logging started Sat Dec  5 10:39:45 2020
+
+Using license file /share/apps/gurobi/9.0.2/gurobi_client.lic
+Set parameter TokenServer to value 10.1.1.1
+Set parameter LogFile to value /storage/users/anderhva/051220-103929/logs/O10-C3-V2-WS2.log
+Set parameter LogToConsole to value 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+Optimize a model with 2366 rows, 15990 columns and 87579 nonzeros
+Model fingerprint: 0xb88fe9cf
+Variable types: 72 continuous, 15918 integer (15918 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 640 rows and 3030 columns
+Presolve time: 0.43s
+Presolved: 1726 rows, 12960 columns, 58002 nonzeros
+Variable types: 60 continuous, 12900 integer (12897 binary)
+
+Root relaxation: objective 4.428650e+03, 2265 iterations, 0.23 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4428.64958    0   50          - 4428.64958      -     -    0s
+     0     0 4593.16593    0   51          - 4593.16593      -     -    1s
+     0     0 4602.39958    0   50          - 4602.39958      -     -    1s
+     0     0 4800.58359    0   47          - 4800.58359      -     -    1s
+     0     0 4827.12851    0   66          - 4827.12851      -     -    1s
+     0     0 4827.23699    0   50          - 4827.23699      -     -    1s
+     0     0 4885.89166    0   66          - 4885.89166      -     -    1s
+     0     0 4886.60267    0   74          - 4886.60267      -     -    1s
+     0     0 4886.60267    0   80          - 4886.60267      -     -    1s
+     0     0 4906.51617    0   51          - 4906.51617      -     -    1s
+     0     0 4919.12078    0   63          - 4919.12078      -     -    1s
+H    0     0                    5736.1086357 4919.12078  14.2%     -    1s
+     0     0 4919.83251    0   66 5736.10864 4919.83251  14.2%     -    1s
+H    0     0                    5649.8586357 4919.83251  12.9%     -    1s
+     0     0 4930.07652    0   60 5649.85864 4930.07652  12.7%     -    1s
+     0     0 4930.07652    0   40 5649.85864 4930.07652  12.7%     -    2s
+     0     0 5074.20683    0   24 5649.85864 5074.20683  10.2%     -    2s
+     0     0 5141.86729    0   40 5649.85864 5141.86729  8.99%     -    2s
+     0     0 5149.36729    0   40 5649.85864 5149.36729  8.86%     -    2s
+     0     0 5210.95597    0   44 5649.85864 5210.95597  7.77%     -    2s
+     0     0 5222.79124    0   49 5649.85864 5222.79124  7.56%     -    2s
+     0     0 5223.22014    0   51 5649.85864 5223.22014  7.55%     -    2s
+     0     0 5269.04206    0   49 5649.85864 5269.04206  6.74%     -    2s
+     0     0 5269.04206    0   30 5649.85864 5269.04206  6.74%     -    2s
+H    0     0                    5644.3641595 5269.04206  6.65%     -    2s
+     0     0 5359.69847    0   36 5644.36416 5359.69847  5.04%     -    3s
+     0     0 5359.69847    0   32 5644.36416 5359.69847  5.04%     -    3s
+     0     0 5478.66728    0   34 5644.36416 5478.66728  2.94%     -    3s
+     0     0 5485.95076    0   37 5644.36416 5485.95076  2.81%     -    3s
+     0     0 5487.68356    0   21 5644.36416 5487.68356  2.78%     -    3s
+     0     0 5531.02533    0    6 5644.36416 5531.02533  2.01%     -    3s
+     0     0 5531.02533    0   28 5644.36416 5531.02533  2.01%     -    3s
+     0     0 5644.36416    0   32 5644.36416 5644.36416  0.00%     -    3s
+
+Cutting planes:
+  Gomory: 19
+  Implied bound: 33
+  MIR: 27
+  Flow cover: 32
+  RLT: 30
+  Relax-and-lift: 40
+
+Explored 1 nodes (6538 simplex iterations) in 3.32 seconds
+Thread count was 20 (of 40 available processors)
+
+Solution count 3: 5644.36 5649.86 5736.11 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 5.644364159524e+03, best bound 5.644364159524e+03, gap 0.0000%

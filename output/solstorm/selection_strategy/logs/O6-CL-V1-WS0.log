@@ -1,0 +1,51 @@
+
+Gurobi 9.0.2 (linux64, Python) logging started Fri Dec  4 11:00:52 2020
+
+Using license file /share/apps/gurobi/9.0.2/gurobi_client.lic
+Set parameter TokenServer to value 10.1.1.1
+Set parameter LogFile to value /storage/users/anderhva/041220-084956/logs/O6-CL-V1-WS0.log
+Set parameter LogToConsole to value 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+Optimize a model with 2396 rows, 10326 columns and 52638 nonzeros
+Model fingerprint: 0xe6135657
+Variable types: 32 continuous, 10294 integer (10294 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 205 rows and 487 columns
+Presolve time: 0.16s
+Presolved: 2191 rows, 9839 columns, 40822 nonzeros
+Variable types: 24 continuous, 9815 integer (9813 binary)
+Found heuristic solution: objective 20078.949167
+
+Root relaxation: objective 1.038988e+03, 2768 iterations, 0.21 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 1089.34336    0   72 20078.9492 1089.34336  94.6%     -    0s
+H    0     0                    5270.7975000 1089.34336  79.3%     -    0s
+H    0     0                    3420.6483333 1089.34336  68.2%     -    0s
+     0     0 1692.49651    0   24 3420.64833 1692.49651  50.5%     -    1s
+     0     0 1692.49651    0    6 3420.64833 1692.49651  50.5%     -    1s
+H    0     0                    3292.3316667 1692.49651  48.6%     -    1s
+H    0     0                    1760.5350000 1692.49651  3.86%     -    1s
+     0     0     cutoff    0      1760.53500 1760.53500  0.00%     -    1s
+
+Cutting planes:
+  Implied bound: 9
+  MIR: 4
+  RLT: 2
+  Relax-and-lift: 2
+
+Explored 1 nodes (4054 simplex iterations) in 1.78 seconds
+Thread count was 20 (of 40 available processors)
+
+Solution count 5: 1760.53 3292.33 3420.65 ... 20078.9
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.760535000000e+03, best bound 1.760535000000e+03, gap 0.0000%

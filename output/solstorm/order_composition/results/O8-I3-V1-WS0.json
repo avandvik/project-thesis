@@ -1,0 +1,268 @@
+{
+  "instance_info": {
+    "installation_ordering": "Random",
+    "number_of_installations": 4,
+    "weather_scenario": 0,
+    "fleet_size": 1,
+    "order_composition": {
+      "1": {
+        "order": "MD_VFB",
+        "size": 7.5,
+        "installation": 18,
+        "node": 1
+      },
+      "2": {
+        "order": "OD_VFB",
+        "size": 10.0,
+        "installation": 18,
+        "node": 2
+      },
+      "3": {
+        "order": "MD_VMO",
+        "size": 8.125,
+        "installation": 16,
+        "node": 3
+      },
+      "4": {
+        "order": "OD_VMO",
+        "size": 12.5,
+        "installation": 16,
+        "node": 4
+      },
+      "5": {
+        "order": "OP_VMO",
+        "size": 11.25,
+        "installation": 16,
+        "node": 5
+      },
+      "6": {
+        "order": "MD_TRO",
+        "size": 8.215,
+        "installation": 1,
+        "node": 6
+      },
+      "7": {
+        "order": "OD_TRO",
+        "size": 10.0,
+        "installation": 1,
+        "node": 7
+      },
+      "8": {
+        "order": "OP_TRO",
+        "size": 11.25,
+        "installation": 1,
+        "node": 8
+      }
+    }
+  },
+  "voyages": {
+    "0": {
+      "0": [
+        1,
+        [
+          63,
+          88,
+          91
+        ],
+        10.0,
+        [
+          56.34,
+          0
+        ],
+        [
+          634.1483333333335,
+          0.0
+        ]
+      ],
+      "1": [
+        2,
+        [
+          91,
+          91,
+          95
+        ],
+        0,
+        [
+          48.84,
+          0
+        ],
+        [
+          46.92,
+          0.0
+        ]
+      ],
+      "2": [
+        3,
+        [
+          95,
+          103,
+          107
+        ],
+        10.0,
+        [
+          38.84,
+          0
+        ],
+        [
+          238.5866666666667,
+          0.0
+        ]
+      ],
+      "3": [
+        4,
+        [
+          107,
+          107,
+          112
+        ],
+        0,
+        [
+          30.715000000000003,
+          0
+        ],
+        [
+          58.650000000000006,
+          0.0
+        ]
+      ],
+      "4": [
+        5,
+        [
+          112,
+          112,
+          113
+        ],
+        0,
+        [
+          18.215000000000003,
+          0
+        ],
+        [
+          11.73,
+          0.0
+        ]
+      ],
+      "5": [
+        6,
+        [
+          113,
+          131,
+          135
+        ],
+        10.0,
+        [
+          18.215000000000003,
+          11.25
+        ],
+        [
+          478.1700000000002,
+          0.0
+        ]
+      ],
+      "6": [
+        7,
+        [
+          135,
+          135,
+          139
+        ],
+        0,
+        [
+          10.0,
+          11.250000000000002
+        ],
+        [
+          46.92,
+          0.0
+        ]
+      ],
+      "7": [
+        8,
+        [
+          139,
+          139,
+          140
+        ],
+        0,
+        [
+          0,
+          11.250000000000002
+        ],
+        [
+          11.73,
+          0.0
+        ]
+      ],
+      "8": [
+        9,
+        [
+          140,
+          157,
+          157
+        ],
+        10.0,
+        [
+          0,
+          22.5
+        ],
+        [
+          407.2916666666668,
+          0.0
+        ]
+      ]
+    },
+    "1": {
+      "0": [
+        9,
+        [
+          63,
+          63,
+          63
+        ],
+        0,
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "order_fulfillment": {
+    "postponed_orders": [],
+    "serviced_orders": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  "vessels": {
+    "fleet_vessels": 1,
+    "chartered_vessels": 0
+  },
+  "objective": {
+    "objective_bound": 1934.1467,
+    "fuel_costs": 1934.1467,
+    "charter_costs": 0.0,
+    "penalty_costs": 0.0,
+    "optimality_gap": 0.0
+  },
+  "variables": {
+    "number_of_variables": 21276,
+    "number_of_bin_variables": 21236,
+    "number_of_arcs": 21216,
+    "number_of_cont_variables": 40
+  },
+  "runtime": {
+    "preprocess_runtime": 2.1295,
+    "model_runtime": 3.3109
+  }
+}

@@ -1,0 +1,47 @@
+
+Gurobi 9.0.2 (linux64, Python) logging started Fri Dec  4 11:00:49 2020
+
+Using license file /share/apps/gurobi/9.0.2/gurobi_client.lic
+Set parameter TokenServer to value 10.1.1.1
+Set parameter LogFile to value /storage/users/anderhva/041220-084956/logs/O4-CL-V1-WS0.log
+Set parameter LogToConsole to value 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+Optimize a model with 1942 rows, 4644 columns and 20280 nonzeros
+Model fingerprint: 0xaac6e400
+Variable types: 24 continuous, 4620 integer (4620 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 5e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 148 rows and 172 columns
+Presolve time: 0.07s
+Presolved: 1794 rows, 4472 columns, 15318 nonzeros
+Variable types: 16 continuous, 4456 integer (4456 binary)
+Found heuristic solution: objective 9563.3800000
+
+Root relaxation: objective 8.382121e+02, 2028 iterations, 0.11 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0  882.03622    0   78 9563.38000  882.03622  90.8%     -    0s
+H    0     0                    1224.9166667  882.03622  28.0%     -    0s
+
+Cutting planes:
+  Gomory: 5
+  Implied bound: 5
+  Clique: 1
+  MIR: 4
+  Zero half: 2
+  RLT: 41
+
+Explored 1 nodes (2795 simplex iterations) in 0.61 seconds
+Thread count was 20 (of 40 available processors)
+
+Solution count 2: 1224.92 9563.38 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.224916666667e+03, best bound 1.224916666667e+03, gap 0.0000%

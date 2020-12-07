@@ -1,0 +1,54 @@
+
+Gurobi 9.0.2 (linux64, Python) logging started Sat Dec  5 10:40:14 2020
+
+Using license file /share/apps/gurobi/9.0.2/gurobi_client.lic
+Set parameter TokenServer to value 10.1.1.1
+Set parameter LogFile to value /storage/users/anderhva/051220-103929/logs/O12-C2-V2-WS2.log
+Set parameter LogToConsole to value 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+Optimize a model with 3045 rows, 21789 columns and 120996 nonzeros
+Model fingerprint: 0xd362d33c
+Variable types: 84 continuous, 21705 integer (21705 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 744 rows and 3552 columns
+Presolve time: 0.55s
+Presolved: 2301 rows, 18237 columns, 82743 nonzeros
+Variable types: 72 continuous, 18165 integer (18162 binary)
+
+Root relaxation: objective 4.742978e+03, 3539 iterations, 0.39 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4742.97775    0   76          - 4742.97775      -     -    1s
+H    0     0                    5580.6293357 4742.97775  15.0%     -    1s
+     0     0 4800.49994    0   36 5580.62934 4800.49994  14.0%     -    1s
+     0     0 4827.16661    0   49 5580.62934 4827.16661  13.5%     -    1s
+     0     0 4945.22371    0   86 5580.62934 4945.22371  11.4%     -    2s
+     0     0 5023.80840    0   61 5580.62934 5023.80840  10.0%     -    2s
+     0     0 5278.43910    0   35 5580.62934 5278.43910  5.41%     -    2s
+H    0     0                    5519.3793357 5278.43910  4.37%     -    2s
+     0     0 5309.37934    0   33 5519.37934 5309.37934  3.80%     -    2s
+     0     0 5353.15723    0   23 5519.37934 5353.15723  3.01%     -    3s
+
+Cutting planes:
+  Gomory: 6
+  Implied bound: 14
+  MIR: 21
+  Flow cover: 8
+  RLT: 28
+  Relax-and-lift: 29
+
+Explored 1 nodes (5453 simplex iterations) in 3.28 seconds
+Thread count was 20 (of 40 available processors)
+
+Solution count 2: 5519.38 5580.63 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 5.519379335714e+03, best bound 5.519379335714e+03, gap 0.0000%

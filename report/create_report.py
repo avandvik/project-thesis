@@ -3,15 +3,15 @@
 import os
 import data
 
-LOCAL = True
+LOCAL = False
 if LOCAL:
-    RESULTS_DIR = 'output/local/results'
-    REPORT_DIR = f'{data.PROJECT_DIR_PATH}/report/reports/local'
+    RESULTS_PATH = 'output/local/results'
+    REPORT_PATH = f'{data.PROJECT_DIR_PATH}/report/reports/local'
 else:
-    RESULTS_DIR = 'output/solstorm/021220-133641/results'
-    REPORT_DIR = f'{data.PROJECT_DIR_PATH}/report/reports/solstorm'
+    RESULTS_DIR = 'solstorm/weather'
+    RESULTS_PATH = f'{data.PROJECT_DIR_PATH}/output/{RESULTS_DIR}/results'
+    REPORT_PATH = f'{data.PROJECT_DIR_PATH}/report/reports/{RESULTS_DIR}'
 
-RESULTS_PATH = f'{data.PROJECT_DIR_PATH}/{RESULTS_DIR}'
 IPYNB_FILENAME = 'template.ipynb'
 CONFIG_FILENAME = '.config_ipynb'
 
@@ -22,4 +22,4 @@ for file_path in file_paths:
         f.write(' '.join(['file_path', file_path]))
     REPORT_NAME = os.path.basename(file_path).split('.')[0]
     os.system(f'jupyter nbconvert --execute {IPYNB_FILENAME} --to html --no-input '
-              f'--output="{REPORT_DIR}/{REPORT_NAME}"')
+              f'--output="{REPORT_PATH}/{REPORT_NAME}"')

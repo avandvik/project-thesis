@@ -1,0 +1,51 @@
+
+Gurobi 9.0.2 (linux64, Python) logging started Sat Dec  5 22:43:25 2020
+
+Using license file /share/apps/gurobi/9.0.2/gurobi_client.lic
+Set parameter TokenServer to value 10.1.1.1
+Set parameter LogFile to value /storage/users/anderhva/051220-175751/logs/O8-C2-V1-WS1.log
+Set parameter LogToConsole to value 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+Optimize a model with 3134 rows, 25574 columns and 141120 nonzeros
+Model fingerprint: 0x5eeb7117
+Variable types: 40 continuous, 25534 integer (25534 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 274 rows and 1132 columns
+Presolve time: 0.43s
+Presolved: 2860 rows, 24442 columns, 111026 nonzeros
+Variable types: 32 continuous, 24410 integer (24408 binary)
+
+Root relaxation: objective 2.128207e+03, 4959 iterations, 0.85 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 2128.20703    0  105          - 2128.20703      -     -    1s
+     0     0 2797.24273    0   81          - 2797.24273      -     -    2s
+H    0     0                    3473.0816917 2797.24273  19.5%     -    3s
+H    0     0                    3285.3681500 2797.24273  14.9%     -    3s
+     0     0 2921.34316    0   48 3285.36815 2921.34316  11.1%     -    3s
+     0     0 3098.93854    0   58 3285.36815 3098.93854  5.67%     -    3s
+
+Cutting planes:
+  Gomory: 1
+  Cover: 4
+  Implied bound: 3
+  Clique: 6
+  MIR: 9
+  Zero half: 6
+  RLT: 11
+
+Explored 1 nodes (6402 simplex iterations) in 4.49 seconds
+Thread count was 20 (of 40 available processors)
+
+Solution count 2: 3285.37 3473.08 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.285368150000e+03, best bound 3.285368150000e+03, gap 0.0000%

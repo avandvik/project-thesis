@@ -1,0 +1,51 @@
+
+Gurobi 9.0.2 (linux64, Python) logging started Sat Dec  5 11:30:59 2020
+
+Using license file /share/apps/gurobi/9.0.2/gurobi_client.lic
+Set parameter TokenServer to value 10.1.1.1
+Set parameter LogFile to value /storage/users/anderhva/051220-103929/logs/O6-C4-V1-WS2.log
+Set parameter LogToConsole to value 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+Optimize a model with 916 rows, 4362 columns and 22646 nonzeros
+Model fingerprint: 0x7ab8772b
+Variable types: 32 continuous, 4330 integer (4330 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 8e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 299 rows and 987 columns
+Presolve time: 0.11s
+Presolved: 617 rows, 3375 columns, 14690 nonzeros
+Variable types: 24 continuous, 3351 integer (3349 binary)
+Found heuristic solution: objective 20226.079150
+
+Root relaxation: objective 2.817625e+03, 939 iterations, 0.03 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 2817.62549    0   20 20226.0791 2817.62549  86.1%     -    0s
+H    0     0                    3278.5457429 2817.62549  14.1%     -    0s
+H    0     0                    3245.4274228 2817.62549  13.2%     -    0s
+H    0     0                    3243.5457429 2817.62549  13.1%     -    0s
+     0     0 3183.58146    0   12 3243.54574 3183.58146  1.85%     -    0s
+
+Cutting planes:
+  Gomory: 1
+  Implied bound: 1
+  MIR: 4
+  Flow cover: 1
+  Zero half: 2
+  RLT: 4
+  Relax-and-lift: 2
+
+Explored 1 nodes (1058 simplex iterations) in 0.27 seconds
+Thread count was 20 (of 40 available processors)
+
+Solution count 4: 3243.55 3245.43 3278.55 20226.1 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.243545742857e+03, best bound 3.243545742857e+03, gap 0.0000%

@@ -1,0 +1,50 @@
+
+Gurobi 9.0.2 (linux64, Python) logging started Fri Dec  4 08:49:07 2020
+
+Using license file /share/apps/gurobi/9.0.2/gurobi_client.lic
+Set parameter TokenServer to value 10.1.1.1
+Set parameter LogFile to value /storage/users/anderhva/041220-084838/logs/O4-C4-V2-WS0.log
+Set parameter LogToConsole to value 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+Optimize a model with 2525 rows, 10599 columns and 53415 nonzeros
+Model fingerprint: 0x021be8c0
+Variable types: 36 continuous, 10563 integer (10563 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 8e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Found heuristic solution: objective 22597.253333
+Presolve removed 241 rows and 705 columns
+Presolve time: 0.35s
+Presolved: 2284 rows, 9894 columns, 40500 nonzeros
+Variable types: 24 continuous, 9870 integer (9867 binary)
+
+Root relaxation: objective 1.071645e+03, 3332 iterations, 0.29 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 1089.11453    0   52 22597.2533 1089.11453  95.2%     -    1s
+H    0     0                    18727.565000 1089.11453  94.2%     -    1s
+H    0     0                    9459.5439583 1089.11453  88.5%     -    1s
+     0     0 2372.26979    0   23 9459.54396 2372.26979  74.9%     -    1s
+     0     0 2372.26979    0    8 9459.54396 2372.26979  74.9%     -    4s
+H    0     0                    5919.6400000 2372.26979  59.9%     -    4s
+H    0     0                    2413.1500000 2372.26979  1.69%     -    4s
+     0     0     cutoff    0      2413.15000 2413.15000  0.00%     -    4s
+
+Cutting planes:
+  Implied bound: 3
+  RLT: 5
+  Relax-and-lift: 1
+
+Explored 1 nodes (5014 simplex iterations) in 4.25 seconds
+Thread count was 20 (of 40 available processors)
+
+Solution count 5: 2413.15 5919.64 9459.54 ... 22597.3
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 2.413150000000e+03, best bound 2.413150000000e+03, gap 0.0000%

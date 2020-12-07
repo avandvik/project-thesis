@@ -1,0 +1,51 @@
+
+Gurobi 9.0.2 (linux64, Python) logging started Fri Dec  4 08:49:52 2020
+
+Using license file /share/apps/gurobi/9.0.2/gurobi_client.lic
+Set parameter TokenServer to value 10.1.1.1
+Set parameter LogFile to value /storage/users/anderhva/041220-084838/logs/O6-C2-V3-WS0.log
+Set parameter LogToConsole to value 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+Optimize a model with 4308 rows, 33740 columns and 184072 nonzeros
+Model fingerprint: 0x7b21f073
+Variable types: 64 continuous, 33676 integer (33676 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 439 rows and 2336 columns
+Presolve time: 0.88s
+Presolved: 3869 rows, 31404 columns, 141366 nonzeros
+Variable types: 48 continuous, 31356 integer (31352 binary)
+
+Root relaxation: objective 1.999772e+03, 9950 iterations, 2.61 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 2005.51643    0   59          - 2005.51643      -     -    4s
+     0     0 2025.51643    0   29          - 2025.51643      -     -    6s
+     0     0 2506.64210    0   42          - 2506.64210      -     -    6s
+H    0     0                    2597.3616667 2506.64210  3.49%     -    7s
+     0     0 2507.57000    0   37 2597.36167 2507.57000  3.46%     -    7s
+     0     0 2520.90333    0   19 2597.36167 2520.90333  2.94%     -    7s
+
+Cutting planes:
+  Cover: 9
+  Implied bound: 21
+  Clique: 8
+  Flow cover: 3
+  Zero half: 5
+  RLT: 16
+  Relax-and-lift: 6
+
+Explored 1 nodes (12312 simplex iterations) in 7.39 seconds
+Thread count was 20 (of 40 available processors)
+
+Solution count 1: 2597.36 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 2.597361666667e+03, best bound 2.597361666667e+03, gap 0.0000%
