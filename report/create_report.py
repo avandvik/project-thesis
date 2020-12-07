@@ -3,10 +3,11 @@
 import os
 import data
 
-LOCAL = False
+LOCAL = True
 if LOCAL:
-    RESULTS_PATH = 'output/local/results'
-    REPORT_PATH = f'{data.PROJECT_DIR_PATH}/report/reports/local'
+    RESULTS_DIR = 'local/speed_opt'
+    RESULTS_PATH = f'{data.PROJECT_DIR_PATH}/output/{RESULTS_DIR}/results'
+    REPORT_PATH = f'{data.PROJECT_DIR_PATH}/report/reports/{RESULTS_DIR}'
 else:
     RESULTS_DIR = 'solstorm/weather'
     RESULTS_PATH = f'{data.PROJECT_DIR_PATH}/output/{RESULTS_DIR}/results'
