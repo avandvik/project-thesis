@@ -13,9 +13,10 @@ PROJECT_DIR_PATH = f'{pathlib.Path(__file__).parent.absolute()}'  # Path of the 
 LOCAL = True
 if LOCAL:
     INSTANCE_NAME = 'O4-C1-V1-WS0'
+    RUN_CATEGORY = 'speed_opt'
     INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/run/{INSTANCE_NAME}.json'
-    LOG_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/logs/{INSTANCE_NAME}.log'
-    RESULTS_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/results/{INSTANCE_NAME}.json'
+    LOG_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/{RUN_CATEGORY}/logs/{INSTANCE_NAME}.log'
+    RESULTS_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/{RUN_CATEGORY}/results/{INSTANCE_NAME}.json'
 else:
     INSTANCE_NAME = os.environ.get('instance_name')
     DIR_NAME = os.environ.get('dir_name')
