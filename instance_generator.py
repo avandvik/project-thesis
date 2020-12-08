@@ -8,7 +8,7 @@ import data
 """ ONLY RUN THIS FILE WHEN YOU WANT TO GENERATE A NEW PROBLEM INSTANCE """
 
 # Do not change
-variation_multipliers = [0, 0.5, 0.75, 1.0, 1.25, 1.5]
+variation_multipliers = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0] # Changed due avoid variation in order sizes
 standard_order_sizes = [0.0, 15.0, 20.0, 15.0, 20.0, 20.0, 20.0, 20.0, 15.0, 15.0, 15.0, 15.0, 7.5, 15.0, 20.0, 10.0,
                         15.0, 15.0, 15.0, 15.0, 10.0, 17.5, 17.5, 17.5, 17.5, 17.5, 17.5, 15.0]
 
@@ -26,7 +26,7 @@ weather_forecasts = [
 
 
 def generate_test_instances():
-    weather_scenario = 0
+    weather_scenario = 2
     number_of_vessels = 1
     return_time = 80
     planning_period_hours = 80
