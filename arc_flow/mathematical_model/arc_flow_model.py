@@ -119,10 +119,6 @@ class ArcFlowModel:
         self.model.optimize()
         model_runtime = round(self.model.Runtime, 4)
 
-        if data.VERBOSE:
-            post.print_nodes_and_orders()
-            self.model.printAttr('X')
-
         voyages = post.create_voyages_variable(self.model.getVars(), self.arc_arrival_times, self.arc_speeds,
                                                self.sep_arc_costs)
         postponed_orders, serviced_orders = post.find_postponed_orders(voyages)
@@ -135,6 +131,14 @@ class ArcFlowModel:
         number_of_variables = self.model.NumVars
         number_of_bin_variables = self.model.NumBinVars
         number_of_cont_variables = number_of_variables - number_of_bin_variables
+
+        if data.VERBOSE:
+            post.print_nodes_and_orders()
+            self.model.printAttr('X')
+            print(f'Penalty costs: {self.penalty_costs}')
+            print(f'Postponed orders: {postponed_orders}')
+            print(f'Charter costs: {charter_costs}')
+
         post.save_results(voyages=voyages,
                           postponed_orders=postponed_orders,
                           serviced_orders=serviced_orders,
