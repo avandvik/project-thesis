@@ -1,0 +1,59 @@
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec 15 10:26:44 2020
+
+Using license file /Users/andersvandvik/gurobi.lic
+Set parameter LogFile to value /Users/andersvandvik/Repositories/project-thesis/output/local/pickup/logs/O2-C1-V1-WS0_P.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 1280 rows, 6250 columns and 31852 nonzeros
+Model fingerprint: 0x2e274210
+Variable types: 20 continuous, 6230 integer (6230 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 9e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 1194 rows and 6051 columns
+Presolve time: 0.68s
+Presolved: 86 rows, 199 columns, 1421 nonzeros
+Variable types: 12 continuous, 187 integer (186 binary)
+
+Root relaxation: objective 2.170305e+03, 38 iterations, 0.00 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 2170.30500    0    6          - 2170.30500      -     -    0s
+H    0     0                    2738.4810417 2170.30500  20.7%     -    0s
+H    0     0                    2350.3050000 2170.30500  7.66%     -    0s
+H    0     0                    2200.3050000 2170.30500  1.36%     -    0s
+     0     0 2170.30500    0    6 2200.30500 2170.30500  1.36%     -    0s
+
+Explored 1 nodes (38 simplex iterations) in 0.69 seconds
+Thread count was 4 (of 4 available processors)
+
+Solution count 3: 2200.31 2350.3 2738.48 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 2.200305000000e+03, best bound 2.200305000000e+03, gap 0.0000%
+
+    Variable            X 
+-------------------------
+x_0_63_1_116_0            1 
+x_1_116_2_136_0            1 
+x_2_136_3_137_0            1 
+x_3_137_4_167_0            1 
+x_0_63_4_63_1            1 
+       u_0_0            1 
+       u_1_0            1 
+       u_2_0            1 
+       u_3_0            1 
+       u_4_0            1 
+       u_0_1            1 
+       u_4_1            1 
+     l_D_0_0          100 
+     l_D_1_0           30 
+     l_P_3_0           40 
+     l_P_4_0           40 

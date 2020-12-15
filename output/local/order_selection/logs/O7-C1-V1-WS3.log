@@ -1,0 +1,193 @@
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 15:56:34 2020
+
+Using license file /Users/andersvandvik/gurobi.lic
+Set parameter LogFile to value /Users/andersvandvik/Repositories/project-thesis/output/local/order_selection/logs/O7-C1-V1-WS3.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 766 rows, 5990 columns and 31948 nonzeros
+Model fingerprint: 0x4affe1e9
+Variable types: 36 continuous, 5954 integer (5954 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 8e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 119 rows and 1885 columns
+Presolve time: 0.34s
+Presolved: 647 rows, 4105 columns, 18755 nonzeros
+Variable types: 28 continuous, 4077 integer (4076 binary)
+
+Root relaxation: objective 1.756086e+04, 1662 iterations, 0.06 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 17564.9801    0   41          - 17564.9801      -     -    0s
+H    0     0                    19561.475598 17564.9801  10.2%     -    0s
+H    0     0                    19453.230784 17564.9801  9.71%     -    0s
+     0     0 18650.4038    0   39 19453.2308 18650.4038  4.13%     -    0s
+H    0     0                    19336.668222 18650.4038  3.55%     -    0s
+     0     0 19201.5594    0    2 19336.6682 19201.5594  0.70%     -    0s
+H    0     0                    19233.699323 19201.5594  0.17%     -    0s
+     0     0 19201.5594    0    2 19233.6993 19201.5594  0.17%     -    0s
+
+Explored 1 nodes (1809 simplex iterations) in 0.64 seconds
+Thread count was 4 (of 4 available processors)
+
+Solution count 4: 19233.7 19336.7 19453.2 19561.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.923369932328e+04, best bound 1.923369932328e+04, gap 0.0000%
+
+    Variable            X 
+-------------------------
+x_0_63_2_94_0            1 
+x_1_125_8_164_0            1 
+x_2_94_3_104_0            1 
+x_3_104_4_114_0            1 
+x_4_114_1_125_0            1 
+x_0_63_6_81_1            1 
+x_5_93_7_113_1            1 
+x_6_81_5_93_1            1 
+x_7_113_8_144_1            1 
+       u_0_0            1 
+       u_1_0            1 
+       u_2_0            1 
+       u_3_0            1 
+       u_4_0            1 
+       u_8_0            1 
+       u_0_1            1 
+       u_5_1            1 
+       u_6_1            1 
+       u_7_1            1 
+       u_8_1            1 
+     l_D_0_0           65 
+     l_D_2_0           55 
+     l_D_3_0         32.5 
+     l_D_4_0           15 
+     l_D_0_1           30 
+     l_D_5_1         12.5 
+     l_D_6_1           20 
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 16:01:13 2020
+
+Using license file /Users/andersvandvik/gurobi.lic
+Set parameter LogFile to value /Users/andersvandvik/Repositories/project-thesis/output/local/order_selection/logs/O7-C1-V1-WS3.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 826 rows, 6812 columns and 36650 nonzeros
+Model fingerprint: 0xc49dd82d
+Variable types: 36 continuous, 6776 integer (6776 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 9e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 111 rows and 1797 columns
+Presolve time: 0.35s
+Presolved: 715 rows, 5015 columns, 23050 nonzeros
+Variable types: 28 continuous, 4987 integer (4986 binary)
+
+Root relaxation: objective 1.440938e+04, 2286 iterations, 0.10 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 14409.3767    0   27          - 14409.3767      -     -    0s
+     0     0 14558.9875    0   54          - 14558.9875      -     -    0s
+     0     0 14563.8521    0   57          - 14563.8521      -     -    0s
+     0     0 14566.3486    0   57          - 14566.3486      -     -    0s
+     0     0 15004.0698    0   41          - 15004.0698      -     -    0s
+     0     0 15017.2887    0   52          - 15017.2887      -     -    0s
+     0     0 15070.9807    0   56          - 15070.9807      -     -    0s
+     0     0 15165.3151    0   61          - 15165.3151      -     -    0s
+     0     0 15165.5294    0   61          - 15165.5294      -     -    0s
+     0     0 15447.8218    0   60          - 15447.8218      -     -    0s
+     0     0 15450.4380    0   64          - 15450.4380      -     -    0s
+     0     0 15457.1402    0   67          - 15457.1402      -     -    0s
+     0     0 15457.3939    0   40          - 15457.3939      -     -    0s
+     0     0 15464.8433    0   64          - 15464.8433      -     -    1s
+     0     0 15465.8632    0   66          - 15465.8632      -     -    1s
+     0     0 15574.5498    0   57          - 15574.5498      -     -    1s
+     0     0 15575.6212    0   66          - 15575.6212      -     -    1s
+     0     0 15589.2350    0   74          - 15589.2350      -     -    1s
+     0     0 15589.9305    0   74          - 15589.9305      -     -    1s
+     0     0 15592.5050    0   69          - 15592.5050      -     -    1s
+     0     0 15592.5050    0   69          - 15592.5050      -     -    1s
+H    0     0                    20797.691707 15592.5050  25.0%     -    1s
+H    0     0                    19536.804217 15927.3899  18.5%     -    1s
+     0     0 15927.3899    0   27 19536.8042 15927.3899  18.5%     -    2s
+H    0     0                    18363.091986 15927.3899  13.3%     -    2s
+H    0     0                    18347.368670 15927.3899  13.2%     -    2s
+     0     0 15927.3899    0   55 18347.3687 15927.3899  13.2%     -    2s
+H    0     0                    18131.520710 15927.3899  12.2%     -    2s
+H    0     0                    18047.514176 15927.3899  11.7%     -    2s
+H    0     0                    18001.038911 15927.3899  11.5%     -    2s
+     0     0 15927.3899    0   74 18001.0389 15927.3899  11.5%     -    2s
+     0     0 15927.3899    0   47 18001.0389 15927.3899  11.5%     -    2s
+     0     0 15927.3899    0   60 18001.0389 15927.3899  11.5%     -    2s
+     0     0 16165.0474    0   63 18001.0389 16165.0474  10.2%     -    2s
+     0     0 16165.0474    0   26 18001.0389 16165.0474  10.2%     -    2s
+     0     0 16165.0474    0   45 18001.0389 16165.0474  10.2%     -    2s
+     0     0 16197.1271    0   57 18001.0389 16197.1271  10.0%     -    2s
+     0     0 16204.5887    0   64 18001.0389 16204.5887  10.0%     -    2s
+     0     0 16205.2204    0   64 18001.0389 16205.2204  10.0%     -    2s
+     0     0 16291.6878    0   65 18001.0389 16291.6878  9.50%     -    2s
+H    0     0                    17943.064854 16291.6878  9.20%     -    2s
+H    0     0                    16520.447462 16291.6878  1.38%     -    2s
+     0     0 16368.7983    0    6 16520.4475 16368.7983  0.92%     -    2s
+     0     0 16382.5555    0    6 16520.4475 16382.5555  0.83%     -    2s
+     0     0 16405.9056    0    6 16520.4475 16405.9056  0.69%     -    2s
+
+Cutting planes:
+  Gomory: 4
+  Implied bound: 4
+  Clique: 5
+  MIR: 9
+  Flow cover: 1
+  Zero half: 2
+  RLT: 2
+  Relax-and-lift: 4
+
+Explored 1 nodes (7748 simplex iterations) in 2.74 seconds
+Thread count was 4 (of 4 available processors)
+
+Solution count 9: 16520.4 17943.1 18001 ... 20797.7
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.652044746174e+04, best bound 1.652044746174e+04, gap 0.0000%
+
+    Variable            X 
+-------------------------
+x_0_63_6_86_0            1 
+x_1_130_8_169_0            1 
+x_2_104_3_110_0            1 
+x_3_110_4_117_0            1 
+x_4_117_1_130_0            1 
+x_5_98_2_104_0            1 
+x_6_86_5_98_0            1 
+x_0_63_7_97_1            1 
+x_7_97_8_126_1            1 
+       u_0_0            1 
+       u_1_0            1 
+       u_2_0            1 
+       u_3_0            1 
+       u_4_0            1 
+       u_5_0            1 
+       u_6_0            1 
+       u_8_0            1 
+       u_0_1            1 
+       u_7_1            1 
+       u_8_1            1 
+     l_D_0_0       79.375 
+     l_D_2_0       41.875 
+     l_D_3_0       30.625 
+     l_D_4_0       21.875 
+     l_D_5_0       46.875 
+     l_D_6_0       54.375 
+     l_D_0_1           15 

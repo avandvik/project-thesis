@@ -35,14 +35,14 @@ def generate_test_instances():
     return_time = 80
     planning_period_hours = 80
     time_units_per_hour = 4
-    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/data/speed_optimization_case.xlsx',
+    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/data/pickup_value.xlsx',
                            template_path=f'{data.PROJECT_DIR_PATH}/input/templates/mongstad_template.json',
                            number_of_vessels=number_of_vessels,
                            return_time=return_time,
                            weather_scenario=weather_scenario,
                            planning_period_hours=planning_period_hours,
                            time_units_per_hour=time_units_per_hour,
-                           outdir_path=f'{data.PROJECT_DIR_PATH}/input/mongstad/insight/speed_opt')
+                           outdir_path=f'{data.PROJECT_DIR_PATH}/input/mongstad/insight/pickup')
 
 
 def generate_test_instance(orders_file_path,

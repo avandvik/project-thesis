@@ -12,8 +12,8 @@ PROJECT_DIR_PATH = f'{pathlib.Path(__file__).parent.absolute()}'  # Path of the 
 
 LOCAL = True
 if LOCAL:
-    INSTANCE_NAME = 'O5-C2-V1-WS0'
-    RUN_CATEGORY = 'speed_opt'
+    INSTANCE_NAME = 'O4-C1-V1-WS0'
+    RUN_CATEGORY = 'misc'
     INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/run/{INSTANCE_NAME}.json'
     LOG_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/{RUN_CATEGORY}/logs/{INSTANCE_NAME}.log'
     RESULTS_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/{RUN_CATEGORY}/results/{INSTANCE_NAME}.json'
@@ -25,7 +25,7 @@ else:
     RESULTS_OUTPUT_PATH = f'/storage/users/anderhva/{os.environ.get("current_time")}/results/{INSTANCE_NAME}.json'
 
 VERBOSE = True
-SPEED_OPTIMIZATION = False
+SPEED_OPTIMIZATION = True
 TIME_LIMIT = 60 * 60  # Max run time of gurobi solver
 
 with open(INPUT_FILE_PATH) as file:
@@ -113,8 +113,7 @@ MIN_SPEED_DISC = MIN_SPEED * (1 / TIME_UNITS_PER_HOUR)
 
 MAX_DISTANCE_UNIT = MAX_SPEED * TIME_UNIT_DISC
 
-# TODO: Make part of input file
-PREPARATION_END_TIME = 16 * TIME_UNITS_PER_HOUR - 1
+PREPARATION_END_TIME = 16 * TIME_UNITS_PER_HOUR - 1  # 16 because vessel preparation ends at 16:00
 
 """ ============================ WEATHER ============================ """
 WEATHER_FORECAST_HOURS = input_data['weather_forecast']
