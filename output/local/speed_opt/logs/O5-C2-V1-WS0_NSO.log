@@ -1,0 +1,75 @@
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 20:34:35 2020
+
+Using license file /Users/kpulsrud/gurobi.lic
+Set parameter LogFile to value /Users/kpulsrud/Repositories/project-thesis/output/local/speed_opt/logs/O5-C2-V1-WS0_NSO.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 2266 rows, 10218 columns and 52410 nonzeros
+Model fingerprint: 0xee7f8ec5
+Variable types: 28 continuous, 10190 integer (10190 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 7e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 77 rows and 184 columns
+Presolve time: 0.14s
+Presolved: 2189 rows, 10034 columns, 43774 nonzeros
+Variable types: 20 continuous, 10014 integer (10013 binary)
+
+Root relaxation: objective 1.756126e+03, 5257 iterations, 0.47 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 1756.12636    0   78          - 1756.12636      -     -    0s
+H    0     0                    3459.7900000 1756.12636  49.2%     -    0s
+     0     0 2992.68000    0   44 3459.79000 2992.68000  13.5%     -    1s
+     0     0 2992.68000    0   44 3459.79000 2992.68000  13.5%     -    2s
+     0     0 3230.79435    0   33 3459.79000 3230.79435  6.62%     -    2s
+H    0     0                    3376.9900000 3230.79435  4.33%     -    2s
+H    0     0                    3356.9900000 3230.79435  3.76%     -    2s
+     0     0 3239.94397    0   56 3356.99000 3239.94397  3.49%     -    2s
+     0     0 3301.35000    0    4 3356.99000 3301.35000  1.66%     -    2s
+     0     0     cutoff    0      3356.99000 3356.99000  0.00%     -    2s
+
+Cutting planes:
+  Gomory: 2
+  Implied bound: 3
+  MIR: 1
+  Relax-and-lift: 1
+
+Explored 1 nodes (21900 simplex iterations) in 2.33 seconds
+Thread count was 4 (of 4 available processors)
+
+Solution count 3: 3356.99 3376.99 3459.79 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.356990000000e+03, best bound 3.356990000000e+03, gap 0.0000%
+
+    Variable            X 
+-------------------------
+x_0_63_5_85_0            1 
+x_1_110_4_120_0            1 
+x_2_148_6_162_0            1 
+x_3_134_2_148_0            1 
+x_4_120_3_134_0            1 
+x_5_85_1_110_0            1 
+x_0_63_6_63_1            1 
+       u_0_0            1 
+       u_1_0            1 
+       u_2_0            1 
+       u_3_0            1 
+       u_4_0            1 
+       u_5_0            1 
+       u_6_0            1 
+       u_0_1            1 
+       u_6_1            1 
+     l_D_0_0         82.5 
+     l_D_1_0           45 
+     l_D_3_0           20 
+     l_D_4_0         27.5 
+     l_D_5_0         62.5 
