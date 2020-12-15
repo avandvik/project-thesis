@@ -4,10 +4,8 @@ __pycache__
 venv
 input/data/*
 input/run/*
-output/local
 report/.ipynb_checkpoints/*
 report/plots
-report/reports
 report/runtime_analysis
 report/.config_ipynb
 .config_ipynb

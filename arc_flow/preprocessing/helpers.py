@@ -2,7 +2,6 @@ import data
 import math
 import numpy as np
 
-
 def get_start_times(start_node, vessel):
     dist_from_dep = data.DEPOT.get_distance_to_installation(start_node.get_installation())
     earliest_start_time = data.PREPARATION_END_TIME + get_min_sailing_duration(dist_from_dep)

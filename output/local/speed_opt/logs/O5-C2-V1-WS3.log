@@ -1,0 +1,452 @@
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 18:18:36 2020
+
+Using license file /Users/kpulsrud/gurobi.lic
+Set parameter LogFile to value /Users/kpulsrud/Repositories/project-thesis/output/local/speed_opt/logs/O5-C2-V1-WS3.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 482 rows, 2592 columns and 13324 nonzeros
+Model fingerprint: 0x81e69643
+Variable types: 28 continuous, 2564 integer (2564 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 12 rows and 96 columns
+Presolve time: 0.00s
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 4 available processors)
+
+Solution count 0
+
+Model is infeasible
+Best objective -, best bound -, gap -
+
+    Variable            X 
+-------------------------
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 18:22:39 2020
+
+Using license file /Users/kpulsrud/gurobi.lic
+Set parameter LogFile to value /Users/kpulsrud/Repositories/project-thesis/output/local/speed_opt/logs/O5-C2-V1-WS3.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 444 rows, 2312 columns and 11444 nonzeros
+Model fingerprint: 0x45fa2c3b
+Variable types: 28 continuous, 2284 integer (2284 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 12 rows and 124 columns
+Presolve time: 0.00s
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 4 available processors)
+
+Solution count 0
+
+Model is infeasible
+Best objective -, best bound -, gap -
+
+    Variable            X 
+-------------------------
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 18:30:59 2020
+
+Using license file /Users/kpulsrud/gurobi.lic
+Set parameter LogFile to value /Users/kpulsrud/Repositories/project-thesis/output/local/speed_opt/logs/O5-C2-V1-WS3.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 482 rows, 2592 columns and 13324 nonzeros
+Model fingerprint: 0x9b3d7ddb
+Variable types: 28 continuous, 2564 integer (2564 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 12 rows and 96 columns
+Presolve time: 0.00s
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 4 available processors)
+
+Solution count 0
+
+Model is infeasible
+Best objective -, best bound -, gap -
+
+    Variable            X 
+-------------------------
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 18:32:21 2020
+
+Using license file /Users/kpulsrud/gurobi.lic
+Set parameter LogFile to value /Users/kpulsrud/Repositories/project-thesis/output/local/speed_opt/logs/O5-C2-V1-WS3.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 490 rows, 2722 columns and 14104 nonzeros
+Model fingerprint: 0xf5d9f53b
+Variable types: 28 continuous, 2694 integer (2694 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 12 rows and 96 columns
+Presolve time: 0.00s
+
+Explored 0 nodes (0 simplex iterations) in 0.01 seconds
+Thread count was 1 (of 4 available processors)
+
+Solution count 0
+
+Model is infeasible
+Best objective -, best bound -, gap -
+
+    Variable            X 
+-------------------------
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 18:34:44 2020
+
+Using license file /Users/kpulsrud/gurobi.lic
+Set parameter LogFile to value /Users/kpulsrud/Repositories/project-thesis/output/local/speed_opt/logs/O5-C2-V1-WS3.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 490 rows, 2722 columns and 14104 nonzeros
+Model fingerprint: 0xf5d9f53b
+Variable types: 28 continuous, 2694 integer (2694 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 12 rows and 96 columns
+Presolve time: 0.00s
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 4 available processors)
+
+Solution count 0
+
+Model is infeasible
+Best objective -, best bound -, gap -
+
+    Variable            X 
+-------------------------
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 18:44:30 2020
+
+Using license file /Users/kpulsrud/gurobi.lic
+Set parameter LogFile to value /Users/kpulsrud/Repositories/project-thesis/output/local/speed_opt/logs/O5-C2-V1-WS3.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 604 rows, 3898 columns and 20756 nonzeros
+Model fingerprint: 0xf28a263e
+Variable types: 28 continuous, 3870 integer (3870 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 7e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 91 rows and 776 columns
+Presolve time: 0.15s
+Presolved: 513 rows, 3122 columns, 14150 nonzeros
+Variable types: 20 continuous, 3102 integer (3101 binary)
+
+Root relaxation: objective 2.985941e+03, 761 iterations, 0.02 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 2985.94054    0   17          - 2985.94054      -     -    0s
+H    0     0                    11632.219728 2985.94054  74.3%     -    0s
+H    0     0                    10712.591098 2985.94054  72.1%     -    0s
+H    0     0                    9826.2429427 2985.94054  69.6%     -    0s
+     0     0 3278.56236    0   15 9826.24294 3278.56236  66.6%     -    0s
+H    0     0                    3338.9320508 3278.56236  1.81%     -    0s
+     0     0 3303.87583    0    9 3338.93205 3303.87583  1.05%     -    0s
+
+Cutting planes:
+  Learned: 2
+  Gomory: 7
+  Implied bound: 2
+  Clique: 4
+  MIR: 5
+  Flow cover: 1
+  Zero half: 4
+  RLT: 2
+  Relax-and-lift: 1
+
+Explored 1 nodes (1050 simplex iterations) in 0.29 seconds
+Thread count was 4 (of 4 available processors)
+
+Solution count 4: 3338.93 9826.24 10712.6 11632.2 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.338932050794e+03, best bound 3.338932050794e+03, gap 0.0000%
+
+    Variable            X 
+-------------------------
+x_0_63_4_86_0            1 
+x_1_120_3_130_0            1 
+x_2_105_1_120_0            1 
+x_3_130_6_164_0            1 
+x_4_86_5_96_0            1 
+x_5_96_2_105_0            1 
+x_0_63_6_63_1            1 
+       u_0_0            1 
+       u_1_0            1 
+       u_2_0            1 
+       u_3_0            1 
+       u_4_0            1 
+       u_5_0            1 
+       u_6_0            1 
+       u_0_1            1 
+       u_6_1            1 
+     l_D_0_0           80 
+     l_D_1_0         17.5 
+     l_D_2_0         32.5 
+     l_D_4_0           60 
+     l_D_5_0           40 
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 18:47:34 2020
+
+Using license file /Users/kpulsrud/gurobi.lic
+Set parameter LogFile to value /Users/kpulsrud/Repositories/project-thesis/output/local/speed_opt/logs/O5-C2-V1-WS3.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 490 rows, 2722 columns and 14104 nonzeros
+Model fingerprint: 0xf5d9f53b
+Variable types: 28 continuous, 2694 integer (2694 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 12 rows and 96 columns
+Presolve time: 0.00s
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 4 available processors)
+
+Solution count 0
+
+Model is infeasible
+Best objective -, best bound -, gap -
+
+    Variable            X 
+-------------------------
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 18:50:12 2020
+
+Using license file /Users/kpulsrud/gurobi.lic
+Set parameter LogFile to value /Users/kpulsrud/Repositories/project-thesis/output/local/speed_opt/logs/O5-C2-V1-WS3.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 556 rows, 3584 columns and 18774 nonzeros
+Model fingerprint: 0x550c3922
+Variable types: 28 continuous, 3556 integer (3556 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 8e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 91 rows and 1018 columns
+Presolve time: 0.19s
+Presolved: 465 rows, 2566 columns, 11444 nonzeros
+Variable types: 20 continuous, 2546 integer (2545 binary)
+
+Root relaxation: objective 3.640980e+03, 762 iterations, 0.02 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+*    0     0               0    3640.9804738 3640.98047  0.00%     -    0s
+
+Explored 0 nodes (762 simplex iterations) in 0.24 seconds
+Thread count was 4 (of 4 available processors)
+
+Solution count 1: 3640.98 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.640980473810e+03, best bound 3.640980473810e+03, gap 0.0000%
+
+    Variable            X 
+-------------------------
+x_0_63_4_85_0            1 
+x_1_110_3_120_0            1 
+x_2_96_1_110_0            1 
+x_3_120_5_130_0            1 
+x_4_85_2_96_0            1 
+x_5_130_6_168_0            1 
+x_0_63_6_63_1            1 
+       u_0_0            1 
+       u_1_0            1 
+       u_2_0            1 
+       u_3_0            1 
+       u_4_0            1 
+       u_5_0            1 
+       u_6_0            1 
+       u_0_1            1 
+       u_6_1            1 
+     l_D_0_0         77.5 
+     l_D_1_0           35 
+     l_D_2_0           50 
+     l_D_3_0         17.5 
+     l_D_4_0         57.5 
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 19:33:43 2020
+
+Using license file /Users/kpulsrud/gurobi.lic
+Set parameter LogFile to value /Users/kpulsrud/Repositories/project-thesis/output/local/speed_opt/logs/O5-C2-V1-WS3.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 480 rows, 2114 columns and 10954 nonzeros
+Model fingerprint: 0xeae5863d
+Variable types: 28 continuous, 2086 integer (2086 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 99 rows and 384 columns
+Presolve time: 0.06s
+Presolved: 381 rows, 1730 columns, 7530 nonzeros
+Variable types: 20 continuous, 1710 integer (1709 binary)
+
+Root relaxation: objective 3.378670e+03, 405 iterations, 0.01 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3378.67001    0   10          - 3378.67001      -     -    0s
+H    0     0                    3448.8756226 3378.67001  2.04%     -    0s
+     0     0 3410.14150    0   10 3448.87562 3410.14150  1.12%     -    0s
+
+Cutting planes:
+  MIR: 3
+  RLT: 1
+
+Explored 1 nodes (419 simplex iterations) in 0.11 seconds
+Thread count was 4 (of 4 available processors)
+
+Solution count 1: 3448.88 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.448875622619e+03, best bound 3.448875622619e+03, gap 0.0000%
+
+    Variable            X 
+-------------------------
+x_0_63_2_94_0            1 
+x_1_101_3_111_0            1 
+x_2_94_1_101_0            1 
+x_3_111_5_122_0            1 
+x_4_130_6_169_0            1 
+x_5_122_4_130_0            1 
+x_0_63_6_63_1            1 
+       u_0_0            1 
+       u_1_0            1 
+       u_2_0            1 
+       u_3_0            1 
+       u_4_0            1 
+       u_5_0            1 
+       u_6_0            1 
+       u_0_1            1 
+       u_6_1            1 
+     l_D_0_0         77.5 
+     l_D_1_0         52.5 
+     l_D_2_0         67.5 
+     l_D_3_0           35 
+     l_D_5_0         17.5 
+
+Gurobi 9.0.3 (mac64, Python) logging started Tue Dec  8 20:00:08 2020
+
+Using license file /Users/kpulsrud/gurobi.lic
+Set parameter LogFile to value /Users/kpulsrud/Repositories/project-thesis/output/local/speed_opt/logs/O5-C2-V1-WS3.log
+Academic license - for non-commercial use only
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 610 rows, 5392 columns and 29562 nonzeros
+Model fingerprint: 0x59f8a9a6
+Variable types: 28 continuous, 5364 integer (5364 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 8e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 91 rows and 1114 columns
+Presolve time: 0.13s
+Presolved: 519 rows, 4278 columns, 19882 nonzeros
+Variable types: 20 continuous, 4258 integer (4257 binary)
+
+Root relaxation: objective 3.243725e+03, 944 iterations, 0.03 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3559.04071    0   14          - 3559.04071      -     -    0s
+H    0     0                    3630.3859988 3559.04071  1.97%     -    0s
+     0     0 3598.36216    0    6 3630.38600 3598.36216  0.88%     -    0s
+
+Cutting planes:
+  Gomory: 2
+  Implied bound: 2
+  MIR: 4
+  RLT: 2
+  Relax-and-lift: 1
+
+Explored 1 nodes (1365 simplex iterations) in 0.28 seconds
+Thread count was 4 (of 4 available processors)
+
+Solution count 1: 3630.39 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.630385998810e+03, best bound 3.630385998810e+03, gap 0.0000%
+
+    Variable            X 
+-------------------------
+x_0_63_5_86_0            1 
+x_1_130_6_168_0            1 
+x_2_95_3_103_0            1 
+x_3_103_4_120_0            1 
+x_4_120_1_130_0            1 
+x_5_86_2_95_0            1 
+x_0_63_6_63_1            1 
+       u_0_0            1 
+       u_1_0            1 
+       u_2_0            1 
+       u_3_0            1 
+       u_4_0            1 
+       u_5_0            1 
+       u_6_0            1 
+       u_0_1            1 
+       u_6_1            1 
+     l_D_0_0         82.5 
+     l_D_2_0         42.5 
+     l_D_3_0           35 
+     l_D_4_0         17.5 
+     l_D_5_0         62.5 
