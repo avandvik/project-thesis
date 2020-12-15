@@ -30,7 +30,9 @@ def calculate_penalty_costs(arcs, arc_costs):
             if arcs[0][0][preparation_end_time][mand_node.get_index()][t]:
                 service_from_depot_costs.append(arc_costs[0][0][preparation_end_time][mand_node.get_index()][t] * 2)
         worst_cost = max(service_from_depot_costs)
+        best_cost = min(service_from_depot_costs)
+        # avg_cost = sum(service_from_depot_costs) / len(service_from_depot_costs)
         idx = opt_node.get_index()
-        penalty_costs[idx] = worst_cost
+        penalty_costs[idx] = best_cost
 
     return penalty_costs

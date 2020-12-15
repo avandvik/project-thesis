@@ -150,6 +150,6 @@ class ArcGenerator:
         return self.number_of_arcs
 
 
-# ag = ArcGenerator(verbose=True)
-# ag.generate_arcs()
-# ag.print_arcs()
+ag = ArcGenerator(verbose=True)
+ag.generate_arcs()
+ag.print_arcs()
