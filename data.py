@@ -12,8 +12,8 @@ PROJECT_DIR_PATH = f'{pathlib.Path(__file__).parent.absolute()}'  # Path of the 
 
 LOCAL = True
 if LOCAL:
-    INSTANCE_NAME = 'O7-C2-V1-WS2'
-    RUN_CATEGORY = 'order_selection'
+    INSTANCE_NAME = 'O6-C1-V1-WS3'
+    RUN_CATEGORY = 'speed_opt'
     INPUT_FILE_PATH = f'{PROJECT_DIR_PATH}/input/run/{INSTANCE_NAME}.json'
     LOG_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/{RUN_CATEGORY}/logs/{INSTANCE_NAME}.log'
     RESULTS_OUTPUT_PATH = f'{PROJECT_DIR_PATH}/output/local/{RUN_CATEGORY}/results/{INSTANCE_NAME}.json'

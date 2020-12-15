@@ -21,24 +21,27 @@ weather_forecasts = [
      1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
      3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3,
+     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
      3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
 ]
 
 
 def generate_test_instances():
-    weather_scenario = 0
+    weather_scenario = 3
     number_of_vessels = 1
     return_time = 80
     planning_period_hours = 80
     time_units_per_hour = 4
-    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/data/order_selection_value.xlsx',
+    generate_test_instance(orders_file_path=f'{data.PROJECT_DIR_PATH}/input/data/speed_opt_value.xlsx',
                            template_path=f'{data.PROJECT_DIR_PATH}/input/templates/mongstad_template.json',
                            number_of_vessels=number_of_vessels,
                            return_time=return_time,
                            weather_scenario=weather_scenario,
                            planning_period_hours=planning_period_hours,
                            time_units_per_hour=time_units_per_hour,
-                           outdir_path=f'{data.PROJECT_DIR_PATH}/input/mongstad/insight/order_selection')
+                           outdir_path=f'{data.PROJECT_DIR_PATH}/input/mongstad/insight/speed_opt')
 
 
 def generate_test_instance(orders_file_path,
@@ -150,4 +153,9 @@ def get_filename(base, vessels, weather_scenario):
 
 
 if __name__ == '__main__':
-    generate_test_instances()
+    # generate_test_instances()
+    print(len(weather_forecasts[3]))
+    for w in range(len(weather_forecasts[3])):
+        if weather_forecasts[2][w] == 3:
+            print(w * 4)
+            break

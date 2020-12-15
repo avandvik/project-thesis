@@ -1053,52 +1053,46 @@
     "0": {
       "transport_type": "delivery",
       "mandatory": "True",
-      "size": 15.0,
-      "installation": 21
+      "size": 21.875,
+      "installation": 22
     },
     "1": {
       "transport_type": "delivery",
       "mandatory": "True",
-      "size": 7.5,
-      "installation": 22
+      "size": 11.25,
+      "installation": 15
     },
     "2": {
       "transport_type": "delivery",
       "mandatory": "True",
-      "size": 8.75,
-      "installation": 23
+      "size": 15.0,
+      "installation": 16
     },
     "3": {
       "transport_type": "delivery",
       "mandatory": "True",
       "size": 10.0,
-      "installation": 15
+      "installation": 26
     },
     "4": {
       "transport_type": "delivery",
       "mandatory": "True",
-      "size": 11.25,
-      "installation": 4
+      "size": 10.0,
+      "installation": 20
     },
     "5": {
       "transport_type": "delivery",
       "mandatory": "True",
-      "size": 15.0,
-      "installation": 1
-    },
-    "6": {
-      "transport_type": "delivery",
-      "mandatory": "True",
-      "size": 7.5,
-      "installation": 13
+      "size": 20.0,
+      "installation": 4
     }
   },
   "planning_period_in_hours": 80,
   "time_units_per_hour": 4,
-  "number_of_orders": 7,
+  "number_of_orders": 6,
   "number_of_installations": 3,
   "installation_ordering": "Random",
-  "weather_scenario": 0,
+  "weather_scenario": 3,
   "fleet_size": 1,
   "weather_forecast": [
     1,
@@ -1119,7 +1113,6 @@
     1,
     1,
     1,
-    1,
     2,
     2,
     2,
@@ -1135,10 +1128,11 @@
     2,
     2,
     2,
-    2,
-    2,
-    2,
-    2,
+    3,
+    3,
+    3,
+    3,
+    3,
     3,
     3,
     3,
