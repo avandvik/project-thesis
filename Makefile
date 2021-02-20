@@ -20,3 +20,6 @@ run:
 
 clean:
 	find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf && find . -name ".DS_Store" -delete && find . -name "__pycache__" -delete
+
+install:
+	shell/install.sh
