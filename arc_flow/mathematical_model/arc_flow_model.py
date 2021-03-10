@@ -135,6 +135,7 @@ class ArcFlowModel:
         if data.VERBOSE:
             post.print_nodes_and_orders()
             self.model.printAttr('X')
+            print(f'Objective value: {self.model.getObjective().getValue()}')
             print(f'Penalty costs: {self.penalty_costs}')
             print(f'Postponed orders: {postponed_orders}')
             print(f'Charter costs: {charter_costs}')

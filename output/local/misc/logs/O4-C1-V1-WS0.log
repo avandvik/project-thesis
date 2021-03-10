@@ -152,3 +152,287 @@ x_0_63_5_63_1            1
      l_D_2_0           15 
      l_P_4_0        11.25 
      l_P_5_0        11.25 
+
+Gurobi 9.1.1 (mac64, Python) logging started Wed Mar 10 12:02:11 2021
+
+Academic license - for non-commercial use only - expires 2021-04-21
+Using license file /Library/gurobi911/mac64/gurobi.lic
+Set parameter LogFile to value /Users/andersvandvik/Repositories/project-thesis/output/local/misc/logs/O4-C1-V1-WS0.log
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.1.1 build v9.1.1rc0 (mac64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 1774 rows, 5818 columns and 27884 nonzeros
+Model fingerprint: 0x0433b2cb
+Variable types: 24 continuous, 5794 integer (5794 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 7e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 156 rows and 260 columns
+Presolve time: 0.17s
+Presolved: 1618 rows, 5558 columns, 21406 nonzeros
+Variable types: 16 continuous, 5542 integer (5542 binary)
+Found heuristic solution: objective 13205.307708
+Found heuristic solution: objective 11764.267083
+
+Root relaxation: objective 1.104731e+03, 2164 iterations, 0.22 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 1145.72215    0   33 11764.2671 1145.72215  90.3%     -    0s
+H    0     0                    4913.9227083 1145.72215  76.7%     -    0s
+H    0     0                    3647.7731250 1145.72215  68.6%     -    0s
+H    0     0                    3611.4283333 1145.72215  68.3%     -    0s
+*    0     0               0    1873.4316667 1873.43167  0.00%     -    1s
+
+Cutting planes:
+  MIR: 3
+  Zero half: 6
+  RLT: 12
+  Relax-and-lift: 2
+
+Explored 1 nodes (3437 simplex iterations) in 1.05 seconds
+Thread count was 4 (of 4 available processors)
+
+Solution count 6: 1873.43 3611.43 3647.77 ... 13205.3
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.873431666667e+03, best bound 1.873431666667e+03, gap 0.0000%
+
+    Variable            X 
+-------------------------
+x_0_63_1_94_0            1 
+x_1_94_2_99_0            1 
+x_2_99_3_113_0            1 
+x_3_113_4_114_0            1 
+x_4_114_5_146_0            1 
+x_0_63_5_63_1            1 
+       u_0_0            1 
+       u_1_0            1 
+       u_2_0            1 
+       u_3_0            1 
+       u_4_0            1 
+       u_5_0            1 
+       u_0_1            1 
+       u_5_1            1 
+     l_D_0_0        41.25 
+     l_D_1_0        26.25 
+     l_D_2_0           15 
+     l_P_4_0        11.25 
+     l_P_5_0        11.25 
+
+Gurobi 9.1.1 (mac64, Python) logging started Wed Mar 10 12:12:54 2021
+
+Academic license - for non-commercial use only - expires 2021-04-21
+Using license file /Library/gurobi911/mac64/gurobi.lic
+Set parameter LogFile to value /Users/andersvandvik/Repositories/project-thesis/output/local/misc/logs/O4-C1-V1-WS0.log
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.1.1 build v9.1.1rc0 (mac64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 1774 rows, 5818 columns and 27884 nonzeros
+Model fingerprint: 0x374ac33c
+Variable types: 24 continuous, 5794 integer (5794 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 6e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 156 rows and 260 columns
+Presolve time: 0.15s
+Presolved: 1618 rows, 5558 columns, 21406 nonzeros
+Variable types: 16 continuous, 5542 integer (5542 binary)
+Found heuristic solution: objective 10654.583594
+Found heuristic solution: objective 8583.3167708
+
+Root relaxation: objective 3.294867e+02, 1836 iterations, 0.17 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0  356.46597    0   55 8583.31677  356.46597  95.8%     -    0s
+H    0     0                     547.1079167  356.46597  34.8%     -    0s
+     0     0     cutoff    0       547.10792  547.10792  0.00%     -    0s
+
+Cutting planes:
+  Gomory: 4
+  Implied bound: 4
+  MIR: 4
+  Zero half: 1
+  RLT: 22
+  Relax-and-lift: 2
+
+Explored 1 nodes (3160 simplex iterations) in 1.00 seconds
+Thread count was 4 (of 4 available processors)
+
+Solution count 3: 547.108 8583.32 10654.6 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 5.471079166667e+02, best bound 5.471079166667e+02, gap 0.0000%
+
+    Variable            X 
+-------------------------
+x_0_63_1_94_0            1 
+x_1_94_2_99_0            1 
+x_2_99_3_113_0            1 
+x_3_113_4_114_0            1 
+x_4_114_5_146_0            1 
+x_0_63_5_63_1            1 
+       u_0_0            1 
+       u_1_0            1 
+       u_2_0            1 
+       u_3_0            1 
+       u_4_0            1 
+       u_5_0            1 
+       u_0_1            1 
+       u_5_1            1 
+     l_D_0_0        41.25 
+     l_D_1_0        26.25 
+     l_D_2_0           15 
+     l_P_4_0        11.25 
+     l_P_5_0        11.25 
+
+Gurobi 9.1.1 (mac64, Python) logging started Wed Mar 10 12:15:30 2021
+
+Academic license - for non-commercial use only - expires 2021-04-21
+Using license file /Library/gurobi911/mac64/gurobi.lic
+Set parameter LogFile to value /Users/andersvandvik/Repositories/project-thesis/output/local/misc/logs/O4-C1-V1-WS0.log
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.1.1 build v9.1.1rc0 (mac64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 1774 rows, 5818 columns and 27884 nonzeros
+Model fingerprint: 0x374ac33c
+Variable types: 24 continuous, 5794 integer (5794 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 6e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 156 rows and 260 columns
+Presolve time: 0.14s
+Presolved: 1618 rows, 5558 columns, 21406 nonzeros
+Variable types: 16 continuous, 5542 integer (5542 binary)
+Found heuristic solution: objective 10654.583594
+Found heuristic solution: objective 8583.3167708
+
+Root relaxation: objective 3.294867e+02, 1836 iterations, 0.26 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0  356.46597    0   55 8583.31677  356.46597  95.8%     -    0s
+H    0     0                     547.1079167  356.46597  34.8%     -    0s
+     0     0     cutoff    0       547.10792  547.10792  0.00%     -    1s
+
+Cutting planes:
+  Gomory: 4
+  Implied bound: 4
+  MIR: 4
+  Zero half: 1
+  RLT: 22
+  Relax-and-lift: 2
+
+Explored 1 nodes (3160 simplex iterations) in 1.07 seconds
+Thread count was 4 (of 4 available processors)
+
+Solution count 3: 547.108 8583.32 10654.6 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 5.471079166667e+02, best bound 5.471079166667e+02, gap 0.0000%
+
+    Variable            X 
+-------------------------
+x_0_63_1_94_0            1 
+x_1_94_2_99_0            1 
+x_2_99_3_113_0            1 
+x_3_113_4_114_0            1 
+x_4_114_5_146_0            1 
+x_0_63_5_63_1            1 
+       u_0_0            1 
+       u_1_0            1 
+       u_2_0            1 
+       u_3_0            1 
+       u_4_0            1 
+       u_5_0            1 
+       u_0_1            1 
+       u_5_1            1 
+     l_D_0_0        41.25 
+     l_D_1_0        26.25 
+     l_D_2_0           15 
+     l_P_4_0        11.25 
+     l_P_5_0        11.25 
+
+Gurobi 9.1.1 (mac64, Python) logging started Wed Mar 10 12:17:08 2021
+
+Academic license - for non-commercial use only - expires 2021-04-21
+Using license file /Library/gurobi911/mac64/gurobi.lic
+Set parameter LogFile to value /Users/andersvandvik/Repositories/project-thesis/output/local/misc/logs/O4-C1-V1-WS0.log
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Gurobi Optimizer version 9.1.1 build v9.1.1rc0 (mac64)
+Thread count: 2 physical cores, 4 logical processors, using up to 4 threads
+Optimize a model with 1774 rows, 5818 columns and 27884 nonzeros
+Model fingerprint: 0x374ac33c
+Variable types: 24 continuous, 5794 integer (5794 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+02]
+  Objective range  [1e+00, 6e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+02]
+Presolve removed 156 rows and 260 columns
+Presolve time: 0.14s
+Presolved: 1618 rows, 5558 columns, 21406 nonzeros
+Variable types: 16 continuous, 5542 integer (5542 binary)
+Found heuristic solution: objective 10654.583594
+Found heuristic solution: objective 8583.3167708
+
+Root relaxation: objective 3.294867e+02, 1836 iterations, 0.16 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0  356.46597    0   55 8583.31677  356.46597  95.8%     -    0s
+H    0     0                     547.1079167  356.46597  34.8%     -    0s
+     0     0     cutoff    0       547.10792  547.10792  0.00%     -    0s
+
+Cutting planes:
+  Gomory: 4
+  Implied bound: 4
+  MIR: 4
+  Zero half: 1
+  RLT: 22
+  Relax-and-lift: 2
+
+Explored 1 nodes (3160 simplex iterations) in 0.98 seconds
+Thread count was 4 (of 4 available processors)
+
+Solution count 3: 547.108 8583.32 10654.6 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 5.471079166667e+02, best bound 5.471079166667e+02, gap 0.0000%
+
+    Variable            X 
+-------------------------
+x_0_63_1_94_0            1 
+x_1_94_2_99_0            1 
+x_2_99_3_113_0            1 
+x_3_113_4_114_0            1 
+x_4_114_5_146_0            1 
+x_0_63_5_63_1            1 
+       u_0_0            1 
+       u_1_0            1 
+       u_2_0            1 
+       u_3_0            1 
+       u_4_0            1 
+       u_5_0            1 
+       u_0_1            1 
+       u_5_1            1 
+     l_D_0_0        41.25 
+     l_D_1_0        26.25 
+     l_D_2_0           15 
+     l_P_4_0        11.25 
+     l_P_5_0        11.25 

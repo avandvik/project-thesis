@@ -78,8 +78,8 @@ def get_internal_arc_data(end_node, start_time, vessel):
     end_time = start_time + service_duration
     if is_return_possible(end_node, end_time, vessel) and is_servicing_possible(start_time, service_duration, end_node):
         speed, arr_time, service_time, distance = 0, start_time, start_time, 0
-        fuel_cost, charter_cost = calculate_arc_cost_v2(start_time, arr_time, service_time, end_time, speed,
-                                                        distance, vessel)
+        fuel_cost, charter_cost = calculate_arc_cost(start_time, arr_time, service_time, end_time, speed,
+                                                     distance, vessel)
         return {start_time: [start_time, end_time, speed, fuel_cost, charter_cost]}, False
     else:
         return None, False
@@ -92,12 +92,28 @@ def get_possible_speeds(distance, start_time):
     max_duration = math.ceil(hour_to_disc(distance / data.MIN_SPEED))  # ceil because we want upper limit
     if max_duration == 0:
         return None
-    weather_states = data.WEATHER_FORECAST_DISC[start_time:start_time + max_duration]
-    max_speeds = [data.MAX_SPEED - data.SPEED_IMPACTS[ws] for ws in weather_states]
-    avg_max_speed = sum(max_speeds) / len(max_speeds)
+
+    avg_max_speed = calculate_average_max_speed(start_time, distance)
     speeds = [float(speed) for speed in np.arange(data.MIN_SPEED, data.MAX_SPEED, 1) if speed < avg_max_speed]
     speeds.append(float(avg_max_speed))
     return speeds
+
+
+def calculate_average_max_speed(start_time, distance):
+    sailed_distance = 0
+    current_time = start_time
+    while sailed_distance < distance:
+        ws = data.WEATHER_FORECAST_DISC[current_time]
+        adjusted_max_speed = data.MAX_SPEED - data.SPEED_IMPACTS[ws]
+        sailed_distance += adjusted_max_speed * data.TIME_UNIT_DISC
+        current_time += 1
+    overshoot_time = calculate_overshoot_time(sailed_distance - distance, current_time)
+    return distance / disc_to_exact_hours(current_time - start_time) - overshoot_time
+
+
+def calculate_overshoot_time(overshoot_distance, sailing_end_time):
+    ws = data.WEATHER_FORECAST_DISC[sailing_end_time - 1]
+    return overshoot_distance / (data.MAX_SPEED - data.SPEED_IMPACTS[ws])
 
 
 def get_arr_times_to_speeds(distance, start_time, speeds):
@@ -147,8 +163,8 @@ def get_return_to_depot_arcs(start_time, arr_times_to_speeds, distance, vessel):
     return_time = vessel.get_hourly_return_time() * data.TIME_UNITS_PER_HOUR - 1
     for arr_time, speed in arr_times_to_speeds.items():
         if arr_time <= return_time:
-            fuel_cost, charter_cost = calculate_arc_cost_v2(start_time, arr_time, arr_time, arr_time, speed,
-                                                            distance, vessel)
+            fuel_cost, charter_cost = calculate_arc_cost(start_time, arr_time, arr_time, arr_time, speed,
+                                                         distance, vessel)
             arr_times_to_arc_data.update({arr_time: [arr_time, arr_time, speed, fuel_cost, charter_cost]})
     return arr_times_to_arc_data
 
@@ -161,8 +177,8 @@ def get_no_idling_arcs(start_time, arr_times_to_speeds, service_duration, end_no
         if is_servicing_possible(arr_time, service_duration, end_node):
             service_time = arr_time
             end_time = service_time + service_duration
-            fuel_cost, charter_cost = calculate_arc_cost_v2(start_time, arr_time, service_time, end_time, speed,
-                                                            distance, vessel)
+            fuel_cost, charter_cost = calculate_arc_cost(start_time, arr_time, service_time, end_time, speed,
+                                                         distance, vessel)
             arr_times_to_arc_data.update({arr_time: [service_time, end_time, speed, fuel_cost, charter_cost]})
     return arr_times_to_arc_data
 
@@ -177,8 +193,8 @@ def get_idling_arcs(start_time, arr_times_to_speeds, service_duration, end_node,
         if not is_return_possible(end_node, service_time + service_duration, vessel):
             break
         end_time = service_time + service_duration
-        fuel_cost, charter_cost = calculate_arc_cost_v2(start_time, arr_time, service_time, end_time, speed, distance,
-                                                        vessel)
+        fuel_cost, charter_cost = calculate_arc_cost(start_time, arr_time, service_time, end_time, speed, distance,
+                                                     vessel)
         arr_times_to_arc_data.update({arr_time: [service_time, end_time, speed, fuel_cost, charter_cost]})
     return arr_times_to_arc_data
 
@@ -210,20 +226,20 @@ def is_return_possible(node, arc_end_time, vessel):
     return earliest_arr_time <= return_time
 
 
-def calculate_arc_cost_v2(start_time, arr_time, service_time, end_time, speed, distance, vessel):
-    return calculate_total_fuel_cost_v2(start_time, arr_time, service_time, end_time, speed, distance), \
+def calculate_arc_cost(start_time, arr_time, service_time, end_time, speed, distance, vessel):
+    return calculate_total_fuel_cost(start_time, arr_time, service_time, end_time, speed, distance), \
            calculate_charter_cost(vessel, start_time, end_time)
 
 
-def calculate_total_fuel_cost_v2(start_time, arr_time, service_time, end_time, speed, distance):
-    sail_cost = calculate_fuel_cost_sailing_v2(start_time, arr_time, speed, distance)
+def calculate_total_fuel_cost(start_time, arr_time, service_time, end_time, speed, distance):
+    sail_cost = calculate_fuel_cost_sailing(start_time, arr_time, speed, distance)
     idle_cost = calculate_fuel_cost_idling(arr_time, service_time)
     service_cost = calculate_fuel_cost_servicing(service_time, end_time)
     total_cost = sail_cost + idle_cost + service_cost
     return total_cost
 
 
-def calculate_fuel_cost_sailing_v2(start_time, arr_time, speed, distance):
+def calculate_fuel_cost_sailing(start_time, arr_time, speed, distance):
     if distance == 0 or start_time == arr_time:
         return 0
     time_in_each_ws = get_time_in_each_weather_state(start_time, arr_time)
@@ -299,7 +315,8 @@ def get_disc_time_interval(start_hour, end_hour):
 
 
 def get_time_in_each_weather_state(start_time, end_time):
-    return [get_time_in_weather_state(start_time, end_time, ws) for ws in range(data.WORST_WEATHER_STATE + 1)]
+    return [disc_to_exact_hours(get_time_in_weather_state(start_time, end_time, ws))
+            for ws in range(data.WORST_WEATHER_STATE + 1)]
 
 
 def get_time_in_weather_state(start_time, end_time, weather_state):

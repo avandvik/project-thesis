@@ -54,7 +54,7 @@ def add_start_and_end_flow_constrs(model, x, departure_times, specific_arrival_t
 def add_visit_limit_constrs(model, x, u, departure_times, specific_arrival_times):
     model.addConstrs((gp.quicksum(x[v, i, t1, j, t2]
                                   for v in range(len(data.VESSELS))
-                                  for i in data.ALL_NODE_INDICES[:-1] if i != j  # TODO: Find out if i != j is needed
+                                  for i in data.ALL_NODE_INDICES[:-1] if i != j
                                   for t1 in departure_times[v][i][j]
                                   for t2 in specific_arrival_times[v][i][j][t1])
 
@@ -68,7 +68,7 @@ def add_visit_limit_constrs(model, x, u, departure_times, specific_arrival_times
                      , name=f'visit-limit-1')
 
     model.addConstrs((gp.quicksum(x[v, i, t1, j, t2]
-                                  for i in data.ALL_NODE_INDICES[:-1] if i != j  # TODO: Find out if i != j is needed
+                                  for i in data.ALL_NODE_INDICES[:-1] if i != j
                                   for t1 in departure_times[v][i][j]
                                   for t2 in specific_arrival_times[v][i][j][t1])
 
